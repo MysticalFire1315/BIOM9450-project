@@ -1,4 +1,4 @@
-# first_demo
+# init_design
 
 ## Project setup
 ```
