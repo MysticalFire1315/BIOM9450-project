@@ -13,10 +13,12 @@ install:
 
 tests:
 	. .venv/bin/activate; \
+	export FLASK_APP=flasky.py; \
 	flask test
 
 run:
 	. .venv/bin/activate; \
+	export FLASK_APP=flasky.py; \
 	flask run
 
 all: clean install tests run

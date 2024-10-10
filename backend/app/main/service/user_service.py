@@ -5,7 +5,6 @@ from app.main import db
 from app.main.model.user import User
 from typing import Dict, Tuple
 
-
 def save_new_user(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     user = User.query.filter_by(email=data['email']).first()
     if not user:
@@ -14,7 +13,8 @@ def save_new_user(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
             email=data['email'],
             username=data['username'],
             password=data['password'],
-            registered_on=datetime.datetime.utcnow()
+            registered_on=datetime.datetime.utcnow(),
+            admin=data.get('admin') or False
         )
         save_changes(new_user)
         return generate_token(new_user)
