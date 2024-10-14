@@ -24,6 +24,7 @@
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/useAuthStore';
 import { computed } from 'vue'; // Import computed from Vue
+import axios from 'axios'; // Import axios
 
 export default {
   name: 'SideBar',
@@ -37,9 +38,23 @@ export default {
       router.push({ name: 'home' }); // Adjust according to the route name
     };
 
-    const logout = () => {
-      authStore.logout();
-      router.push({name: 'logout'})
+    const logout = async () => {
+    try {
+        // Send a request to the server to invalidate the token
+        await axios.post('http://127.0.0.1:5000/auth/logout', {}, {
+          headers: {
+            'Authorization': authStore.token, // Include the JWT token in the Authorization header
+            'accept': 'application/json'
+          }
+        });
+
+        // If the request was successful, proceed to log out the user
+        authStore.logout(); // Call the logout action from the store
+        router.push({ name: 'home' }); // Redirect to the home or login page
+      } catch (error) {
+        console.error('Logout failed:', error); // Log the error if the request fails
+        // Optionally, you can add user feedback here (e.g., a notification)
+      }
     };
 
     const gotoDashboardHomeOrLogin = () => {
@@ -91,6 +106,7 @@ export default {
   padding-bottom: 10px;
   padding-top:10px;
   cursor: pointer;
+  transition: all 0.15s;
 }
 
 .icon:hover {

@@ -2,37 +2,92 @@
   <div class="home">
     <div class="login-window">
       <h1>Login</h1>
-      <!-- <form @submit.prevent="handleLogin"> -->
-      <!-- <form> -->
-        <input type="text" v-model="username" placeholder="Username" />
-        <!-- should add required later -->
-        <input type="password" v-model="password" placeholder="Password"/>
-        <button type="submit" @click="handleLogin">Login</button>
-      <!-- </form> -->
+      <form @submit.prevent="handleLogin">
+        <input 
+          type="text" 
+          v-model="email" 
+          placeholder="Email" 
+          required 
+        />
+        <input 
+          type="password" 
+          v-model="password" 
+          placeholder="Password" 
+          required 
+        />
+        <button type="submit">Login</button>
+</form>
+
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'; // Import ref for reactive variables
-import { useAuthStore } from '../stores/useAuthStore';
+import { ref } from 'vue';
+import axios from 'axios';
+import { useAuthStore } from '../stores/useAuthStore';  // Pinia library
 import { useRouter } from 'vue-router';
 
 export default {
   name: 'HomeView',
   setup() {
     const router = useRouter();
-    const username = ref('');
+    const email = ref('');
     const password = ref('');
-    const authStore = useAuthStore(); // Correctly get the auth store instance
+    const authStore = useAuthStore();
 
-    const handleLogin = () => {
-      authStore.login(); // Login
-      router.push({name:'dashboard'});
+    const handleLogin = async () => {
+      try {
+        const loginData = {
+          email: email.value,
+          password: password.value,
+        };
+
+        // Make the login request with Axios
+        const response = await axios.post('http://127.0.0.1:5000/auth/login', loginData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json',
+          },
+        });
+
+        if (response.status === 200) {
+          const jwtToken = response.data.Authorization;
+
+          // Store the JWT token using Pinia
+          authStore.login(jwtToken);
+
+          // Redirect to the dashboard page after successful login
+          router.push({ name: 'dashboard' });
+        } else {
+          console.error('Login failed:', response.data.message);
+          alert('Login failed. Please check your credentials.');
+        }
+      } catch (error) {
+        // console.error('Error during login:', error);
+        // alert('An error occurred. Please try again.');
+
+          // Error catching fallback
+          if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('Error response:', error.response.data);
+          console.error('Status code:', error.response.status);
+          alert(`Login failed with status ${error.response.status}: ${error.response.data.message || error.response.data}`);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('No response received:', error.request);
+          alert('No response from server. Please make sure the server is running.');
+        } else {
+          // Something happened in setting up the request that triggered an error
+          console.error('Error setting up the request:', error.message);
+          alert(`Error: ${error.message}`);
+        }
+      }
     };
 
     return {
-      username,
+      email,
       password,
       authStore,
       handleLogin,
@@ -40,6 +95,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .home {

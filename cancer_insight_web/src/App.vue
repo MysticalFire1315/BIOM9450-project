@@ -13,8 +13,10 @@
 
 
 <script>
+import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import SideBar from './components/SideBar.vue'; // Import Sidebar component
+import { useAuthStore } from './stores/useAuthStore';
 
 export default {
   name: 'App',
@@ -24,6 +26,7 @@ export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
+    const authStore = useAuthStore();
 
     const handleCancerInsightLogoClick = () => {
       if (route.name === 'about') {
@@ -34,6 +37,10 @@ export default {
         router.push({ name: 'about' });
       }
     };
+    
+    onMounted(() => {
+      authStore.initializeAuth();
+    });
 
     return {
       handleCancerInsightLogoClick,
