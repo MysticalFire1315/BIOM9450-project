@@ -16,9 +16,11 @@
           required 
         />
         <button type="submit">Login</button>
-</form>
+        <h5 @click="goToRegistration">Don't have an account? Click here to register!</h5>
+      </form>
 
     </div>
+    
   </div>
 </template>
 
@@ -86,11 +88,16 @@ export default {
       }
     };
 
+    const goToRegistration = () => {
+      router.push({ name: 'registration' }); // Adjust according to the route name
+    };
+
     return {
       email,
       password,
       authStore,
       handleLogin,
+      goToRegistration
     };
   },
 };
@@ -144,7 +151,7 @@ button {
   cursor: pointer;
   font-family: "Gowun Batang",Arial, sans-serif;
   padding-bottom:10px;
-  margin-bottom:100px;
+  margin-bottom:30px;
   margin-top:20px;
   width:500px;
 }
@@ -155,6 +162,9 @@ button:hover {
 
 h1 {
   display:block;
-  
+}
+
+h5 {
+  cursor:pointer;
 }
 </style>

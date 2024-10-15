@@ -5,6 +5,7 @@ import DatabaseView from '@/views/DatabaseView.vue'
 import PredictiveView from '@/views/PredictiveView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import LogOutView from '@/views/LogOutView.vue'
+import RegistrationView from '@/views/RegistrationView.vue'
 
 import { useAuthStore } from '../stores/useAuthStore';
 
@@ -41,6 +42,11 @@ const routes = [
     path: '/logout',
     name: 'logout',
     component: LogOutView
+  },
+  {
+    path: '/registration',
+    name: 'registration',
+    component: RegistrationView
   },
   {
     path: '/:catchAll(.*)',
