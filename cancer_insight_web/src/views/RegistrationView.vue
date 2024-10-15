@@ -10,9 +10,7 @@
         </form>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
-        <p v-if="redirectCountdown > 0" class="redirect-message">
-            Redirecting to login page in {{ redirectCountdown }} seconds...
-        </p>
+        <p v-if="successMessage" class="redirect-message">Logging-in in {{ redirectCountdown }} seconds ...</p>
         </div>
     </div>
 </template>
@@ -21,7 +19,7 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-
+import { useAuthStore } from '../stores/useAuthStore';
 
 export default {
   name: 'RegistrationVue',
@@ -33,6 +31,7 @@ export default {
     const errorMessage = ref('');
     const successMessage = ref('');
     const router = useRouter();
+    const authStore = useAuthStore();
 
     const handleRegister = async () => {
       errorMessage.value = '';
@@ -51,7 +50,9 @@ export default {
         // Handle the response for successful registration
         if (response.status === 201 && response.data.status === 'success') {
           successMessage.value = response.data.message || 'Successfully registered. Please log in.';
-          redirectCountdown.value = 10;
+          redirectCountdown.value = 7;
+          const jwtToken = response.data.Authorization;// Store the JWT token using Pinia
+          authStore.login(jwtToken);
         }
       } catch (error) {
         // Check for 409 conflict error when the user already exists
@@ -70,7 +71,9 @@ export default {
           redirectCountdown.value--;
         }, 1000); // Decrease the countdown every second
       } else if (newValue === 0 && successMessage.value) {
-        router.push({ name: 'home' }); // Redirect to the login page after the countdown
+       
+          // Redirect to the dashboard page after successful login
+        router.push({ name: 'dashboard' });
       }
     });
 
