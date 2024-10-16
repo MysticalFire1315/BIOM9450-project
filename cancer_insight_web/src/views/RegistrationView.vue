@@ -43,8 +43,6 @@ export default {
           email: email.value,
           username: username.value,
           password: password.value,
-          public_id: 'string', // Replace with a real ID generation logic if needed
-          admin: true, // Set to true or false depending on your application's needs
         });
 
         // Handle the response for successful registration
