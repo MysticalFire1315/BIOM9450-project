@@ -10,35 +10,17 @@
 DROP TABLE IF EXISTS "users";
 
 CREATE TABLE "users" (
-  "id" SERIAL PRIMARY KEY,
-  "username" VARCHAR(255),
-  "password_hash" VARCHAR(255),
-  "salt" VARCHAR(255),
-  "created_at" TIMESTAMP DEFAULT current_timestamp
+  "id" serial PRIMARY KEY,
+  "email" varchar(255) UNIQUE NOT NULL,
+  "username" varchar(255) UNIQUE NOT NULL,
+  "password_hash" varchar(255) NOT NULL,
+  "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ----------
--- -- Table structure for table "People"
--- ----------
--- DROP TABLE IF EXISTS "People";
+create table blacklist_tokens (
+  token varchar(500) unique not null,
+  blacklisted_on timestamp default current_timestamp
+);
 
--- CREATE TABLE "People" (
---   "id" SERIAL,
---   "name" VARCHAR(255) NOT NULL,
---   "age" INTEGER,
---   PRIMARY KEY ("id")
--- );
 
--- ----------
--- -- Table structure for table "Patients"
--- ----------
--- DROP TABLE IF EXISTS "Patients";
 
--- CREATE TABLE "Patients" (
---   "id" SERIAL,
---   "photo" BYTEA,
---   "diagnosis" VARCHAR(255),
---   "mutation_id" INTEGER,
---   PRIMARY KEY ("id"),
---   FOREIGN KEY ("id") REFERENCES "People"("id") -- FOREIGN KEY ("mutation_id") REFERENCES "Mutation_Variants"("id")
--- );
