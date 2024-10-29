@@ -1,44 +1,53 @@
-from functools import wraps
+from functools import partial, wraps
 
 from flask import request
 
-from app.main.service.auth_helper import Auth
+from app.main.service.auth_helper import get_logged_in_person
 from typing import Callable
 
 
-def token_required(f) -> Callable:
-    @wraps(f)
-    def decorated(*args, **kwargs):
+def require_logged_in(
+    func: Callable = None, /, *, patient=False, oncologist=False, researcher=False
+) -> Callable:
+    """Require a user to be logged in to access the route.
+    Optionally, the user can be required to be a patient, oncologist, or researcher.
 
-        data, status = Auth.get_logged_in_user(request)
-        token = data.get('data')
+    Args:
+        func (Callable, optional): Controller function should always take `User` as first argument.
+            Defaults to None.
+        patient (bool, optional): If set to True, allow access to any user with the role `Patient`.
+            Defaults to False.
+        oncologist (bool, optional): If set to True, allow access to any user with the role `Oncologist`.
+            Defaults to False.
+        researcher (bool, optional): If set to True, allow access to any user with the role `Researcher`.
+            Defaults to False.
 
-        if not token:
-            return data, status
+    Returns:
+        Callable: The specified function if the user is logged in with the correct role. Otherwise
+        returns an error message and status code.
+    """
 
-        return f(*args, **kwargs)
+    if not func:
+        return partial(
+            require_logged_in,
+            patient=patient,
+            oncologist=oncologist,
+            researcher=researcher,
+        )
 
-    return decorated
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        resp = get_logged_in_person(request.headers.get("Authorization"))
+        if type(resp) is tuple:
+            return resp
+        # otherwise resp is person
 
+        if not (
+            (resp.role == "patient" and patient)
+            or (resp.role == "oncologist" and oncologist)
+            or (resp.role == "researcher" and researcher)
+        ):
+            return {"status": "fail", "message": "Unauthorized"}, 403
+        return func(resp, *args, **kwargs)
 
-def admin_token_required(f: Callable) -> Callable:
-    @wraps(f)
-    def decorated(*args, **kwargs):
-
-        data, status = Auth.get_logged_in_user(request)
-        token = data.get('data')
-
-        if not token:
-            return data, status
-
-        admin = token.get('admin')
-        if not admin:
-            response_object = {
-                'status': 'fail',
-                'message': 'admin token required'
-            }
-            return response_object, 401
-
-        return f(*args, **kwargs)
-
-    return decorated
+    return wrapper
