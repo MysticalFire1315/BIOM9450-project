@@ -13,7 +13,7 @@ def require_logged_in(
     Optionally, the user can be required to be a patient, oncologist, or researcher.
 
     Args:
-        func (Callable, optional): Controller function should always take `User` as first argument.
+        func (Callable, optional): Controller function should always take `Person` as first argument.
             Defaults to None.
         patient (bool, optional): If set to True, allow access to any user with the role `Patient`.
             Defaults to False.
