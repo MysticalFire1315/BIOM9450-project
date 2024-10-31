@@ -35,8 +35,8 @@ class LoggingCursor2(LoggingCursor):
 postgreSQL_pool = pool.SimpleConnectionPool(
     1,
     20,
-    # user="postgres",
-    # password="postgres",
+    user="postgres",
+    password="postgres",
     # host="127.0.0.1",
     # port="5432",
     database="biom_project_test",
