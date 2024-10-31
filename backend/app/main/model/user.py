@@ -1,31 +1,48 @@
 import datetime
 
-from datetime import datetime
+import datetime
+import traceback
 import jwt
 from app.main import flask_bcrypt
 from app.main.config import key
 from app.main.util.database import (NotNullViolation, UniqueViolation,
                                     db_get_cursor)
 
+from typing import Union
+from flask import current_app
 
 class User(object):
+    TABLE_NAME = 'users'
+
     class AlreadyExistsError(Exception):
-        pass
+        def __init__(self, message=None):
+            super().__init__(message)
+            current_app.logger.error(traceback.format_exc())
 
     class BadInputError(Exception):
-        pass
+        def __init__(self, message=None):
+            super().__init__(message)
+            current_app.logger.error(traceback.format_exc())
 
     class NotFoundError(Exception):
-        pass
+        def __init__(self, message=None):
+            super().__init__(message)
+            current_app.logger.error(traceback.format_exc())
 
     class TokenBlacklistedError(Exception):
-        pass
+        def __init__(self, message=None):
+            super().__init__(message)
+            current_app.logger.error(traceback.format_exc())
 
     class TokenExpiredError(Exception):
-        pass
+        def __init__(self, message=None):
+            super().__init__(message)
+            current_app.logger.error(traceback.format_exc())
 
     class TokenInvalidError(Exception):
-        pass
+        def __init__(self, message=None):
+            super().__init__(message)
+            current_app.logger.error(traceback.format_exc())
 
     def __init__(
         self,
@@ -33,7 +50,7 @@ class User(object):
         email: str,
         username: str,
         password_hash: str,
-        created_at: datetime,
+        created_at: datetime.datetime,
         person_id: int,
     ):
         self._id = id
@@ -49,9 +66,9 @@ class User(object):
             with db_get_cursor() as cur:
                 cur.execute(
                     """
-                        INSERT INTO user (email, username, password_hash)
-                        VALUES (%s, %s, %s);
-                        """,
+                    INSERT INTO users (email, username, password_hash)
+                    VALUES (%s, %s, %s);
+                    """,
                     (email, username, User.hash_password(password)),
                 )
         except UniqueViolation:
@@ -63,7 +80,7 @@ class User(object):
     @staticmethod
     def get_by_email(email: str) -> "User":
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM users WHERE email = %s;", email)
+            cur.execute("SELECT * FROM users WHERE email = %s;", (email,))
             result = cur.fetchone()
 
         try:
@@ -74,7 +91,7 @@ class User(object):
     @staticmethod
     def get_by_id(id: int) -> "User":
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM users WHERE id = %s;", id)
+            cur.execute("SELECT * FROM users WHERE id = %s;", (id,))
             result = cur.fetchone()
 
         try:
@@ -110,17 +127,15 @@ class User(object):
         if self.check_password(password):
             raise AttributeError("password: cannot set same password")
 
-        self._password_hash = flask_bcrypt.generate_password_hash(password).decode(
-            "utf-8"
-        )
+        self._password_hash = User.hash_password(password)
         self._update()
 
     @property
-    def created_at(self) -> datetime:
+    def created_at(self) -> datetime.datetime:
         return self._created_at
 
     @property
-    def person_id(self) -> int:
+    def person_id(self) -> Union[int, None]:
         return self._person_id
 
     @person_id.setter
@@ -138,13 +153,19 @@ class User(object):
         with db_get_cursor() as cur:
             cur.execute(
                 """
-                        UPDATE user
+                        UPDATE users
                         SET password_hash = %s,
                             person_id = %s
                         WHERE id = %s
                         """,
-                (self.password_hash, self.person_id, self.id),
+                (self._password_hash, self._person_id, self._id),
             )
+
+    @staticmethod
+    def hash_password(password: str) -> str:
+        return flask_bcrypt.generate_password_hash(password).decode(
+            "utf-8"
+        )
 
     def encode_auth_token(self) -> bytes:
         payload = {
@@ -165,7 +186,7 @@ class User(object):
             raise User.TokenInvalidError
 
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM blacklist_token WHERE token = %s", (auth_token,))
+            cur.execute("SELECT * FROM blacklist_tokens WHERE token = %s", (auth_token,))
             is_blacklisted = cur.fetchone() is not None
 
         if is_blacklisted:
