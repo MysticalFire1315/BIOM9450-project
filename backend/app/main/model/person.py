@@ -1,46 +1,59 @@
-from app.main.util.database import db_get_cursor
-from app.main.model.user import User
 from datetime import datetime
 from enum import Enum
 
+from app.main.model.user import User
+from app.main.util.database import db_get_cursor
+
+
 class Sex(Enum):
-    MALE = 'male'
-    FEMALE = 'female'
-    OTHER = 'other'
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"
 
     @staticmethod
     def from_str(string: str):
         for x in Sex:
             if x.value == string:
                 return x
-        raise AttributeError(f'{string} does not exist')
+        raise AttributeError(f"{string} does not exist")
+
 
 class Role(Enum):
-    PATIENT = 'patient'
-    ONCOLOGIST = 'oncologist'
-    RESEARCHER = 'researcher'
+    PATIENT = "patient"
+    ONCOLOGIST = "oncologist"
+    RESEARCHER = "researcher"
 
     @staticmethod
     def from_str(string: str):
         for x in Role:
             if x.value == string:
                 return x
-        raise AttributeError(f'{string} does not exist')
+        raise AttributeError(f"{string} does not exist")
 
 
 class Person(object):
+    class NotFoundError(Exception):
+        pass
+
     def __init__(
-        self, firstname: str, lastname: str, date_of_birth: datetime, sex: Sex | str, role: Role | str
+        self,
+        firstname: str,
+        lastname: str,
+        date_of_birth: datetime,
+        sex: Sex | str,
+        role: Role | str,
     ):
         self._id = id
         self._firstname = firstname
         self._lastname = lastname
         self._date_of_birth = date_of_birth
-        self._sex = type(sex) is str ? Sex.from_str(sex) : sex
-        self._role = type(role) is str ? Role.from_str(role) : role
+        self._sex = Sex.from_str(sex) if (type(sex) is str) else sex
+        self._role = Role.from_str(role) if (type(role) is str) else role
 
     @staticmethod
-    def new_person(firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role):
+    def new_person(
+        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role
+    ) -> "Person":
         with db_get_cursor() as cur:
             cur.execute(
                 "INSERT INTO person (firstname, lastname, date_of_birth, sex, role) VALUES (%s, %s, %s, %s, %s)",
@@ -49,7 +62,9 @@ class Person(object):
         return Person.get_person(firstname, lastname, date_of_birth, sex)
 
     @staticmethod
-    def get_person(firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role):
+    def get_person(
+        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role
+    ) -> "Person":
         with db_get_cursor() as cur:
             cur.execute(
                 """
@@ -70,7 +85,7 @@ class Person(object):
             raise Person.NotFoundError
 
     @staticmethod
-    def get_by_user_id(user_id: int):
+    def get_by_user_id(user_id: int) -> "Person":
         try:
             user = User.get_by_id(user_id)
         except User.NotFoundError:

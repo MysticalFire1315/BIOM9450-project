@@ -1,8 +1,11 @@
 import datetime
+
+from datetime import datetime
+import jwt
 from app.main import flask_bcrypt
 from app.main.config import key
-from app.main.util.database import db_get_cursor, UniqueViolation
-import jwt
+from app.main.util.database import (NotNullViolation, UniqueViolation,
+                                    db_get_cursor)
 
 
 class User(object):
@@ -24,14 +27,13 @@ class User(object):
     class TokenInvalidError(Exception):
         pass
 
-    # TODO: Type hint for `created_at`?
     def __init__(
         self,
         id: int,
         email: str,
         username: str,
         password_hash: str,
-        created_at,
+        created_at: datetime,
         person_id: int,
     ):
         self._id = id
@@ -91,17 +93,9 @@ class User(object):
     def id(self) -> int:
         return self._id
 
-    @id.setter
-    def id(self, id: int):
-        raise AttributeError("id: read-only field")
-
     @property
     def email(self) -> str:
         return self._email
-
-    @email.setter
-    def email(self, email: str):
-        raise AttributeError("email: read-only field")
 
     @property
     def username(self) -> str:
@@ -122,7 +116,7 @@ class User(object):
         self._update()
 
     @property
-    def created_at(self):
+    def created_at(self) -> datetime:
         return self._created_at
 
     @property
