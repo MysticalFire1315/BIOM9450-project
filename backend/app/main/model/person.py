@@ -4,6 +4,9 @@ from enum import Enum
 from app.main.model.user import User
 from app.main.util.database import db_get_cursor
 
+from typing import Union
+from flask import current_app
+import traceback
 
 class Sex(Enum):
     MALE = "male"
@@ -33,15 +36,18 @@ class Role(Enum):
 
 class Person(object):
     class NotFoundError(Exception):
-        pass
+        def __init__(self, message=None):
+            super().__init__(message)
+            current_app.logger.error(traceback.format_exc())
 
     def __init__(
         self,
+        id: int,
         firstname: str,
         lastname: str,
         date_of_birth: datetime,
-        sex: Sex | str,
-        role: Role | str,
+        sex: Union[Sex, str],
+        role: Union[Role, str],
     ):
         self._id = id
         self._firstname = firstname
@@ -56,20 +62,20 @@ class Person(object):
     ) -> "Person":
         with db_get_cursor() as cur:
             cur.execute(
-                "INSERT INTO person (firstname, lastname, date_of_birth, sex, role) VALUES (%s, %s, %s, %s, %s)",
+                "INSERT INTO people (firstname, lastname, date_of_birth, sex, role) VALUES (%s, %s, %s, %s, %s)",
                 (firstname, lastname, date_of_birth, sex.value, role.value),
             )
         return Person.get_person(firstname, lastname, date_of_birth, sex)
 
     @staticmethod
-    def get_person(
+    def get_by_details(
         firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role
     ) -> "Person":
         with db_get_cursor() as cur:
             cur.execute(
                 """
                 SELECT *
-                FROM person
+                FROM people
                 WHERE firstname = %s
                     AND lastname = %s
                     AND date_of_birth = %s
@@ -85,14 +91,9 @@ class Person(object):
             raise Person.NotFoundError
 
     @staticmethod
-    def get_by_user_id(user_id: int) -> "Person":
-        try:
-            user = User.get_by_id(user_id)
-        except User.NotFoundError:
-            raise Person.NotFoundError
-
+    def get_by_id(id: int) -> "Person":
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM person WHERE id = %s;", (user.person_id,))
+            cur.execute("SELECT * FROM people WHERE id = %s;", (id,))
             result = cur.fetchone()
 
         try:
@@ -139,7 +140,7 @@ class Person(object):
         with db_get_cursor() as cur:
             cur.execute(
                 """
-                UPDATE person
+                UPDATE people
                 SET firstname = %s,
                     lastname = %s
                 WHERE id = %s
