@@ -7,6 +7,8 @@ from flask_restx import Resource
 
 api = AuthDto.api
 
+@api.errorhandler(User.AlreadyExistsError)
+
 @api.route("/register")
 class RegisterAPI(Resource):
     @api.doc("register a user")

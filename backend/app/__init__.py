@@ -4,6 +4,8 @@ from flask import Blueprint
 from app.main.controller.user_controller import api as user_ns
 from app.main.controller.auth_controller import api as auth_ns
 
+from app.main.util.exceptions.handlers import register_handlers
+
 blueprint = Blueprint('api', __name__)
 authorizations = {
     'apikey': {
@@ -22,6 +24,9 @@ api = Api(
     security='apikey'
 )
 
+# Register namespaces
 api.add_namespace(user_ns, path='/user')
 api.add_namespace(auth_ns, path='/auth')
 # api.add_namespace(person_ns, path='/person')
+
+register_handlers(api)

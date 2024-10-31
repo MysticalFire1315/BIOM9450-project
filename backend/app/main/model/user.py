@@ -7,43 +7,12 @@ from app.main import flask_bcrypt
 from app.main.config import key
 from app.main.util.database import (NotNullViolation, UniqueViolation,
                                     db_get_cursor)
+from app.main.util.exceptions.errors import NotFoundError, AlreadyExistsError, BadInputError, TokenInvalidError
 
 from typing import Union
 from flask import current_app
 
 class User(object):
-    TABLE_NAME = 'users'
-
-    class AlreadyExistsError(Exception):
-        def __init__(self, message=None):
-            super().__init__(message)
-            current_app.logger.error(traceback.format_exc())
-
-    class BadInputError(Exception):
-        def __init__(self, message=None):
-            super().__init__(message)
-            current_app.logger.error(traceback.format_exc())
-
-    class NotFoundError(Exception):
-        def __init__(self, message=None):
-            super().__init__(message)
-            current_app.logger.error(traceback.format_exc())
-
-    class TokenBlacklistedError(Exception):
-        def __init__(self, message=None):
-            super().__init__(message)
-            current_app.logger.error(traceback.format_exc())
-
-    class TokenExpiredError(Exception):
-        def __init__(self, message=None):
-            super().__init__(message)
-            current_app.logger.error(traceback.format_exc())
-
-    class TokenInvalidError(Exception):
-        def __init__(self, message=None):
-            super().__init__(message)
-            current_app.logger.error(traceback.format_exc())
-
     def __init__(
         self,
         id: int,
@@ -72,9 +41,9 @@ class User(object):
                     (email, username, User.hash_password(password)),
                 )
         except UniqueViolation:
-            raise User.AlreadyExistsError
+            raise AlreadyExistsError('User already exists')
         except NotNullViolation:
-            raise User.BadInputError
+            raise BadInputError('Bad input')
         return User.get_by_email(email)
 
     @staticmethod
@@ -86,7 +55,7 @@ class User(object):
         try:
             return User(*result)
         except TypeError:
-            raise User.NotFoundError
+            raise NotFoundError('User not found')
 
     @staticmethod
     def get_by_id(id: int) -> "User":
@@ -97,13 +66,13 @@ class User(object):
         try:
             return User(*result)
         except TypeError:
-            raise User.NotFoundError
+            raise NotFoundError('User not found')
 
     @staticmethod
     def get_by_login(email: str, password: str) -> "User":
         user = User.get_by_email(email)
         if not user.check_password(password):
-            raise User.NotFoundError
+            raise NotFoundError('User not found')
         return user
 
     @property
@@ -120,12 +89,12 @@ class User(object):
 
     @property
     def password(self) -> str:
-        raise AttributeError("password: write-only field")
+        raise BadInputError("password: write-only field")
 
     @password.setter
     def password(self, password: str):
         if self.check_password(password):
-            raise AttributeError("password: cannot set same password")
+            raise BadInputError("password: cannot set same password")
 
         self._password_hash = User.hash_password(password)
         self._update()
@@ -141,7 +110,7 @@ class User(object):
     @person_id.setter
     def person_id(self, person_id: int):
         if self._person_id is not None:
-            raise AttributeError("person_id: read-only field")
+            raise BadInputError("person_id: read-only field")
 
         self._person_id = person_id
         self._update()
@@ -181,15 +150,15 @@ class User(object):
         try:
             payload = jwt.decode(auth_token, key)
         except jwt.ExpiredSignatureError:
-            raise User.TokenExpiredError
+            raise TokenInvalidError('Token expired')
         except jwt.InvalidTokenError:
-            raise User.TokenInvalidError
+            raise TokenInvalidError('Token invalid')
 
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM blacklist_tokens WHERE token = %s", (auth_token,))
             is_blacklisted = cur.fetchone() is not None
 
         if is_blacklisted:
-            raise User.TokenBlacklistedError
+            raise TokenInvalidError('Token expired')
         else:
             return User.get_by_id(payload["sub"])

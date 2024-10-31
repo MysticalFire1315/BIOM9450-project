@@ -1,12 +1,9 @@
 from datetime import datetime
 from enum import Enum
-
-from app.main.model.user import User
-from app.main.util.database import db_get_cursor
-
 from typing import Union
-from flask import current_app
-import traceback
+
+from app.main.util.database import db_get_cursor
+from app.main.util.exceptions.errors import BadInputError, NotFoundError
 
 class Sex(Enum):
     MALE = "male"
@@ -18,7 +15,7 @@ class Sex(Enum):
         for x in Sex:
             if x.value == string:
                 return x
-        raise AttributeError(f"{string} does not exist")
+        raise BadInputError(f"{string} does not exist")
 
 
 class Role(Enum):
@@ -31,15 +28,10 @@ class Role(Enum):
         for x in Role:
             if x.value == string:
                 return x
-        raise AttributeError(f"{string} does not exist")
+        raise BadInputError(f"{string} does not exist")
 
 
 class Person(object):
-    class NotFoundError(Exception):
-        def __init__(self, message=None):
-            super().__init__(message)
-            current_app.logger.error(traceback.format_exc())
-
     def __init__(
         self,
         id: int,
@@ -60,12 +52,15 @@ class Person(object):
     def new_person(
         firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role
     ) -> "Person":
-        with db_get_cursor() as cur:
-            cur.execute(
-                "INSERT INTO people (firstname, lastname, date_of_birth, sex, role) VALUES (%s, %s, %s, %s, %s)",
-                (firstname, lastname, date_of_birth, sex.value, role.value),
-            )
-        return Person.get_person(firstname, lastname, date_of_birth, sex)
+        try:
+            with db_get_cursor() as cur:
+                cur.execute(
+                    "INSERT INTO people (firstname, lastname, date_of_birth, sex, role) VALUES (%s, %s, %s, %s, %s);",
+                    (firstname, lastname, date_of_birth, sex.value, role.value),
+                )
+        except NotNullViolation:
+            raise BadInputError('Bad input')
+        return Person.get_by_details(firstname, lastname, date_of_birth, sex)
 
     @staticmethod
     def get_by_details(
@@ -73,13 +68,13 @@ class Person(object):
     ) -> "Person":
         with db_get_cursor() as cur:
             cur.execute(
-                """
+                """;
                 SELECT *
                 FROM people
                 WHERE firstname = %s
                     AND lastname = %s
                     AND date_of_birth = %s
-                    AND sex = %s
+                    AND sex = %s;
                 """,
                 (firstname, lastname, date_of_birth, sex.value),
             )
@@ -88,7 +83,7 @@ class Person(object):
         try:
             return Person(*result)
         except TypeError:
-            raise Person.NotFoundError
+            raise NotFoundError('Person not found')
 
     @staticmethod
     def get_by_id(id: int) -> "Person":
@@ -99,7 +94,7 @@ class Person(object):
         try:
             return Person(*result)
         except TypeError:
-            raise Person.NotFoundError
+            raise NotFoundError('Person not found')
 
     @property
     def id(self) -> int:
@@ -143,7 +138,7 @@ class Person(object):
                 UPDATE people
                 SET firstname = %s,
                     lastname = %s
-                WHERE id = %s
+                WHERE id = %s;
                 """,
                 (self.firstname, self.lastname, self.id),
             )
