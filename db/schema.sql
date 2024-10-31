@@ -52,6 +52,6 @@ CREATE TABLE patients (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    person_id INTEGER UNIQUE,
+    person_id INTEGER UNIQUE NOT NULL,
     CONSTRAINT fk_person FOREIGN KEY (person_id) REFERENCES people(id)
 );
