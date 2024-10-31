@@ -17,6 +17,7 @@ tests:
 	flask test
 
 run:
+	mkdir log; \
 	. .venv/bin/activate; \
 	export FLASK_APP=flasky.py; \
 	flask run
