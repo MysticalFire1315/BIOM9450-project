@@ -75,7 +75,8 @@ export default {
           // that falls out of the range of 2xx
           console.error('Error response:', error.response.data);
           console.error('Status code:', error.response.status);
-          alert(`Login failed with status ${error.response.status}: ${error.response.data.message || error.response.data}`);
+          // alert(`Login failed with status ${error.response.status}: ${error.response.data.message || error.response.data}`);
+          alert(`Login failed with status ${error.response.status}: ${error.response.data.message}`);
         } else if (error.request) {
           // The request was made but no response was received
           console.error('No response received:', error.request);
