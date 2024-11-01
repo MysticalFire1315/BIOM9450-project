@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Union
 
-from app.main.util.database import db_get_cursor
+from app.main.util.database import db_get_cursor, NotNullViolation
 from app.main.util.exceptions.errors import BadInputError, NotFoundError
 
 class Sex(Enum):
@@ -55,12 +55,12 @@ class Person(object):
         try:
             with db_get_cursor() as cur:
                 cur.execute(
-                    "INSERT INTO people (firstname, lastname, date_of_birth, sex, role) VALUES (%s, %s, %s, %s, %s);",
+                    "INSERT INTO people (firstname, lastname, date_of_birth, sex, person_role) VALUES (%s, %s, %s, %s, %s);",
                     (firstname, lastname, date_of_birth, sex.value, role.value),
                 )
         except NotNullViolation:
             raise BadInputError('Bad input')
-        return Person.get_by_details(firstname, lastname, date_of_birth, sex)
+        return Person.get_by_details(firstname, lastname, date_of_birth, sex, role)
 
     @staticmethod
     def get_by_details(
@@ -74,9 +74,10 @@ class Person(object):
                 WHERE firstname = %s
                     AND lastname = %s
                     AND date_of_birth = %s
-                    AND sex = %s;
+                    AND sex = %s
+                    AND person_role = %s;
                 """,
-                (firstname, lastname, date_of_birth, sex.value),
+                (firstname, lastname, date_of_birth, sex.value, role.value),
             )
             result = cur.fetchone()
 
@@ -141,4 +142,10 @@ class Person(object):
                 WHERE id = %s;
                 """,
                 (self.firstname, self.lastname, self.id),
+            )
+
+    def delete(self):
+        with db_get_cursor() as cur:
+            cur.execute(
+                "DELETE FROM people WHERE id = %s", (self.id,)
             )

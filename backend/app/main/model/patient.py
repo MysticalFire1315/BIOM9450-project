@@ -29,19 +29,20 @@ class Patient(object):
         self._person_id = person_id
 
     @staticmethod
-    def new_patient(cur, person_id: int, photo: bytes = None,
+    def new_patient(person_id: int, photo: bytes = None,
         address: str = None,
         country: str = None,
         emergency_contact_name: str = None,
         emergency_contact_phone: str = None) -> "Patient":
         try:
-            cur.execute(
-                """
-                INSERT INTO patients (photo, address, country, emergency_contact_name, emergency_contact_phone, person_id)
-                VALUES (%s, %s, %s, %s, %s, %s);
-                """,
-                (photo, address, country, emergency_contact_name, emergency_contact_phone, person_id)
-            )
+            with db_get_cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO patients (photo, address, country, emergency_contact_name, emergency_contact_phone, person_id)
+                    VALUES (%s, %s, %s, %s, %s, %s);
+                    """,
+                    (photo, address, country, emergency_contact_name, emergency_contact_phone, person_id)
+                )
         except UniqueViolation:
             raise AlreadyExistsError('Patient already exists')
         except NotNullViolation:
