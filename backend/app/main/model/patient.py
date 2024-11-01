@@ -2,14 +2,10 @@ import traceback
 from flask import current_app
 import datetime
 
-from app.main.util.database import db_get_cursor
-
+from app.main.util.database import db_get_cursor, UniqueViolation, NotNullViolation
+from app.main.util.exceptions.errors import NotFoundError, BadInputError
 
 class Patient(object):
-    class NotFoundError(Exception):
-        def __init__(self, message=None):
-            super().__init__(message)
-            current_app.logger.error(traceback.format_exc())
     def __init__(
         self,
         id: int,
@@ -33,24 +29,23 @@ class Patient(object):
         self._person_id = person_id
 
     @staticmethod
-    def new_patient(person_id: int, photo: bytes = None,
+    def new_patient(cur, person_id: int, photo: bytes = None,
         address: str = None,
         country: str = None,
         emergency_contact_name: str = None,
         emergency_contact_phone: str = None) -> "Patient":
         try:
-            with db_get_cursor() as cur:
-                cur.execute(
-                    """
-                    INSERT INTO patients (photo, address, country, emergency_contact_name, emergency_contact_phone, person_id)
-                    VALUES (%s, %s, %s, %s, %s, %s);
-                    """,
-                    (photo, address, country, emergency_contact_name, emergency_contact_phone, person_id)
-                )
+            cur.execute(
+                """
+                INSERT INTO patients (photo, address, country, emergency_contact_name, emergency_contact_phone, person_id)
+                VALUES (%s, %s, %s, %s, %s, %s);
+                """,
+                (photo, address, country, emergency_contact_name, emergency_contact_phone, person_id)
+            )
         except UniqueViolation:
-            raise User.AlreadyExistsError
+            raise AlreadyExistsError('Patient already exists')
         except NotNullViolation:
-            raise User.BadInputError
+            raise BadInputError('Bad input')
         return Patient.get_by_person_id(person_id)
 
     @staticmethod
@@ -62,4 +57,4 @@ class Patient(object):
         try:
             return Patient(*result)
         except TypeError:
-            raise Patient.NotFoundError
+            raise NotFoundError('Patient not found')

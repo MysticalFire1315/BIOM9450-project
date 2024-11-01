@@ -3,6 +3,7 @@ from functools import partial, wraps
 from flask import request
 
 from app.main.service.auth_service import get_logged_in_person, get_logged_in_user
+from app.main.model.person import Role
 from typing import Callable
 
 def require_user_logged_in(
@@ -28,13 +29,10 @@ def require_user_logged_in(
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        resp = get_logged_in_user(request.headers.get("Authorization"))
-        if type(resp) is tuple:
-            return resp
-        # otherwise resp is user
+        user = get_logged_in_user(request.headers.get("Authorization"))
 
         if throughpass:
-            kwargs['user'] = resp
+            kwargs['user'] = user
         return func(*args, **kwargs)
 
     return wrapper
@@ -64,7 +62,7 @@ def require_logged_in_as(
 
     if not func:
         return partial(
-            require_logged_in,
+            require_logged_in_as,
             patient=patient,
             oncologist=oncologist,
             researcher=researcher,
@@ -73,20 +71,17 @@ def require_logged_in_as(
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        resp = get_logged_in_person(request.headers.get("Authorization"))
-        if type(resp) is tuple:
-            return resp
-        # otherwise resp is person
+        person = get_logged_in_person(request.headers.get("Authorization"))
 
         if not (
-            (resp.role == "patient" and patient)
-            or (resp.role == "oncologist" and oncologist)
-            or (resp.role == "researcher" and researcher)
+            (person.role == Role.PATIENT and patient)
+            or (person.role == Role.ONCOLOGIST and oncologist)
+            or (person.role == Role.RESEARCHER and researcher)
         ):
             return {"status": "fail", "message": "Unauthorized"}, 403
 
         if throughpass:
-            kwargs['person'] = resp
+            kwargs['person'] = person
         return func(*args, **kwargs)
 
     return wrapper
