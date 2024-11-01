@@ -4,9 +4,14 @@
         <h1>Create your account!</h1>
         <form @submit.prevent="handleRegister">
             <input type="email" v-model="email" placeholder="Email" required />
+            <h3 v-if="email && !isEmailValid">Please enter a valid email address.</h3>
             <input type="text" v-model="username" placeholder="Username" required />
+            <h3 v-if="username && !isUsernameValid">Username cannot be empty.</h3>
             <input type="password" v-model="password" placeholder="Password" required />
-            <button type="submit">Register</button>
+            <h3 v-if="password && !isPasswordValid">Password must be 8 characters long and must include uppercase, lowercase and a number.</h3>
+            <input type="password" v-model="reenterPassword" placeholder="Re-enter Password">
+            <h3 v-if="reenterPassword && !isReenterPasswordValid">Password do not match</h3>
+            <button type="submit" :disabled="!isFormValid">Register</button>
         </form>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
@@ -16,7 +21,7 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/useAuthStore';
@@ -27,6 +32,14 @@ export default {
     const email = ref('');
     const username = ref('');
     const password = ref('');
+    const reenterPassword = ref('');
+
+    const isEmailValid = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value));
+    const isUsernameValid = computed(() => username.value.trim().length > 0);
+    const isPasswordValid = computed(() => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password.value));
+    const isReenterPasswordValid = computed(() => reenterPassword.value === password.value);
+    const isFormValid = computed(() => isEmailValid.value && isUsernameValid.value && isPasswordValid.value && isReenterPasswordValid.value);
+
     const redirectCountdown = ref(0);
     const errorMessage = ref('');
     const successMessage = ref('');
@@ -79,6 +92,12 @@ export default {
       email,
       username,
       password,
+      reenterPassword,
+      isEmailValid,
+      isUsernameValid,
+      isPasswordValid,
+      isReenterPasswordValid,
+      isFormValid,
       redirectCountdown,
       handleRegister,
       errorMessage,
@@ -134,6 +153,13 @@ h1 {
   margin-bottom: 20px;
 }
 
+h3 {
+  text-align: left;
+  font-size: 14px;
+  color: red;
+  padding-left: 5px;
+}
+
 
 button {
   padding: 10px 15px;
@@ -154,6 +180,10 @@ button:hover {
   background-color: #46a9fa; /* Darker button color on hover */
 }
 
+button:disabled {
+    background-color: lightgray; /* Gray out the button */
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+}
 
 .error-message {
   color: red;
