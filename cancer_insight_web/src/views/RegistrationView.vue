@@ -39,7 +39,7 @@ export default {
 
       try {
         // Replace this URL with your actual registration endpoint
-        const response = await axios.post('http://127.0.0.1:5000/user/', {
+        const response = await axios.post('http://127.0.0.1:5000/auth/register', {
           email: email.value,
           username: username.value,
           password: password.value,
