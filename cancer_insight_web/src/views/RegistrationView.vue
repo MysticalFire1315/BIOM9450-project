@@ -50,6 +50,10 @@ export default {
       errorMessage.value = '';
       successMessage.value = '';
 
+      // Remove leading and trailing spaces before sending to the server
+      email.value = email.value.trim();
+      username.value = username.value.trim();
+
       try {
         // Replace this URL with your actual registration endpoint
         const response = await axios.post('http://127.0.0.1:5000/auth/register', {
