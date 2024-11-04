@@ -7,7 +7,7 @@
       style="padding-bottom: 10px;"
     ></v-list-item>
 
-    <v-divider :thickness="5" class="border-opacity-100"></v-divider>
+    <v-divider :thickness="3" class="border-opacity-100"></v-divider>
 
     <v-list density="compact" nav>
       <v-list-item
@@ -16,7 +16,7 @@
         :title="item.title"
         :prepend-icon="item.icon"
         v-ripple="{ class: 'text-primary' }"
-        @mousedown="navigateTo(item.route)"
+        @click="navigateTo(item.route)"
       >
       </v-list-item>
     </v-list>
@@ -61,8 +61,9 @@ export default {
   }
 
   .v-list-item:hover {
-  background-color: #0476d0 !important; 
+  background-color: #24a2c9 !important; 
   }
+
   /* :deep(.v-list-item-title) {
   font-size: 18px;
   } */

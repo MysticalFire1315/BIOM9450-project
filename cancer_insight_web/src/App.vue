@@ -1,6 +1,21 @@
 <template>
   <v-app class="app-container">
-    <v-app-bar title="App bar"></v-app-bar>
+    <v-app-bar>
+
+      <v-btn icon>
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+
+      <v-app-bar-title>Title</v-app-bar-title>
+
+      <v-btn icon>
+        <v-icon>mdi-contacts</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-information</v-icon>
+      </v-btn>
+    </v-app-bar>
     
     <SideBar />
     <v-main>
