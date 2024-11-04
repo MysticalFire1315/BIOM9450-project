@@ -64,7 +64,10 @@ export default {
 body {
     margin: 0;
     height: 100vh; /* Ensure it covers the full height of the viewport */
-    background: linear-gradient(to bottom right, #a2c8e1, #ffffff);
+    background-color: #ffffff;
+    background-image:  linear-gradient(#bbe7fe 8px, transparent 8px), linear-gradient(90deg, #bbe7fe 8px, transparent 8px), linear-gradient(#bbe7fe 4px, transparent 4px), linear-gradient(90deg, #bbe7fe 4px, #ffffff 4px);
+    background-size: 200px 200px, 200px 200px, 40px 40px, 40px 40px;
+    background-position: -8px -8px, -8px -8px, -4px -4px, -4px -4px;
 }
 
 .cancer-insight-logo {

@@ -142,7 +142,7 @@ input {
   padding: 20px;
   margin-top:20px;
   margin-bottom:20px;
-  border: none;
+  border: 2px solid #d3b5e5;
   display: block;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.5); /* Semi-transparent background for input */
