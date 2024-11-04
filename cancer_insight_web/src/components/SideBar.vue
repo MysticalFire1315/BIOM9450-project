@@ -1,4 +1,74 @@
 <template>
+  <v-navigation-drawer expand-on-hover rail>
+    <v-list-item
+      prepend-icon="mdi-account-box"
+      subtitle="username@email.com"
+      title="Username"
+      style="padding-bottom: 10px;"
+    ></v-list-item>
+
+    <v-divider :thickness="5" class="border-opacity-100"></v-divider>
+
+    <v-list density="compact" nav>
+      <v-list-item
+        v-for="(item, index) in menuItems"
+        :key="index"
+        :title="item.title"
+        :prepend-icon="item.icon"
+        v-ripple="{ class: 'text-primary' }"
+        @click="navigateTo(item.route)"
+      >
+      </v-list-item>
+    </v-list>
+  </v-navigation-drawer>
+</template>
+
+<script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+export default {
+  setup() {
+    const router = useRouter(); // Get the router instance
+
+    // Define menu items with their corresponding routes
+    const menuItems = ref([
+      { title: 'Dashboard', icon: 'mdi-view-dashboard', route: '/dashboard' },
+      { title: 'Database', icon: 'mdi-database', route: '/database' },
+      { title: 'Predictive Learning', icon: 'mdi-robot-angry', route: '/predictive' },
+      { title: 'Logout', icon: 'mdi-logout', route: '/logout' }
+    ]);
+
+    // Function to navigate to the selected route
+    const navigateTo = (route) => {
+      router.push(route); // Use router to navigate
+    };
+
+    return { menuItems, navigateTo };
+  }
+};
+</script>
+
+
+
+<style scoped>
+  .v-navigation-drawer, .v-list {
+    background-color: #2eb5e0;
+  }
+
+  .v-list-item {
+    color: white;
+  }
+
+  .v-list-item:hover {
+  background-color: #0476d0 !important; 
+  }
+  /* :deep(.v-list-item-title) {
+  font-size: 18px;
+  } */
+
+</style>
+<!-- <template>
     <div class="sidebar">
       <div class="icon" @click="gotoDashboardHomeOrLogin">
         <img src="@/assets/DashboardIcon.svg" alt="Icon 1" />
@@ -122,4 +192,4 @@ export default {
   font-size: 14px; /* Adjust font size as needed */
 }
 
-</style>
+</style> -->

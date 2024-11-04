@@ -1,14 +1,19 @@
 <template>
-  <div class="app-container">
+  <v-app class="app-container">
+    <v-app-bar title="App bar"></v-app-bar>
+    
     <SideBar />
-    <img
+    <v-main>
+      <img
       src="@/assets/CancerInsightLogo.svg"
       alt="Logo"
       class="cancer-insight-logo"
       @click="handleCancerInsightLogoClick"
-    />
-    <router-view></router-view>
-  </div>
+      />
+      <router-view></router-view>
+    </v-main>
+    
+  </v-app>
 </template>
 
 
