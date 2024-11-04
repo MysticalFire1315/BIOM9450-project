@@ -16,7 +16,7 @@
         :title="item.title"
         :prepend-icon="item.icon"
         v-ripple="{ class: 'text-primary' }"
-        @click="navigateTo(item.route)"
+        @mousedown="navigateTo(item.route)"
       >
       </v-list-item>
     </v-list>
