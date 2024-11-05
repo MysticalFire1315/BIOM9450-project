@@ -42,8 +42,7 @@ class PersonDto:
             "firstname": fields.String(description="First name"),
             "lastname": fields.String(description="Last name"),
             "date_of_birth": fields.DateTime(description="Date of birth"),
-            "sex": fields.String(description="Sex"),
-            "role": fields.String(description="Role: Patient/Oncologist/Researcher"),
+            "sex": fields.String(description="Sex")
         },
     )
 
@@ -62,7 +61,27 @@ class PatientDto:
             "emergency_contact_phone": fields.String(
                 description="Emergency contact phone number"
             ),
-            "person_id": fields.Integer(description="Id of the "),
+            "person": fields.Nested(PersonDto.person_profile),
+        },
+    )
+
+
+class OncologistDto:
+    api = Namespace("oncologist", description="oncologist related operations")
+    oncologist_profile = api.model(
+        "oncologist_profile",
+        {
+            # Other fields here
+            "person": fields.Nested(PersonDto.person_profile),
+        },
+    )
+
+class ResearcherDto:
+    api = Namespace("researcher", description="researcher related operations")
+    researcher_profile = api.model(
+        "researcher_profile",
+        {
+            # Other fields here
             "person": fields.Nested(PersonDto.person_profile),
         },
     )

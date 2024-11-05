@@ -73,11 +73,14 @@ def require_logged_in_as(
     def wrapper(*args, **kwargs):
         person = get_logged_in_person(request.headers.get("Authorization"))
 
-        if not (
-            (person.role == Role.PATIENT and patient)
-            or (person.role == Role.ONCOLOGIST and oncologist)
-            or (person.role == Role.RESEARCHER and researcher)
-        ):
+        try:
+            if patient:
+                Patient.get_by_people_id(person.id)
+            if oncologist:
+                Oncologist.get_by_people_id(person.id)
+            if researcher:
+                Researcher.get_by_people_id(person.id)
+        except:
             return {"status": "fail", "message": "Unauthorized"}, 403
 
         if throughpass:

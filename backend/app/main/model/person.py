@@ -18,19 +18,6 @@ class Sex(Enum):
         raise BadInputError(f"{string} does not exist")
 
 
-class Role(Enum):
-    PATIENT = "patient"
-    ONCOLOGIST = "oncologist"
-    RESEARCHER = "researcher"
-
-    @staticmethod
-    def from_str(string: str):
-        for x in Role:
-            if x.value == string:
-                return x
-        raise BadInputError(f"{string} does not exist")
-
-
 class Person(object):
     def __init__(
         self,
@@ -38,33 +25,31 @@ class Person(object):
         firstname: str,
         lastname: str,
         date_of_birth: datetime,
-        sex: Union[Sex, str],
-        role: Union[Role, str],
+        sex: Union[Sex, str]
     ):
         self._id = id
         self._firstname = firstname
         self._lastname = lastname
         self._date_of_birth = date_of_birth
         self._sex = Sex.from_str(sex) if (type(sex) is str) else sex
-        self._role = Role.from_str(role) if (type(role) is str) else role
 
     @staticmethod
     def new_person(
-        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role
+        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex
     ) -> "Person":
         try:
             with db_get_cursor() as cur:
                 cur.execute(
-                    "INSERT INTO people (firstname, lastname, date_of_birth, sex, person_role) VALUES (%s, %s, %s, %s, %s);",
-                    (firstname, lastname, date_of_birth, sex.value, role.value),
+                    "INSERT INTO people (firstname, lastname, date_of_birth, sex) VALUES (%s, %s, %s, %s);",
+                    (firstname, lastname, date_of_birth, sex.value),
                 )
         except NotNullViolation:
             raise BadInputError('Bad input')
-        return Person.get_by_details(firstname, lastname, date_of_birth, sex, role)
+        return Person.get_by_details(firstname, lastname, date_of_birth, sex)
 
     @staticmethod
     def get_by_details(
-        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role
+        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex
     ) -> "Person":
         with db_get_cursor() as cur:
             cur.execute(
@@ -74,10 +59,9 @@ class Person(object):
                 WHERE firstname = %s
                     AND lastname = %s
                     AND date_of_birth = %s
-                    AND sex = %s
-                    AND person_role = %s;
+                    AND sex = %s;
                 """,
-                (firstname, lastname, date_of_birth, sex.value, role.value),
+                (firstname, lastname, date_of_birth, sex.value),
             )
             result = cur.fetchone()
 
@@ -126,11 +110,6 @@ class Person(object):
     @property
     def sex(self) -> Sex:
         return self._sex
-
-    @property
-    def role(self) -> Role:
-        # For now role cannot be updated - possible idea for future
-        return self._role
 
     def _update(self):
         with db_get_cursor() as cur:
