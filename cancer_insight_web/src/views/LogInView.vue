@@ -5,7 +5,7 @@
     <div class="home">
       <v-container class="d-flex justify-center align-center" fill-height>
         <v-card class="login-window">
-          <v-card-title class="text-h5">Login</v-card-title>
+          <v-card-title class="text-h5" style="padding-bottom: 30px">Login</v-card-title>
 
             <v-form @submit.prevent="handleLogin">
             <v-text-field
@@ -137,7 +137,7 @@
   .login-window {
     background: rgba(255, 255, 255, 0.4); /* Semi-transparent white */
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px); /* Blurry effect */
     width: 80%;
     text-align: center;

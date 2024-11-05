@@ -92,7 +92,7 @@ export default {
 
 <style scoped>
     .v-app-bar {
-        background-color: #2eb5e0 !important;
+        background-color: #e0602e !important;
     }
 
     .v-icon, .v-app-bar-title {

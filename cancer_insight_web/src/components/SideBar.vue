@@ -7,7 +7,7 @@
       style="padding-bottom: 10px;"
     ></v-list-item>
 
-    <v-divider :thickness="3" class="border-opacity-100" color="info"></v-divider>
+    <v-divider :thickness="3" class="border-opacity-100" color="warning"></v-divider>
 
     <v-list density="compact" nav>
       <v-list-item
@@ -57,7 +57,7 @@ export default {
 
 <style scoped>
   .v-navigation-drawer, .v-list {
-    background-color: #2eb5e0;
+    background-color: #e0602e;
   }
 
   .v-list-item {
@@ -65,7 +65,7 @@ export default {
   }
 
   .v-list-item:hover {
-  background-color: #24a2c9 !important; 
+  background-color: #e0492e !important; 
   }
 
   /* :deep(.v-list-item-title) {

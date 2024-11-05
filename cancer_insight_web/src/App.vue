@@ -3,13 +3,7 @@
     <AppBar />
     
     <SideBar />
-    <v-main>
-      <!-- <img
-      src="@/assets/CancerInsightLogo.svg"
-      alt="Logo"
-      class="cancer-insight-logo"
-      @click="handleCancerInsightLogoClick"
-      /> -->
+    <v-main class="background-image">
       <router-view></router-view>
     </v-main>
     
@@ -83,6 +77,13 @@ body {
   top: -30px;
   right: -30px;
   cursor: pointer;
+}
+
+.background-image {
+  background-image: url('@/assets/gene_background.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 </style>
