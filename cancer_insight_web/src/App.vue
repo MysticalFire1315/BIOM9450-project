@@ -1,30 +1,15 @@
 <template>
   <v-app class="app-container">
-    <v-app-bar>
-
-      <v-btn icon>
-        <v-icon>mdi-home</v-icon>
-      </v-btn>
-
-      <v-app-bar-title>Title</v-app-bar-title>
-
-      <v-btn icon>
-        <v-icon>mdi-contacts</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-information</v-icon>
-      </v-btn>
-    </v-app-bar>
+    <AppBar />
     
     <SideBar />
     <v-main>
-      <img
+      <!-- <img
       src="@/assets/CancerInsightLogo.svg"
       alt="Logo"
       class="cancer-insight-logo"
       @click="handleCancerInsightLogoClick"
-      />
+      /> -->
       <router-view></router-view>
     </v-main>
     
@@ -35,13 +20,15 @@
 <script>
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import SideBar from './components/SideBar.vue'; // Import Sidebar component
+import SideBar from './components/SideBar.vue'; 
+import AppBar from './components/AppBar.vue'
 import { useAuthStore } from './stores/useAuthStore';
 
 export default {
   name: 'App',
   components: {
-    SideBar, // Register Sidebar component
+    SideBar,
+    AppBar
   },
   setup() {
     const router = useRouter();

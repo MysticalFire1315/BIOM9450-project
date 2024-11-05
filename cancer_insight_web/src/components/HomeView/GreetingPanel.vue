@@ -26,7 +26,6 @@ const formattedDate = currentDate.value.toLocaleDateString('en-US', {
     .greetingpanel {
         width: 80%;
         margin-left:100px;
-        
     }
 
     h1 {

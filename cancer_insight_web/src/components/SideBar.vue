@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer expand-on-hover rail>
+  <v-navigation-drawer expand-on-hover rail v-if="isLogin">
     <v-list-item
       prepend-icon="mdi-account-box"
       subtitle="username@email.com"
@@ -7,7 +7,7 @@
       style="padding-bottom: 10px;"
     ></v-list-item>
 
-    <v-divider :thickness="3" class="border-opacity-100"></v-divider>
+    <v-divider :thickness="3" class="border-opacity-100" color="info"></v-divider>
 
     <v-list density="compact" nav>
       <v-list-item
@@ -26,17 +26,21 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/useAuthStore';  // Pinia library
+import { computed } from 'vue'; // Import computed from Vue
 
 export default {
   setup() {
     const router = useRouter(); // Get the router instance
+    const authStore = useAuthStore(); 
+    const isLogin = computed(() => authStore.isLogin); // Get isLogin from store
 
     // Define menu items with their corresponding routes
     const menuItems = ref([
       { title: 'Dashboard', icon: 'mdi-view-dashboard', route: '/dashboard' },
       { title: 'Database', icon: 'mdi-database', route: '/database' },
       { title: 'Predictive Learning', icon: 'mdi-robot-angry', route: '/predictive' },
-      { title: 'Logout', icon: 'mdi-logout', route: '/logout' }
+      { title: 'Setting', icon: 'mdi-cog', route: '/setting' }
     ]);
 
     // Function to navigate to the selected route
@@ -44,7 +48,7 @@ export default {
       router.push(route); // Use router to navigate
     };
 
-    return { menuItems, navigateTo };
+    return { menuItems, isLogin, navigateTo };
   }
 };
 </script>
@@ -101,7 +105,7 @@ export default {
   name: 'SideBar',
   setup() {
     const router = useRouter();
-    const authStore = useAuthStore(); // Use your Pinia store
+    const authStore = useAuthStore(); 
 
     const isLogin = computed(() => authStore.isLogin); // Get isLogin from store
 

@@ -6,8 +6,13 @@ import PredictiveView from '@/views/PredictiveView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import LogOutView from '@/views/LogOutView.vue'
 import RegistrationView from '@/views/RegistrationView.vue'
+import LogInView from '@/views/LogInView.vue'
+import SettingView from '@/views/SettingView.vue'
+import ContactView from '@/views/ContactView.vue'
+import DocumentView from '@/views/DocumentView.vue'
 
 import { useAuthStore } from '../stores/useAuthStore';
+import AboutView from '../views/AboutView.vue'
 
 const routes = [
   {
@@ -49,6 +54,31 @@ const routes = [
     component: RegistrationView
   },
   {
+    path: '/login',
+    name: 'login',
+    component: LogInView
+  },
+  {
+    path: '/setting',
+    name: 'setting',
+    component: SettingView
+  },
+  {
+    path: '/document',
+    name: 'document',
+    component: DocumentView
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: AboutView
+  },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: ContactView
+  },
+  {
     path: '/:catchAll(.*)',
     name: 'NotFound',
     component: NotFoundView,
@@ -67,7 +97,7 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
   // List of routes that require login
-  const protectedRoutes = ["dashboard", "database", "predictive"];
+  const protectedRoutes = ["dashboard", "database", "predictive", "setting"];
 
   // Check if the route requires login
   if (protectedRoutes.includes(to.name) && !authStore.isLogin) {
