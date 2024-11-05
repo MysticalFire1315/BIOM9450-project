@@ -10,7 +10,7 @@
 ----------
 
 CREATE TYPE sex as ENUM ('male', 'female', 'other');
-CREATE TYPE person_role as ENUM ('patient', 'oncologist', 'researcher');
+CREATE TYPE people_role as ENUM ('patient', 'oncologist', 'researcher');
 
 ----------
 -- Tables
@@ -21,8 +21,7 @@ CREATE TABLE people (
     firstname varchar(100) NOT NULL,
     lastname varchar(100) NOT NULL,
     date_of_birth TIMESTAMP NOT NULL,
-    sex sex NOT NULL,
-    person_role person_role NOT NULL
+    sex sex NOT NULL
 );
 
 CREATE TABLE users (
@@ -32,8 +31,8 @@ CREATE TABLE users (
     password_hash varchar(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    person_id INTEGER UNIQUE,
-    CONSTRAINT fk_person FOREIGN KEY (person_id) REFERENCES people(id)
+    people_id INTEGER UNIQUE,
+    CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people(id)
 );
 
 CREATE TABLE blacklist_tokens (
@@ -52,6 +51,20 @@ CREATE TABLE patients (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    person_id INTEGER UNIQUE NOT NULL,
-    CONSTRAINT fk_person FOREIGN KEY (person_id) REFERENCES people(id)
+    people_id INTEGER UNIQUE NOT NULL,
+    CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people(id)
 );
+
+CREATE TABLE oncologists (
+    id serial PRIMARY KEY,
+
+    people_id INTEGER UNIQUE NOT NULL,
+    CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people(id)
+)
+
+CREATE TABLE researchers (
+    id serial PRIMARY KEY,
+
+    people_id INTEGER UNIQUE NOT NULL,
+    CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people(id)
+)
