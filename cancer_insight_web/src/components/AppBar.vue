@@ -3,6 +3,9 @@
     <v-app-bar>
 
         <v-btn icon @click="navigateTo('/')">
+            <v-tooltip activator="parent" location="bottom">
+                Home
+            </v-tooltip>
         <v-icon>mdi-home</v-icon>
         </v-btn>
 

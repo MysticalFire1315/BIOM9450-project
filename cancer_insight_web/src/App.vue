@@ -3,7 +3,7 @@
     <AppBar />
     
     <SideBar />
-    <v-main class="background-image">
+    <v-main :class="{backgroundImageClass: isBackgroundImageClass}">
       <router-view></router-view>
     </v-main>
     
@@ -17,6 +17,7 @@ import { useRouter, useRoute } from 'vue-router';
 import SideBar from './components/SideBar.vue'; 
 import AppBar from './components/AppBar.vue'
 import { useAuthStore } from './stores/useAuthStore';
+import {computed} from 'vue'
 
 export default {
   name: 'App',
@@ -28,6 +29,10 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const authStore = useAuthStore();
+
+    const routesWithBackground = ['home', 'about', 'login', 'registration', 'logout', 'contact'];
+
+    const isBackgroundImageClass = computed(() => routesWithBackground.includes(route.name));
 
     const handleCancerInsightLogoClick = () => {
       if (route.name === 'about') {
@@ -45,6 +50,7 @@ export default {
 
     return {
       handleCancerInsightLogoClick,
+      isBackgroundImageClass
     };
   },
 };
@@ -79,8 +85,8 @@ body {
   cursor: pointer;
 }
 
-.background-image {
-  background-image: url('@/assets/gene_background.jpg');
+.backgroundImageClass {
+  background-image: url('@/assets/background.png');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;

@@ -1,7 +1,6 @@
 <template>
     <div class="setting">
-      <h1> You have successfully logged out.</h1>
-      <h1> To log in, please click Home.</h1>
+      <h1 style="float:left;font-size:6vh;color:white;"> You have successfully logged out.</h1>
     </div>
   </template>
   

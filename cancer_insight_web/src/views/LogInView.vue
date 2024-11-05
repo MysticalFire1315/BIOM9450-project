@@ -5,7 +5,7 @@
     <div class="home">
       <v-container class="d-flex justify-center align-center" fill-height>
         <v-card class="login-window">
-          <v-card-title class="text-h5" style="padding-bottom: 30px">Login</v-card-title>
+          <v-card-title class="text-h4" style="padding-bottom: 30px">Login</v-card-title>
 
             <v-form @submit.prevent="handleLogin">
             <v-text-field
