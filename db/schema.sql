@@ -10,7 +10,6 @@
 ----------
 
 CREATE TYPE sex as ENUM ('male', 'female', 'other');
-CREATE TYPE people_role as ENUM ('patient', 'oncologist', 'researcher');
 
 ----------
 -- Tables
@@ -60,11 +59,11 @@ CREATE TABLE oncologists (
 
     people_id INTEGER UNIQUE NOT NULL,
     CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people(id)
-)
+);
 
 CREATE TABLE researchers (
     id serial PRIMARY KEY,
 
     people_id INTEGER UNIQUE NOT NULL,
     CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people(id)
-)
+);
