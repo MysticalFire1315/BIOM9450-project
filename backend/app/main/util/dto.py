@@ -32,6 +32,13 @@ class UserDto:
             ),
         },
     )
+    user_profile = api.model(
+        "user_profile",
+        {
+            "email": fields.String(description="The email address"),
+            "username": fields.String(description="The user's public username"),
+        },
+    )
 
 
 class PersonDto:

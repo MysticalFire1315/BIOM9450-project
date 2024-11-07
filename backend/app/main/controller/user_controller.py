@@ -24,7 +24,14 @@ class UserLink(Resource):
         post_data = request.json
         return link_user(user, post_data)
 
-
+@api.route("/profile")
+class UserProfile(Resource):
+    @api.doc("get the user's profile")
+    @api.response(200, "User profile")
+    @api.marshal_with(UserDto.user_profile, envelope="data")
+    @require_user_logged_in(throughpass=True)
+    def get(self, user):
+        return user
 
 # @UserDto.api.route("/")
 # class UserList(Resource):
