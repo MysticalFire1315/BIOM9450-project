@@ -8,8 +8,13 @@ export const data = {
     ]
   }
   
-  export const options = {
-    responsive: true,
-    maintainAspectRatio: false
+export const options = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'right'  // Set the legend position to 'right'
+    }
   }
+}
   
