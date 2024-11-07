@@ -65,7 +65,7 @@ export default {
         // Handle the response for successful registration
         if (response.status === 201 && response.data.status === 'success') {
           successMessage.value = response.data.message || 'Successfully registered. Please log in.';
-          redirectCountdown.value = 7;
+          redirectCountdown.value = 3;
           const jwtToken = response.data.Authorization;// Store the JWT token using Pinia
           authStore.login(jwtToken);
         }

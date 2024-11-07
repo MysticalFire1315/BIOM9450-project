@@ -7,9 +7,6 @@
       backgroundPosition: 'bottom'
     }"
   >
-    <v-card-image>
-        
-    </v-card-image>
     <v-card-title style="font-size:xx-large; color: white;" class="text-left">
         Welcome back, USERNAME!
     </v-card-title>
