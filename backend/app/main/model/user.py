@@ -125,7 +125,7 @@ class User(object):
                         UPDATE users
                         SET password_hash = %s,
                             people_id = %s
-                        WHERE id = %s
+                        WHERE id = %s;
                         """,
                 (self._password_hash, self._people_id, self._id),
             )

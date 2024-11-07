@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 from app.main.model.patient import Patient
-from app.main.model.person import Person, Role, Sex
+from app.main.model.person import Person, Sex
 
 def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     person_data = data.get("person")
@@ -13,7 +13,7 @@ def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
 
     try:
         Patient.new_patient(
-            person_id or person.id,
+            person.id,
             data.get("photo"),
             data.get("address"),
             data.get("country"),

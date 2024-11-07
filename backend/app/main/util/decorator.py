@@ -3,7 +3,7 @@ from functools import partial, wraps
 from flask import request
 
 from app.main.service.auth_service import get_logged_in_person, get_logged_in_user
-from app.main.model.person import Role
+from app.main.service.person_service import get_person_role
 from typing import Callable
 
 def require_user_logged_in(
@@ -73,14 +73,12 @@ def require_logged_in_as(
     def wrapper(*args, **kwargs):
         person = get_logged_in_person(request.headers.get("Authorization"))
 
-        try:
-            if patient:
-                Patient.get_by_people_id(person.id)
-            if oncologist:
-                Oncologist.get_by_people_id(person.id)
-            if researcher:
-                Researcher.get_by_people_id(person.id)
-        except:
+        role = get_person_role(person)
+        roles = {"patient": patient, "oncologist": oncologist, "researcher": researcher}
+
+        print(role)
+
+        if (role not in roles) or (roles[role] is False):
             return {"status": "fail", "message": "Unauthorized"}, 403
 
         if throughpass:
