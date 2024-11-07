@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 
-from app.main.service.user_service import link_user
+from app.main.service.user_service import check_link, link_user
 from app.main.util.decorator import require_user_logged_in
 from app.main.util.dto import UserDto
 from flask import request
@@ -10,6 +10,12 @@ api = UserDto.api
 
 @api.route("/link")
 class UserLink(Resource):
+    @api.doc("check if user is linked")
+    @api.response(200, "True or false depending whether the logged in user is linked")
+    @require_user_logged_in(throughpass=True)
+    def get(self, user) -> Tuple[Dict[str, str], int]:
+        return check_link(user)
+
     @api.doc("link a user to an existing person profile")
     @api.expect(UserDto.user_link, validate=True)
     @api.response(200, "Successfully linked")
