@@ -4,7 +4,7 @@ from app.main.model.user import User
 from app.main.model.person import Person
 
 def check_link(user: User) -> Tuple[Dict[str, str], int]:
-    return {"status": "success", "message": ("True" if user.people_id is not None else "False")}, 200
+    return {"status": "success", "message": user.people_id is not None}, 200
 
 def link_user(user: User, data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     # Check person_id exists

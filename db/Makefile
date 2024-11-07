@@ -13,9 +13,10 @@ SCHEMA_FILE = schema.sql
 FUNCTIONS_FILE = functions.sql
 TRIGGERS_FILE = triggers.sql
 DUMP_FILE = dump.sql
+VIEWS_FILE = views.sql
 
 # Default target
-all: createdb apply_schema load_data
+all: createdb apply_schema apply_views load_data
 
 # Create the database
 createdb:
@@ -33,6 +34,10 @@ apply_functions: $(FUNCTIONS_FILE)
 # Apply triggers
 apply_triggers: $(TRIGGERS_FILE)
 	psql -h $(DB_HOST) -U $(DB_USER) -d $(DB_NAME) -f $(TRIGGERS_FILE)
+
+# Apply views
+apply_views: $(VIEWS_FILE)
+	psql -h $(DB_HOST) -U $(DB_USER) -d $(DB_NAME) -f $(VIEWS_FILE)
 
 # Load initial data
 load_data: $(DUMP_FILE)
