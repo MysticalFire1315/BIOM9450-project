@@ -41,3 +41,11 @@ class Researcher(object):
             return Researcher(*result)
         except TypeError:
             raise NotFoundError('Researcher not found')
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def people_id(self) -> int:
+        return self._people_id

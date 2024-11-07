@@ -1,11 +1,14 @@
-class NotFoundError(Exception):
+class CustomError(Exception):
     pass
 
-class AlreadyExistsError(Exception):
+class NotFoundError(CustomError):
     pass
 
-class BadInputError(Exception):
+class AlreadyExistsError(CustomError):
     pass
 
-class TokenInvalidError(Exception):
+class BadInputError(CustomError):
+    pass
+
+class TokenInvalidError(CustomError):
     pass

@@ -1,10 +1,12 @@
 from flask_restx import Api
 from flask import Blueprint
 
-from app.main.controller.user_controller import api as user_ns
 from app.main.controller.auth_controller import api as auth_ns
+from app.main.controller.user_controller import api as user_ns
 from app.main.controller.person_controller import api as person_ns
 from app.main.controller.patient_controller import api as patient_ns
+from app.main.controller.oncologist_controller import api as oncologist_ns
+from app.main.controller.researcher_controller import api as researcher_ns
 
 from app.main.util.exceptions.handlers import register_handlers
 
@@ -27,9 +29,11 @@ api = Api(
 )
 
 # Register namespaces
-api.add_namespace(user_ns, path='/user')
 api.add_namespace(auth_ns, path='/auth')
+api.add_namespace(user_ns, path='/user')
 api.add_namespace(person_ns, path='/person')
 api.add_namespace(patient_ns, path='/patient')
+api.add_namespace(oncologist_ns, path='/oncologist')
+api.add_namespace(researcher_ns, path='/researcher')
 
 register_handlers(api)

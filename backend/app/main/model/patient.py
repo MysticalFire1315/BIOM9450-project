@@ -59,3 +59,39 @@ class Patient(object):
             return Patient(*result)
         except TypeError:
             raise NotFoundError('Patient not found')
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def photo(self) -> bytes:
+        return self._photo
+
+    @property
+    def address(self) -> str:
+        return self._address
+
+    @property
+    def country(self) -> str:
+        return self._country
+
+    @property
+    def emergency_contact_name(self) -> str:
+        return self._emergency_contact_name
+
+    @property
+    def emergency_contact_phone(self) -> str:
+        return self._emergency_contact_phone
+
+    @property
+    def created_at(self) -> datetime.datetime:
+        return self._created_at
+
+    @property
+    def updated_at(self) -> datetime.datetime:
+        return self._updated_at
+
+    @property
+    def people_id(self) -> int:
+        return self._people_id
