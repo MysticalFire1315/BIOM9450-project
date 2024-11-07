@@ -36,10 +36,10 @@ def logout_user(token: str) -> Tuple[Dict[str, str], int]:
     return {"status": "success", "message": "Successfully logged out"}, 200
 
 
-def get_logged_in_user(token: str) -> Union[User, Tuple[Dict[str, str], int]]:
+def get_logged_in_user(token: str) -> User:
     return User.decode_auth_token(token)
 
 
-def get_logged_in_person(token: str) -> Union[Person, Tuple[Dict[str, str], int]]:
+def get_logged_in_person(token: str) -> Person:
     resp = get_logged_in_user(token)
-    return Person.get_by_id(resp.person_id)
+    return Person.get_by_id(resp.people_id)

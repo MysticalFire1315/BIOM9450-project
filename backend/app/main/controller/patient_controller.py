@@ -12,7 +12,7 @@ api = PatientDto.api
 class CreateAPI(Resource):
     @api.doc("create a new patient profile")
     @require_logged_in_as(oncologist=True, researcher=True)
-    @api.expect(PatientDto.person, validate=True)
+    @api.expect(PatientDto.patient_profile, validate=True)
     @api.response(201, "Patient successfully created.")
     def post(self) -> Tuple[Dict[str, str], int]:
         post_data = request.json

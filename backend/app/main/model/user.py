@@ -20,14 +20,14 @@ class User(object):
         username: str,
         password_hash: str,
         created_at: datetime.datetime,
-        person_id: int,
+        people_id: int,
     ):
         self._id = id
         self._email = email
         self._username = username
         self._password_hash = password_hash
         self._created_at = created_at
-        self._person_id = person_id
+        self._people_id = people_id
 
     @staticmethod
     def new_user(email: str, username: str, password: str) -> "User":
@@ -104,15 +104,15 @@ class User(object):
         return self._created_at
 
     @property
-    def person_id(self) -> Union[int, None]:
-        return self._person_id
+    def people_id(self) -> Union[int, None]:
+        return self._people_id
 
-    @person_id.setter
-    def person_id(self, person_id: int):
-        if self._person_id is not None:
-            raise BadInputError("person_id: read-only field")
+    @people_id.setter
+    def people_id(self, people_id: int):
+        if self._people_id is not None:
+            raise BadInputError("people_id: read-only field")
 
-        self._person_id = person_id
+        self._people_id = people_id
         self._update()
 
     def check_password(self, password: str) -> bool:
@@ -124,10 +124,10 @@ class User(object):
                 """
                         UPDATE users
                         SET password_hash = %s,
-                            person_id = %s
-                        WHERE id = %s
+                            people_id = %s
+                        WHERE id = %s;
                         """,
-                (self._password_hash, self._person_id, self._id),
+                (self._password_hash, self._people_id, self._id),
             )
 
     @staticmethod

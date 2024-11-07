@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Union
 
-from app.main.util.database import db_get_cursor
+from app.main.util.database import db_get_cursor, NotNullViolation
 from app.main.util.exceptions.errors import BadInputError, NotFoundError
 
 class Sex(Enum):
@@ -18,19 +18,6 @@ class Sex(Enum):
         raise BadInputError(f"{string} does not exist")
 
 
-class Role(Enum):
-    PATIENT = "patient"
-    ONCOLOGIST = "oncologist"
-    RESEARCHER = "researcher"
-
-    @staticmethod
-    def from_str(string: str):
-        for x in Role:
-            if x.value == string:
-                return x
-        raise BadInputError(f"{string} does not exist")
-
-
 class Person(object):
     def __init__(
         self,
@@ -38,25 +25,23 @@ class Person(object):
         firstname: str,
         lastname: str,
         date_of_birth: datetime,
-        sex: Union[Sex, str],
-        role: Union[Role, str],
+        sex: Union[Sex, str]
     ):
         self._id = id
         self._firstname = firstname
         self._lastname = lastname
         self._date_of_birth = date_of_birth
         self._sex = Sex.from_str(sex) if (type(sex) is str) else sex
-        self._role = Role.from_str(role) if (type(role) is str) else role
 
     @staticmethod
     def new_person(
-        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role
+        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex
     ) -> "Person":
         try:
             with db_get_cursor() as cur:
                 cur.execute(
-                    "INSERT INTO people (firstname, lastname, date_of_birth, sex, role) VALUES (%s, %s, %s, %s, %s);",
-                    (firstname, lastname, date_of_birth, sex.value, role.value),
+                    "INSERT INTO people (firstname, lastname, date_of_birth, sex) VALUES (%s, %s, %s, %s);",
+                    (firstname, lastname, date_of_birth, sex.value),
                 )
         except NotNullViolation:
             raise BadInputError('Bad input')
@@ -64,7 +49,7 @@ class Person(object):
 
     @staticmethod
     def get_by_details(
-        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex, role: Role
+        firstname: str, lastname: str, date_of_birth: datetime, sex: Sex
     ) -> "Person":
         with db_get_cursor() as cur:
             cur.execute(
@@ -126,11 +111,6 @@ class Person(object):
     def sex(self) -> Sex:
         return self._sex
 
-    @property
-    def role(self) -> Role:
-        # For now role cannot be updated - possible idea for future
-        return self._role
-
     def _update(self):
         with db_get_cursor() as cur:
             cur.execute(
@@ -141,4 +121,10 @@ class Person(object):
                 WHERE id = %s;
                 """,
                 (self.firstname, self.lastname, self.id),
+            )
+
+    def delete(self):
+        with db_get_cursor() as cur:
+            cur.execute(
+                "DELETE FROM people WHERE id = %s", (self.id,)
             )
