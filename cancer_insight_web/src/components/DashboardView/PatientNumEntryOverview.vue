@@ -1,7 +1,7 @@
 <template>
     <v-card  color="#e3ebed">
       <v-card-title class="text-left" style="font-size:xx-large;">
-        Database Size
+        Patient Information Overview
       </v-card-title>
       <v-card-text>
       <Doughnut :data="data" :options="options" />
@@ -15,12 +15,12 @@
   import { Doughnut } from 'vue-chartjs'
   import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
   // Updated import path
-  import * as chartConfig from '@/config/DashboardView/DatabaseNumEntryOverviewChartConfig.js'
+  import * as chartConfig from '@/config/DashboardView/PatientNumEntryOverview.js'
   
   ChartJS.register(ArcElement, Tooltip, Legend)
   
   export default {
-    name: 'DatabaseNumEntryOverview',
+    name: 'PatientNumEntryOverview',
     components: {
       Doughnut
     },

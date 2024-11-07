@@ -1,5 +1,5 @@
 <template>
-  <v-card color="#e3ebed">
+  <v-card color="#FEAEBC">
     <v-card-title class="text-left" style="font-size:xx-large;" >
       Recent Activities
     </v-card-title>
