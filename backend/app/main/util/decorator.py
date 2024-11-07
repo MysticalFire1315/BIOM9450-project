@@ -76,8 +76,6 @@ def require_logged_in_as(
         role = get_person_role(person)
         roles = {"patient": patient, "oncologist": oncologist, "researcher": researcher}
 
-        print(role)
-
         if (role not in roles) or (roles[role] is False):
             return {"status": "fail", "message": "Unauthorized"}, 403
 

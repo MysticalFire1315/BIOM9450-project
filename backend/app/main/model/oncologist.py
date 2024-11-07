@@ -41,3 +41,11 @@ class Oncologist(object):
             return Oncologist(*result)
         except TypeError:
             raise NotFoundError('Oncologist not found')
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def people_id(self) -> int:
+        return self._people_id

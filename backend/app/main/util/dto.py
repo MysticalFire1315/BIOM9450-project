@@ -48,7 +48,7 @@ class PersonDto:
         {
             "firstname": fields.String(description="First name"),
             "lastname": fields.String(description="Last name"),
-            "date_of_birth": fields.DateTime(description="Date of birth"),
+            "date_of_birth": fields.Date(description="Date of birth"),
             "sex": fields.String(description="Sex")
         },
     )

@@ -9,7 +9,7 @@ from flask_restx import Resource
 api = UserDto.api
 
 @api.route("/link")
-class UserLink(Resource):
+class LinkAPI(Resource):
     @api.doc("check if user is linked")
     @api.response(200, "True or false depending whether the logged in user is linked")
     @require_user_logged_in(throughpass=True)
@@ -25,7 +25,7 @@ class UserLink(Resource):
         return link_user(user, post_data)
 
 @api.route("/profile")
-class UserProfile(Resource):
+class ProfileAPI(Resource):
     @api.doc("get the user's profile")
     @api.response(200, "User profile")
     @api.marshal_with(UserDto.user_profile, envelope="data")

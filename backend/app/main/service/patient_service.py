@@ -1,6 +1,7 @@
 from typing import Dict, Tuple
 from app.main.model.patient import Patient
 from app.main.model.person import Person, Sex
+from app.main.util.exceptions.errors import CustomError
 
 def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     person_data = data.get("person")
@@ -12,7 +13,7 @@ def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     )
 
     try:
-        Patient.new_patient(
+        p = Patient.new_patient(
             person.id,
             data.get("photo"),
             data.get("address"),
@@ -20,8 +21,12 @@ def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
             data.get("emergency_contact_name"),
             data.get("emergency_contact_phone")
         )
-    except Exception as error:
+        return {"status": "success", "message": "Successfully created", "id": p.people_id}, 201
+    except CustomError as error:
         person.delete()
         raise error
 
-    return {"status": "success", "message": "Successfully created"}, 201
+def get_profile(person: Person):
+    p = Patient.get_by_people_id(person.id)
+    p.person = person
+    return p
