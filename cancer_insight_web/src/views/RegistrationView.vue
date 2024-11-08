@@ -22,7 +22,7 @@
 
 <script>
 import { ref, watch, computed } from 'vue';
-import axios from 'axios';
+import apiService from '@/services/apiService';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/useAuthStore';
 
@@ -54,13 +54,15 @@ export default {
       email.value = email.value.trim();
       username.value = username.value.trim();
 
+      const registrationData = {
+        email: email.value,
+        username: username.value,
+        password: password.value,
+      };
+
       try {
-        // Replace this URL with your actual registration endpoint
-        const response = await axios.post('http://127.0.0.1:5000/auth/register', {
-          email: email.value,
-          username: username.value,
-          password: password.value,
-        });
+        // Make the login request with Axios
+        const response = await apiService.postData('/auth/register', registrationData);
 
         // Handle the response for successful registration
         if (response.status === 201 && response.data.status === 'success') {

@@ -46,9 +46,9 @@
   
   <script>
   import { ref } from 'vue';
-  import axios from 'axios';
   import { useAuthStore } from '../stores/useAuthStore';  // Pinia library
   import { useRouter } from 'vue-router';
+  import apiService from '@/services/apiService';
   
   export default {
     name: 'HomeView',
@@ -66,13 +66,7 @@
           };
   
           // Make the login request with Axios
-          const response = await axios.post('http://127.0.0.1:5000/auth/login', loginData, {
-            headers: {
-              'Content-Type': 'application/json',
-              'accept': 'application/json',
-            },
-          });
-
+          const response = await apiService.postData('/auth/login', loginData);
   
           if (response.status === 200) {
             const jwtToken = response.data.Authorization;

@@ -3,9 +3,7 @@
     min-height="250" 
     color = "orange"
   >
-    <v-card-image>
-        
-    </v-card-image>
+
     <v-card-title style="font-size:xx-large; color: white;" class="text-left">
         Your account has <span v-if="!message">NOT</span> been verified.
     </v-card-title>
@@ -50,7 +48,7 @@
 <script setup>
 import { ref, onMounted, shallowRef } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore';
-import axios from 'axios';
+import apiService from '@/services/apiService';
 
 // The message about whether the account is linked
 const message = ref(null);
@@ -60,12 +58,7 @@ const person_id = ref('');
 
 const fetchUserLink = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:5000/user/link', {
-      headers: {
-        'Authorization': authStore.token,
-        'accept': 'application/json'
-      }
-    });
+    const response = await apiService.getData('/user/link');
     message.value = response.data.message;
     console.log(message.value)
   } catch (error) {
@@ -76,17 +69,19 @@ const fetchUserLink = async () => {
 const handleLink = async () => {
     console.log(person_id.value)
     console.log(authStore.token)
+    
       try {
         const personIdInt = parseInt(person_id.value, 10);
-        const response = await axios.post('http://127.0.0.1:5000/user/link', {
+
+        // Check if the entered text contains digit only
+        if (isNaN(personIdInt)) {
+          throw new Error('Invalid person ID.');
+        }
+
+        const linkData = {
             person_id: personIdInt
-            }, {
-            headers: {
-                'accept': 'application/json',
-                'Authorization': authStore.token,
-                'Content-Type': 'application/json'
-            }
-        });
+        };
+        const response = await apiService.postData('/user/link', linkData);
 
         // Handle the response for successful registration
         if (response.status === 200 && response.data.status === 'success') {
