@@ -72,3 +72,12 @@ CREATE TABLE researchers (
     CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people (id)
 );
 
+CREATE TABLE logs (
+    id serial PRIMARY KEY,
+    user_id integer UNIQUE NOT NULL,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id),
+
+    route varchar(255),
+    time_accessed TIMESTAMP,
+    data_id integer
+);
