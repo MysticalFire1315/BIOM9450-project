@@ -72,13 +72,22 @@
               'accept': 'application/json',
             },
           });
+
   
           if (response.status === 200) {
             const jwtToken = response.data.Authorization;
   
             // Store the JWT token using Pinia
             authStore.login(jwtToken);
-  
+            
+            // Get the user profile from the server
+            // const responseProfile = await axios.get('http://127.0.0.1:5000/user/link', {
+            //   headers: {
+            //   'Authorization': authStore.token,
+            //     'accept': 'application/json'
+            //   }
+            // });
+
             // Redirect to the dashboard page after successful login
             router.push({ name: 'dashboard' });
           } else {

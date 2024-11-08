@@ -14,12 +14,12 @@
       >
         <v-card>
           <v-card-title :class="['text-h6', `bg-${item.color}`]">
-            Lorem Ipsum Dolor
+            {{ item.activity_title }}
           </v-card-title>
           <v-card-text class="bg-white text--primary">
-            <p>Lorem ipsum dolor sit amet, no nam oblique veritus...</p>
+            <p>{{ item.activity_timestamp }}</p>
             <v-btn :color="item.color" variant="outlined">
-              Button
+              Go there!
             </v-btn>
           </v-card-text>
         </v-card>
@@ -35,18 +35,21 @@ const items = [
   {
     color: 'red-lighten-2',
     icon: 'mdi-star',
+    activity_title: "Save a new User",
+    activity_timestamp: "Nov 8, 2024 11:59am"
+
   },
   {
     color: 'purple-lighten-2',
     icon: 'mdi-book-variant',
+    activity_title: "Save a new Model",
+    activity_timestamp: "Nov 7, 2024 8:34am"
   },
   {
     color: 'green-lighten-1',
     icon: 'mdi-airballoon',
-  },
-  {
-    color: 'indigo-lighten-2',
-    icon: 'mdi-layers-triple',
+    activity_title: "Train a new Model",
+    activity_timestamp: "Nov 9, 2024 5:34am"
   },
 ]
 </script>
