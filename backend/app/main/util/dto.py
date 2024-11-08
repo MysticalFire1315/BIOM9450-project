@@ -46,6 +46,7 @@ class PersonDto:
     person_profile = api.model(
         "person_profile",
         {
+            "id": fields.Integer(description="Id"),
             "firstname": fields.String(description="First name"),
             "lastname": fields.String(description="Last name"),
             "date_of_birth": fields.Date(description="Date of birth"),

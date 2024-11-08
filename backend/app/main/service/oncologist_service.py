@@ -1,7 +1,10 @@
 from app.main.model.person import Person
 from app.main.model.oncologist import Oncologist
 
-def get_profile(person: Person):
-    o = Oncologist.get_by_people_id(person.id)
-    o.person = person
-    return o
+def get_all_oncologists():
+    return Oncologist.get_all()
+
+def get_profile(id: int):
+    x = Oncologist.get_by_people_id(id)
+    x.person = Person.get_by_id(id)
+    return x
