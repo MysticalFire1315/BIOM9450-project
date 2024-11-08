@@ -2,8 +2,8 @@
   <v-navigation-drawer expand-on-hover rail v-if="isLogin">
     <v-list-item
       prepend-icon="mdi-account-box"
-      subtitle="username@email.com"
-      title="Username"
+      :subtitle="sessionStore.userEmail"
+      :title="sessionStore.userName"
       style="padding-bottom: 10px;"
     ></v-list-item>
 
@@ -27,12 +27,14 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/useAuthStore';  // Pinia library
+import { useSessionStore } from '@/stores/useSessionStore';
 import { computed } from 'vue'; // Import computed from Vue
 
 export default {
   setup() {
     const router = useRouter(); // Get the router instance
     const authStore = useAuthStore(); 
+    const sessionStore = useSessionStore();
     const isLogin = computed(() => authStore.isLogin); // Get isLogin from store
 
     // Define menu items with their corresponding routes
@@ -48,7 +50,7 @@ export default {
       router.push(route); // Use router to navigate
     };
 
-    return { menuItems, isLogin, navigateTo };
+    return { menuItems, isLogin, sessionStore, navigateTo };
   }
 };
 </script>

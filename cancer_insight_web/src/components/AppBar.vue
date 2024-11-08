@@ -46,15 +46,18 @@
 <script>
 // import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../stores/useAuthStore';
+import { useAuthStore } from '@/stores/useAuthStore';
+import {useSessionStore} from '@/stores/useSessionStore';
 import { computed } from 'vue'; // Import computed from Vue
-import axios from 'axios'; // Import axios
+import apiService from '@/services/apiService';
+
 
 export default {
   setup() {
     const router = useRouter(); // Get the router instance
 
     const authStore = useAuthStore(); 
+    const sessionStore = useSessionStore();
     const isLogin = computed(() => authStore.isLogin); // Get isLogin from store
     console.log(isLogin.value);
 
@@ -71,15 +74,10 @@ export default {
     const logout = async () => {
     try {
         // Send a request to the server to invalidate the token
-        await axios.post('http://127.0.0.1:5000/auth/logout', {}, {
-          headers: {
-            'Authorization': authStore.token, // Include the JWT token in the Authorization header
-            'accept': 'application/json'
-          }
-        });
-
+        await apiService.postData('/auth/logout', {});
         // If the request was successful, proceed to log out the user
         authStore.logout(); // Call the logout action from the store
+        sessionStore.logout();
         router.push({ name: 'logout' }); // Redirect to the home or login page
       } catch (error) {
         console.error('Logout failed:', error); // Log the error if the request fails

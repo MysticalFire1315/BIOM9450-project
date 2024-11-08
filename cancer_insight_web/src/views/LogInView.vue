@@ -46,7 +46,8 @@
   
   <script>
   import { ref } from 'vue';
-  import { useAuthStore } from '../stores/useAuthStore';  // Pinia library
+  import { useAuthStore } from '../stores/useAuthStore'; 
+  import { useSessionStore } from '@/stores/useSessionStore';
   import { useRouter } from 'vue-router';
   import apiService from '@/services/apiService';
   
@@ -57,6 +58,7 @@
       const email = ref('');
       const password = ref('');
       const authStore = useAuthStore();
+      const sessionStore = useSessionStore();
   
       const handleLogin = async () => {
         try {
@@ -75,12 +77,12 @@
             authStore.login(jwtToken);
             
             // Get the user profile from the server
-            // const responseProfile = await axios.get('http://127.0.0.1:5000/user/link', {
-            //   headers: {
-            //   'Authorization': authStore.token,
-            //     'accept': 'application/json'
-            //   }
-            // });
+          
+            const responseProfile = await apiService.getData('/user/profile');
+            sessionStore.login(
+              responseProfile.data.data.username, responseProfile.data.data.email, responseProfile.data.data.role
+            );
+
 
             // Redirect to the dashboard page after successful login
             router.push({ name: 'dashboard' });

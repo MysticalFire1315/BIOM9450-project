@@ -9,7 +9,7 @@
     </v-card-title>
     <v-card-subtitle style="font-size:x-large; color:white;" class="text-left">
         <span v-if="!message">Click the button below to link your account!</span>
-        <span v-else>You are logged in as IDENTITY.</span>
+        <span v-else>You are logged in as {{sessionStore.userRole}}.</span>
     </v-card-subtitle>
     <v-card-text v-if="message" style="font-size:large; color:white;" class="text-left">
         You can access and filter patient mutational profiles, view shared mutations, and create new profiles by entering details and upload new mutation data.
@@ -48,11 +48,13 @@
 <script setup>
 import { ref, onMounted, shallowRef } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useSessionStore} from '@/stores/useSessionStore';
 import apiService from '@/services/apiService';
 
 // The message about whether the account is linked
 const message = ref(null);
 const authStore = useAuthStore(); 
+const sessionStore = useSessionStore();
 const dialog = shallowRef(false);
 const person_id = ref('');
 
