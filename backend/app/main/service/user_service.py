@@ -12,3 +12,8 @@ def link_user(user: User, data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     person = Person.get_by_id(data.get("person_id"))
     user.people_id = person.id
     return {"status": "success", "message": "Successfully linked", "role": get_person_role(person)}, 200
+
+def get_user(user: User) -> User:
+    person = Person.get_by_id(user.people_id)
+    user.role = get_person_role(person)
+    return user

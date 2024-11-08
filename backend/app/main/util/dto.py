@@ -37,6 +37,7 @@ class UserDto:
         {
             "email": fields.String(description="The email address"),
             "username": fields.String(description="The user's public username"),
+            "role": fields.String(description="The user's role"),
         },
     )
 
