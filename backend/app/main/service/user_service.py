@@ -3,6 +3,7 @@ from typing import Dict, Tuple
 from app.main.model.user import User
 from app.main.model.person import Person
 from app.main.service.person_service import get_person_role
+from app.main.util.exceptions.errors import NotFoundError
 
 def check_link(user: User) -> Tuple[Dict[str, str], int]:
     return {"status": "success", "message": user.people_id is not None}, 200
@@ -14,6 +15,8 @@ def link_user(user: User, data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     return {"status": "success", "message": "Successfully linked", "role": get_person_role(person)}, 200
 
 def get_user(user: User) -> User:
-    person = Person.get_by_id(user.people_id)
-    user.role = get_person_role(person)
+    try:
+        user.role = get_person_role(Person.get_by_id(user.people_id))
+    except NotFoundError:
+        user.role = "none"
     return user
