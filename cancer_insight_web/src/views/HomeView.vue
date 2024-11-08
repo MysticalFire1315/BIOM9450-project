@@ -5,7 +5,7 @@
     <p>
       Unlock cancer insights at your fingertips! Input genetic mutation data and let our deep learning model <span>reveal the risk of cancer.</span> Explore trends and connections between <span>mutations and cancer types</span>, <span>ALL in a user-friendly portal</span>. Join us on this journey to better health!
     </p>
-    <button @click="navigateTo('/login')">
+    <button @click="navigateTo(authStore.isLogin ? '/dashboard': '/login')">
       Getting Started
     </button>
   </div>
@@ -13,16 +13,18 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default {
   setup() {
     const router = useRouter(); // Get the router instance
+    const authStore = useAuthStore();
 
     // Function to navigate to the selected route
     const navigateTo = (route) => {
       router.push(route);
     };
-    return {navigateTo};
+    return {navigateTo, authStore};
   }
 };
 </script>
