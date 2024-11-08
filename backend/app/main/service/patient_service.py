@@ -26,7 +26,10 @@ def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
         person.delete()
         raise error
 
-def get_profile(person: Person):
-    p = Patient.get_by_people_id(person.id)
-    p.person = person
-    return p
+def get_profile(id: int):
+    x = Patient.get_by_people_id(id)
+    x.person = Person.get_by_id(id)
+    return x
+
+def get_all_patients():
+    return Patient.get_all()

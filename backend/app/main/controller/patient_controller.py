@@ -1,7 +1,7 @@
 from typing import Dict, Tuple
 
-from app.main.service.patient_service import create_patient, get_profile
-from app.main.util.dto import PatientDto
+from app.main.service.patient_service import create_patient, get_profile, get_all_patients
+from app.main.util.dto import PatientDto, PersonDto
 from app.main.util.decorator import require_logged_in_as
 from flask import request
 from flask_restx import Resource
@@ -25,4 +25,21 @@ class ProfileAPI(Resource):
     @api.marshal_with(PatientDto.patient_profile, envelope="data")
     @require_logged_in_as(patient=True, throughpass=True)
     def get(self, person):
-        return get_profile(person)
+        return get_profile(person.id)
+
+@api.route("/profile/<id>")
+class ProfileAPI(Resource):
+    @api.doc("get the patient's profile")
+    @api.response(200, "patient profile")
+    @api.marshal_with(PatientDto.patient_profile, envelope="data")
+    @require_logged_in_as(oncologist=True, researcher=True)
+    def get(self, id):
+        return get_profile(id)
+
+@api.route("/list")
+class ListAPI(Resource):
+    @api.doc("list of patients")
+    @api.marshal_list_with(PersonDto.person_profile, envelope="data")
+    @require_logged_in_as(oncologist=True, researcher=True)
+    def get(self):
+        return get_all_patients()

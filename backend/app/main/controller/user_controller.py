@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 
-from app.main.service.user_service import check_link, link_user
+from app.main.service.user_service import check_link, link_user, get_user
 from app.main.util.decorator import require_user_logged_in
 from app.main.util.dto import UserDto
 from flask import request
@@ -31,7 +31,7 @@ class ProfileAPI(Resource):
     @api.marshal_with(UserDto.user_profile, envelope="data")
     @require_user_logged_in(throughpass=True)
     def get(self, user):
-        return user
+        return get_user(user)
 
 # @UserDto.api.route("/")
 # class UserList(Resource):
