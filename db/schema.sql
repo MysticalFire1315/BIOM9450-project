@@ -81,3 +81,24 @@ CREATE TABLE logs (
     time_accessed TIMESTAMP,
     data_id integer
 );
+
+
+
+-------------------------------------
+-- For documentation purposes only --
+-------------------------------------
+
+CREATE TYPE http_method AS ENUM (
+    'GET',
+    'POST'
+);
+
+CREATE TABLE routes (
+    uri varchar(255) NOT NULL,
+    method http_method NOT NULL,
+    patient boolean,
+    oncologist boolean,
+    researcher boolean,
+    no_role boolean,
+    everyone boolean
+);

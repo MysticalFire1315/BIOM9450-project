@@ -13,3 +13,28 @@ INSERT INTO researchers (people_id)
     VALUES (2),
     (5);
 
+INSERT INTO routes (uri, method, patient, oncologist, researcher, no_role, everyone)
+    VALUES ('/auth/register', 'POST', false, false, false, false, true),
+    ('/auth/login', 'POST', false, false, false, false, true),
+    ('/auth/logout', 'POST', true, true, true, true, false),
+
+    -- /user routes
+    ('/user/link', 'GET', true, true, true, true, false),
+    ('/user/link', 'POST', false, false, false, true, false),
+    ('/user/profile', 'GET', true, true, true, true, false),
+
+    -- /patient routes
+    ('/patient/create', 'POST', false, true, true, false, false),
+    ('/patient/profile', 'GET', true, false, false, false, false),
+    ('/patient/profile/<id>', 'GET', false, true, true, false, false),
+    ('/patient/list', 'GET', false, true, true, false, false),
+
+    -- /oncologist routes
+    ('/oncologist/profile', 'GET', false, true, false, false, false),
+    ('/oncologist/profile/<id>', 'GET', true, true, true, true, true),
+    ('/oncologist/list', 'GET', true, true, true, true, true),
+
+    -- /researcher routes
+    ('/researcher/profile', 'GET', false, false, true, false, false),
+    ('/researcher/profile/<id>', 'GET', true, true, true, true, true),
+    ('/researcher/list', 'GET', true, true, true, true, true);
