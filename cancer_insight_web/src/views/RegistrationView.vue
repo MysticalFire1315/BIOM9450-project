@@ -15,16 +15,16 @@
         </form>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
-        <p v-if="successMessage" class="redirect-message">Logging-in in {{ redirectCountdown }} seconds ...</p>
         </div>
     </div>
 </template>
 
 <script>
-import { ref, watch, computed } from 'vue';
+import { ref, computed } from 'vue';
 import apiService from '@/services/apiService';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/useAuthStore';
+import { useSessionStore } from '@/stores/useSessionStore';
 
 export default {
   name: 'RegistrationVue',
@@ -40,11 +40,11 @@ export default {
     const isReenterPasswordValid = computed(() => reenterPassword.value === password.value);
     const isFormValid = computed(() => isEmailValid.value && isUsernameValid.value && isPasswordValid.value && isReenterPasswordValid.value);
 
-    const redirectCountdown = ref(0);
     const errorMessage = ref('');
     const successMessage = ref('');
     const router = useRouter();
     const authStore = useAuthStore();
+    const sessionStore = useSessionStore();
 
     const handleRegister = async () => {
       errorMessage.value = '';
@@ -67,9 +67,14 @@ export default {
         // Handle the response for successful registration
         if (response.status === 201 && response.data.status === 'success') {
           successMessage.value = response.data.message || 'Successfully registered. Please log in.';
-          redirectCountdown.value = 3;
           const jwtToken = response.data.Authorization;// Store the JWT token using Pinia
           authStore.login(jwtToken);
+          // Update the session data
+          const responseProfile = await apiService.getData('/user/profile');
+            sessionStore.login(
+              responseProfile.data.data.username, responseProfile.data.data.email, responseProfile.data.data.role
+            );
+          router.push({ name: 'dashboard' });
         }
       } catch (error) {
         // Check for 409 conflict error when the user already exists
@@ -82,18 +87,6 @@ export default {
       }
     };
 
-    watch(redirectCountdown, (newValue) => {
-      if (newValue > 0) {
-        setTimeout(() => {
-          redirectCountdown.value--;
-        }, 1000); // Decrease the countdown every second
-      } else if (newValue === 0 && successMessage.value) {
-       
-          // Redirect to the dashboard page after successful login
-        router.push({ name: 'dashboard' });
-      }
-    });
-
     return {
       email,
       username,
@@ -104,7 +97,6 @@ export default {
       isPasswordValid,
       isReenterPasswordValid,
       isFormValid,
-      redirectCountdown,
       handleRegister,
       errorMessage,
       successMessage,

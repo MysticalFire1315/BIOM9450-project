@@ -19,13 +19,19 @@ export const useSessionStore = defineStore('session', {
     logout() {
       this.userName=null;
       this.userEmail=null;
-      this.token = null;
+      this.userRole = null;
 
       // Remove all caches from localStorage when logging out
       localStorage.removeItem('userName');
       localStorage.removeItem('userEmail');
       localStorage.removeItem('userRole');
     },
+
+    updateRole(userRole){
+      this.userRole = userRole;
+      localStorage.setItem('userRole', userRole);
+    },
+
     // Optionally, add a method to initialize the store from localStorage
     initializeSession() {
       const storedUserName = localStorage.getItem('userName');

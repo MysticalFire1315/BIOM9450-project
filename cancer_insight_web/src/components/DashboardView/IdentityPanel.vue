@@ -9,7 +9,8 @@
     </v-card-title>
     <v-card-subtitle style="font-size:x-large; color:white;" class="text-left">
         <span v-if="!message">Click the button below to link your account!</span>
-        <span v-else>You are logged in as {{sessionStore.userRole}}.</span>
+        <span v-else>You are logged in as {{userRole}}.</span>
+
     </v-card-subtitle>
     <v-card-text v-if="message" style="font-size:large; color:white;" class="text-left">
         You can access and filter patient mutational profiles, view shared mutations, and create new profiles by entering details and upload new mutation data.
@@ -46,32 +47,29 @@
 </template>
 
 <script setup>
-import { ref, onMounted, shallowRef } from 'vue';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { ref, onMounted, shallowRef,computed } from 'vue';
 import { useSessionStore} from '@/stores/useSessionStore';
 import apiService from '@/services/apiService';
 
 // The message about whether the account is linked
-const message = ref(null);
-const authStore = useAuthStore(); 
+const message = ref(null); 
 const sessionStore = useSessionStore();
 const dialog = shallowRef(false);
 const person_id = ref('');
+
+const userRole = computed(() => sessionStore.userRole);
 
 const fetchUserLink = async () => {
   try {
     const response = await apiService.getData('/user/link');
     message.value = response.data.message;
-    console.log(message.value)
   } catch (error) {
     console.error(error);
   }
 };
 
 const handleLink = async () => {
-    console.log(person_id.value)
-    console.log(authStore.token)
-    
+  
       try {
         const personIdInt = parseInt(person_id.value, 10);
 
@@ -87,10 +85,14 @@ const handleLink = async () => {
 
         // Handle the response for successful registration
         if (response.status === 200 && response.data.status === 'success') {
-            location.reload();
+            const responseProfile = await apiService.getData('/user/profile');
+            sessionStore.updateRole(responseProfile.data.data.role);
+            dialog.value=false;
+            fetchUserLink();
         }
       } catch (error) {
         alert('Linking failed. Please check your link ID.');
+        console.error('Error response:', error.message);
       }
     };
 
