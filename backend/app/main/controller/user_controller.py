@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 
-from app.main.service.user_service import check_link, link_user, get_user
+from app.main.service.user_service import check_link, link_user, get_user, user_history
 from app.main.util.decorator import require_user_logged_in
 from app.main.util.dto import UserDto
 from flask import request
@@ -32,6 +32,14 @@ class ProfileAPI(Resource):
     @require_user_logged_in(throughpass=True)
     def get(self, user):
         return get_user(user)
+
+@api.route("/history/<n>")
+class HistoryAPI(Resource):
+    @api.doc("get the last `n` requests made by the current user")
+    @api.marshal_list_with(UserDto.user_history)
+    @require_user_logged_in(throughpass=True)
+    def get(self, user, n):
+        return user_history(user, int(n))
 
 # @UserDto.api.route("/")
 # class UserList(Resource):

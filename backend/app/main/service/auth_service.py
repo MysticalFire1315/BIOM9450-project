@@ -1,9 +1,7 @@
 from app.main.model.user import User
 from app.main.model.person import Person
 from app.main.util.database import db_get_cursor
-from typing import Dict, Tuple, Union
-from flask import current_app
-import traceback
+from typing import Dict, Tuple
 
 
 def register_user(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:

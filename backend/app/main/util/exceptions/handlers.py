@@ -1,25 +1,35 @@
-from flask import current_app
+from flask import request
 import traceback
 import app.main.util.exceptions.errors as errors
+import logging
+
+logger = logging.getLogger("errors")
 
 def register_handlers(api):
     @api.errorhandler(errors.NotFoundError)
     def handle_not_found(error):
-        current_app.logger.error(traceback.format_exc())
-        current_app.logger.error(str(error))
-        return {'message': str(error)}, 404
+        logger.debug(traceback.format_exc())
+        output = {'message': str(error)}, 404
+        logger.error(output)
+        return output
 
     @api.errorhandler(errors.AlreadyExistsError)
     def handle_already_exists(error):
-        current_app.logger.error(traceback.format_exc())
-        return {'message': str(error)}, 409
+        logger.debug(traceback.format_exc())
+        output = {'message': str(error)}, 409
+        logger.error(output)
+        return output
 
     @api.errorhandler(errors.BadInputError)
     def handle_bad_input(error):
-        current_app.logger.error(traceback.format_exc())
-        return {'message': str(error)}, 400
+        logger.debug(traceback.format_exc())
+        output = {'message': str(error)}, 400
+        logger.error(output)
+        return output
 
     @api.errorhandler(errors.TokenInvalidError)
     def handle_token_expired(error):
-        current_app.logger.error(traceback.format_exc())
-        return {'message': str(error)}, 401
+        logger.debug(traceback.format_exc())
+        output = {'message': str(error)}, 401
+        logger.error(output)
+        return output

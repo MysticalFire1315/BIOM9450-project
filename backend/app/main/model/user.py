@@ -1,7 +1,6 @@
 import datetime
 
 import datetime
-import traceback
 import jwt
 from app.main import flask_bcrypt
 from app.main.config import key
