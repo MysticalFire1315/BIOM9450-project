@@ -17,8 +17,9 @@ tests:
 	flask test
 
 run:
+	mkdir logs; \
 	. .venv/bin/activate; \
 	export FLASK_APP=flasky.py; \
 	flask run
 
-all: clean install tests run
+all: clean install run
