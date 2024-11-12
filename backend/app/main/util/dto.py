@@ -40,6 +40,15 @@ class UserDto:
             "role": fields.String(description="The user's role"),
         },
     )
+    user_history = api.model(
+        "user_history",
+        {
+            "time_accessed": fields.DateTime(description="Time this route was accessed"),
+            "method": fields.String(description="The HTTP method for this request"),
+            "path": fields.String(description="The path accessed"),
+            "response": fields.Integer(description="The HTTP response code"),
+        }
+    )
 
 
 class PersonDto:

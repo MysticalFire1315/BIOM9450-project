@@ -8,7 +8,8 @@
 
 ## Route Permissions Breakdown
 
-### Publicly Accessible Routes
+Listed in database. Access using:
 
-You don't have to be logged in to access any of these routes.
-
+```sql
+select * from routes;
+```

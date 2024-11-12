@@ -11,7 +11,6 @@ def get_person_role(person: Person):
     role_classes = {"patient": Patient, "oncologist": Oncologist, "researcher": Researcher}
 
     for r, c in role_classes.items():
-        print(r)
         try:
             c.get_by_people_id(person.id)
             return r
