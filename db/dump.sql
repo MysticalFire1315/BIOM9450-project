@@ -30,6 +30,7 @@ INSERT INTO routes (uri, method, patient, oncologist, researcher, no_role, every
     ('/user/link', 'GET', true, true, true, true, false),
     ('/user/link', 'POST', false, false, false, true, false),
     ('/user/profile', 'GET', true, true, true, true, false),
+    ('/user/history/<n>', 'GET', true, true, true, true, false),
 
     -- /patient routes
     ('/patient/create', 'POST', false, true, true, false, false),
