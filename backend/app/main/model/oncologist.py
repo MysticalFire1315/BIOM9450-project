@@ -5,7 +5,6 @@ from typing import List
 
 from app.main.util.database import db_get_cursor, UniqueViolation, NotNullViolation
 from app.main.util.exceptions.errors import NotFoundError, BadInputError
-from app.main.model.person import Person
 
 class Oncologist(object):
     def __init__(
@@ -54,12 +53,12 @@ class Oncologist(object):
             raise NotFoundError('Oncologist not found')
 
     @staticmethod
-    def get_all() -> List[Person]:
+    def get_all() -> List["Oncologist"]:
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM oncologists;")
             result = cur.fetchall()
 
-        return [Person.get_by_id(Oncologist(*r).people_id) for r in result]
+        return [Oncologist(*r) for r in result]
 
     @property
     def id(self) -> int:
