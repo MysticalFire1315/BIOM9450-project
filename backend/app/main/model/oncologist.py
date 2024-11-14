@@ -11,13 +11,22 @@ class Oncologist(object):
     def __init__(
         self,
         id: int,
+        specialization: str,
+        phone: str,
+        email: str,
         people_id: int,
     ):
         self._id = id
+        self._specialization = specialization
+        self._phone = phone
+        self._email = email
         self._people_id = people_id
 
     @staticmethod
     def new_oncologist(people_id: int) -> "Oncologist":
+        # TODO
+        raise NotImplementedError
+
         try:
             with db_get_cursor() as cur:
                 cur.execute(
@@ -57,5 +66,26 @@ class Oncologist(object):
         return self._id
 
     @property
+    def specialization(self) -> str:
+        return self._specialization
+
+    @property
+    def phone(self) -> str:
+        return self._phone
+
+    @property
+    def email(self) -> str:
+        return self._email
+
+    @property
     def people_id(self) -> int:
         return self._people_id
+
+    @property
+    def affiliations(self) -> List[str]:
+        with db_get_cursor() as cur:
+            cur.execute("""
+                SELECT hospital FROM oncologist_affiliations
+                WHERE id = %s;
+                """, (self.id,))
+            return [i for j in cur.fetchall() for i in j]
