@@ -30,7 +30,7 @@ export default {
     const route = useRoute();
     const authStore = useAuthStore();
 
-    const routesWithBackground = ['home', 'about', 'login', 'registration', 'logout', 'contact'];
+    const routesWithBackground = ['home', 'about', 'login', 'registration', 'logout'];
 
     const isBackgroundImageClass = computed(() => routesWithBackground.includes(route.name));
 

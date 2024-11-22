@@ -1,7 +1,11 @@
 <template>
-    <div class="contact">
-      <h1>This is an contact page. </h1>
-      <h1>Yes, we are supposed to write something here about how to contact us.</h1>
-    </div>
-  </template>
-  
+  <div>
+    <h1>Meet our experts!</h1>
+    <ResearcherTable />
+  </div>
+</template>
+
+<script setup>
+import ResearcherTable from '@/components/ContactView/ResearcherTable.vue';
+
+</script>

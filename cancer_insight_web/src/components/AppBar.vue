@@ -59,7 +59,6 @@ export default {
     const authStore = useAuthStore(); 
     const sessionStore = useSessionStore();
     const isLogin = computed(() => authStore.isLogin); // Get isLogin from store
-    console.log(isLogin.value);
 
     // Function to navigate to the selected route
     const navigateTo = (route) => {
