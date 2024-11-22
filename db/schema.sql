@@ -50,7 +50,7 @@ CREATE TABLE patients (
     address text,
     country varchar(50),
     emergency_contact_name varchar(50),
-    emergency_contact_phone varchar(20),
+    emergency_contact_phone varchar(32),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
@@ -60,9 +60,20 @@ CREATE TABLE patients (
 
 CREATE TABLE oncologists (
     id serial PRIMARY KEY,
+    specialization varchar(255),
+    phone varchar(32),
+    email varchar(100),
 
     people_id integer UNIQUE NOT NULL,
     CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people (id)
+);
+
+CREATE TABLE oncologist_affiliations (
+    id serial PRIMARY KEY,
+    hospital varchar(255),
+
+    oncologist_id integer NOT NULL,
+    CONSTRAINT fk_oncologist FOREIGN KEY (oncologist_id) REFERENCES oncologists (id)
 );
 
 CREATE TABLE researchers (
@@ -73,7 +84,7 @@ CREATE TABLE researchers (
 );
 
 CREATE TABLE request_logs (
-    id SERIAL PRIMARY KEY,
+    id serial PRIMARY KEY,
     time_accessed TIMESTAMPTZ DEFAULT NOW(),
     method varchar(10),
     url_path varchar(255),
@@ -83,6 +94,24 @@ CREATE TABLE request_logs (
 
     user_id integer,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE machine_learning_model (
+    id SERIAL PRIMARY KEY,
+    name varchar(64),
+    time_created TIMESTAMPTZ DEFAULT NOW(),
+    last_updated TIMESTAMPTZ DEFAULT NOW()
+
+);
+
+CREATE TABLE machine_learning_features (
+    id SERIAL PRIMARY KEY,
+    feat_name varchar(32),
+    omics integer,
+    imp double precision,
+
+    model_id integer,
+    CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_model (id)
 );
 
 -------------------------------------

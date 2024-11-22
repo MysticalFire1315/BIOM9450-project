@@ -27,6 +27,6 @@ class ProfileAPI(Resource):
 @api.route("/list")
 class ListAPI(Resource):
     @api.doc("list of oncologists")
-    @api.marshal_list_with(PersonDto.person_profile, envelope="data")
+    @api.marshal_list_with(OncologistDto.oncologist_profile, envelope="data")
     def get(self):
         return get_all_oncologists()

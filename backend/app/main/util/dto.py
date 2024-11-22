@@ -89,7 +89,10 @@ class OncologistDto:
     oncologist_profile = api.model(
         "oncologist_profile",
         {
-            # Other fields here
+            "specialization": fields.String(description="The specialization"),
+            "phone": fields.String(description="Phone number"),
+            "email": fields.String(description="Email"),
+            "affiliations": fields.List(fields.String(description="Hospital affiliations")),
             "person": fields.Nested(PersonDto.person_profile),
         },
     )
