@@ -99,14 +99,12 @@ CREATE TABLE request_logs (
 CREATE TABLE machine_learning_model (
     id SERIAL PRIMARY KEY,
     name varchar(64),
-    time_created TIMESTAMPTZ DEFAULT NOW(),
-    last_updated TIMESTAMPTZ DEFAULT NOW()
-
+    time_created TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE machine_learning_features (
     id SERIAL PRIMARY KEY,
-    feat_name varchar(32),
+    feat_name varchar(64),
     omics integer,
     imp double precision,
 
