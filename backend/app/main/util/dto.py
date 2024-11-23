@@ -125,3 +125,10 @@ class MachineLearningDto:
             "features": fields.List(fields.Nested(ml_features)),
         }
     )
+    ml_expressions = api.model(
+        "ml_expressions",
+        {
+            "model_id": fields.Integer(),
+            "*": fields.Wildcard(fields.Float()),
+        }
+    )
