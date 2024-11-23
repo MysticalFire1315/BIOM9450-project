@@ -17,6 +17,7 @@ import { useRouter, useRoute } from 'vue-router';
 import SideBar from './components/SideBar.vue'; 
 import AppBar from './components/AppBar.vue'
 import { useAuthStore } from './stores/useAuthStore';
+import { useSessionStore } from './stores/useSessionStore';
 import {computed} from 'vue'
 
 export default {
@@ -29,6 +30,7 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const authStore = useAuthStore();
+    const sessionStore = useSessionStore();
 
     const routesWithBackground = ['home', 'about', 'login', 'registration', 'logout'];
 
@@ -46,6 +48,7 @@ export default {
     
     onMounted(() => {
       authStore.initializeAuth();
+      sessionStore.initializeSession();
     });
 
     return {

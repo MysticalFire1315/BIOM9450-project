@@ -23,37 +23,33 @@
   </v-navigation-drawer>
 </template>
 
-<script>
-import { ref } from 'vue';
+<script setup>
+import { ref, computed} from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/useAuthStore';  // Pinia library
 import { useSessionStore } from '@/stores/useSessionStore';
-import { computed } from 'vue'; // Import computed from Vue
 
-export default {
-  setup() {
-    const router = useRouter(); // Get the router instance
-    const authStore = useAuthStore(); 
-    const sessionStore = useSessionStore();
-    const isLogin = computed(() => authStore.isLogin); // Get isLogin from store
+const router = useRouter(); // Get the router instance
+const authStore = useAuthStore(); 
+const sessionStore = useSessionStore();
 
-    // Define menu items with their corresponding routes
-    const menuItems = ref([
-      { title: 'Dashboard', icon: 'mdi-view-dashboard', route: '/dashboard' },
-      { title: 'Database', icon: 'mdi-database', route: '/database' },
-      { title: 'Predictive Learning', icon: 'mdi-robot-angry', route: '/predictive' },
-      { title: 'Setting', icon: 'mdi-cog', route: '/setting' }
-    ]);
+const isLogin = computed(() => authStore.isLogin); // Get isLogin from store
 
-    // Function to navigate to the selected route
-    const navigateTo = (route) => {
-      router.push(route); // Use router to navigate
-    };
+// Define menu items with their corresponding routes
+const menuItems = ref([
+  { title: 'Dashboard', icon: 'mdi-view-dashboard', route: '/dashboard' },
+  { title: 'Database', icon: 'mdi-database', route: '/database' },
+  { title: 'Predictive Learning', icon: 'mdi-robot-angry', route: '/predictive' },
+  { title: 'Setting', icon: 'mdi-cog', route: '/setting' }
+]);
 
-    return { menuItems, isLogin, sessionStore, navigateTo };
-  }
+// Function to navigate to the selected route
+const navigateTo = (route) => {
+  router.push(route); // Use router to navigate
 };
+
 </script>
+
 
 
 

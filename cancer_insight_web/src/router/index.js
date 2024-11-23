@@ -10,6 +10,7 @@ import LogInView from '@/views/LogInView.vue'
 import SettingView from '@/views/SettingView.vue'
 import ContactView from '@/views/ContactView.vue'
 import DocumentView from '@/views/DocumentView.vue'
+import CreatePatientView from '@/views/DatabaseView/CreatePatientView.vue'
 
 import { useAuthStore } from '../stores/useAuthStore';
 import AboutView from '../views/AboutView.vue'
@@ -36,7 +37,13 @@ const routes = [
   {
     path: '/database',
     name: 'database',
-    component: DatabaseView
+    component: DatabaseView,
+    children: [
+      {
+        path: 'create-patient', // Updated route path
+        component: CreatePatientView, // Updated component
+      },
+    ],
   },
   {
     path: '/predictive',
