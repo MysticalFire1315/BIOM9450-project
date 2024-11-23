@@ -18,11 +18,11 @@ class MLModel(object):
     @staticmethod
     def get_by_id(id: int) -> "ML":
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM machine_learning_model WHERE id = %s;", (id,))
+            cur.execute("SELECT * FROM machine_learning_models WHERE id = %s;", (id,))
             result = cur.fetchone()
 
         try:
-            return ML(*result)
+            return MLModel(*result)
         except TypeError:
             raise NotFoundError('ML model not found')
 
@@ -41,7 +41,7 @@ class MLModel(object):
     @property
     def features(self) -> List:
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM machine_learning_features WHERE model_id = %s;", (self._id,))
+            cur.execute("SELECT feat_name, omics, imp FROM machine_learning_features WHERE model_id = %s;", (self._id,))
             result = cur.fetchall()
         return [{
             "feat_name": feat_name,

@@ -1,6 +1,6 @@
 from app.main.service.ml_service import get_model
 from app.main.util.dto import MachineLearningDto
-from app.main.util.decorators import require_logged_in_as
+from app.main.util.decorator import require_logged_in_as
 from flask_restx import Resource
 
 api = MachineLearningDto.api

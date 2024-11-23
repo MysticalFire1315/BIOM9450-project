@@ -115,7 +115,7 @@ class MachineLearningDto:
         {
             "feat_name": fields.String(description="The name of the feature"),
             "omics": fields.Integer(description="omics"),
-            "imp": fields.Double(description="Importance"),
+            "imp": fields.Float(description="Importance"),
         }
     )
     ml_model = api.model(
