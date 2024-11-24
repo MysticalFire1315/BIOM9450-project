@@ -21,9 +21,6 @@ def main(
 ):
     # Step 1: Train and test the model
     logger.info("Step 1: Training and Testing the Model...")
-    print(data_folder, view_list, num_class,
-               lr_e_pretrain, lr_e, lr_c,
-               num_epoch_pretrain, num_epoch)
     performance = train_test(data_folder, view_list, num_class,
                lr_e_pretrain, lr_e, lr_c,
                num_epoch_pretrain, num_epoch)

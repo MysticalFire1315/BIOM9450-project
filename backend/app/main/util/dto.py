@@ -163,3 +163,17 @@ class MachineLearningDto:
             "loss": fields.Float(),
         }
     )
+    ml_feature_feedback = api.model(
+        "ml_feature_feedback",
+        {
+            "feature": fields.String(),
+            "feedback": fields.String(),
+        }
+    )
+    ml_feedback = api.model(
+        "ml_feedback",
+        {
+            "model_id": fields.Integer(),
+            "data": fields.List(fields.Nested(ml_feature_feedback)),
+        }
+    )

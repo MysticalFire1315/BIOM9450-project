@@ -128,12 +128,19 @@ CREATE TABLE machine_learning_performance (
     CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_models (id)
 );
 
+CREATE TABLE features (
+    id SERIAL PRIMARY KEY,
+    name varchar(64) UNIQUE NOT NULL
+);
+
 CREATE TABLE machine_learning_features (
     id SERIAL PRIMARY KEY,
-    feat_name varchar(64) NOT NULL,
+    feat_id integer NOT NULL,
     omics integer NOT NULL,
     imp double precision NOT NULL,
+    feedback text,
 
+    CONSTRAINT fk_feature FOREIGN KEY (feat_id) REFERENCES features (id),
     model_id integer NOT NULL,
     CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_models (id)
 );

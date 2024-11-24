@@ -51,3 +51,8 @@ def get_metrics(data: Dict[str, str]):
     metrics = model.get_metrics(data.get("metric_type"), data.get("interval"))
     keys = ["epoch", "acc", "f1_weighted", "f1_macro", "auc", "precision_val", "loss"]
     return [dict(zip(keys, t)) for t in metrics]
+
+def feedback(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
+    model = get_model(data["model_id"])
+    model.feedback(data["data"])
+    return {"status": "success", "message": "Your feedback has been saved!"}, 201
