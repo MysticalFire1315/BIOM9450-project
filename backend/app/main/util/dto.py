@@ -132,3 +132,14 @@ class MachineLearningDto:
             "*": fields.Wildcard(fields.Float()),
         }
     )
+    ml_train = api.model(
+        "ml_train",
+        {
+            "name": fields.String(required=True, description="The name of the model (BRCA or ROSMAP)"),
+            "num_epoch_pretrain": fields.Integer(description="Number of epochs for pretraining"),
+            "num_epoch": fields.Integer(description="Number of epochs for main training"),
+            "lr_e_pretrain": fields.Float(description="Learning rate for encoder pretraining"),
+            "lr_e": fields.Float(description="Learning rate for encoder main training"),
+            "lr_c": fields.Float(description="Learning rate for classifier training"),
+        }
+    )

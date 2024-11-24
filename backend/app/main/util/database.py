@@ -19,6 +19,10 @@ class LoggingConnection2(LoggingConnection):
 class LoggingCursor2(LoggingCursor):
     def execute(self, query, vars=None):
         logger = logging.getLogger('psycopg2')
+        if isinstance(query, str):
+            query = self.mogrify(query, vars)
+
+        query = query.decode('utf-8') if isinstance(query, bytes) else query
         query = textwrap.dedent(query)
         query = f"\n{query}" if query[0] != '\n' else query
         query = f"{query}\n" if query[-1] != '\n' else query
@@ -26,7 +30,7 @@ class LoggingCursor2(LoggingCursor):
 
         try:
             self.timestamp = time.time()
-            return LoggingCursor.execute(self, textwrap.dedent(query), vars)
+            return LoggingCursor.execute(self, query)
         except Exception as exc:
             logging.error(f"{exc.__class__.__name__}: {exc}")
             raise exc

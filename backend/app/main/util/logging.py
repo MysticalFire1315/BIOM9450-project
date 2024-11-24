@@ -48,6 +48,14 @@ def setup_logging(env: str):
                 "maxBytes": 1000000,
                 "backupCount": 5,
             },
+            "mogonet_handler": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "level": "DEBUG",
+                "formatter": "simple",
+                "filename": "logs/mogonet.log",
+                "maxBytes": 1000000,
+                "backupCount": 5,
+            },
         },
         "loggers": {
             "psycopg2": {
@@ -65,6 +73,16 @@ def setup_logging(env: str):
                 "handlers": ["requests_handler"],
                 "propagate": False,
             },
+            "threading": {
+                "level": "INFO",
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "mogonet": {
+                "level": "INFO",
+                "handlers": ["console", "mogonet_handler"],
+                "propagate": False,
+            }
         },
         "root": {
             "level": "WARNING",
