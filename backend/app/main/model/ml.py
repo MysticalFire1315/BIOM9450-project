@@ -1,7 +1,7 @@
 import datetime
 import logging
 import os
-from typing import List
+from typing import List, Dict
 from psycopg2.extras import execute_values
 
 from app.main.util.database import db_get_cursor, UniqueViolation
@@ -84,7 +84,12 @@ class MLModel(object):
     @property
     def features(self) -> List:
         with db_get_cursor() as cur:
-            cur.execute("SELECT feat_name, omics, imp FROM machine_learning_features WHERE model_id = %s;", (self._id,))
+            cur.execute("""
+                SELECT f.name, m.omics, m.imp
+                FROM machine_learning_features m
+                    JOIN features f ON m.feat_id = f.id
+                WHERE m.model_id = %s;
+            """, (self._id,))
             result = cur.fetchall()
         return [dict(zip(["feat_name", "omics", "imp"], t)) for t in result]
 
@@ -112,6 +117,21 @@ class MLModel(object):
     def num_class(self) -> int:
         return self._num_class
 
+    @staticmethod
+    def get_feat_dict() -> Dict[str, int]:
+        with db_get_cursor() as cur:
+            cur.execute("SELECT * FROM features")
+            existing = cur.fetchall()
+        return {name: id for id, name in existing}
+
+    @staticmethod
+    def update_feat_dict(feat_names: List[str]):
+        d = MLModel.get_feat_dict()
+        missing = [(n,) for n in feat_names if n not in d]
+        with db_get_cursor() as cur:
+            execute_values(cur, "INSERT INTO features (name) VALUES %s;", missing)
+        return MLModel.get_feat_dict()
+
     def train(self, threaded=False, thread_dict=None):
         performance, features = main(os.path.join("app", "main", "mogonet", self.name), [1, 2, 3], self.num_epoch_pretrain, self.num_epoch, self.lr_e_pretrain, self.lr_e, self.lr_c, self.num_class)
 
@@ -123,7 +143,10 @@ class MLModel(object):
         logger.debug(f"Metrics: {metrics}")
 
         # Prepare features for insertion to database
-        feat = [i.tolist() + (self._id,) for i in features.to_records(index=False)]
+        feat = [list(i.tolist() + (self._id,)) for i in features.to_records(index=False)]
+        feat_dict = MLModel.update_feat_dict([f[0] for f in feat])
+        for f in feat:
+            f[0] = feat_dict[f[0]]
         logger.debug(f"Features: {feat}")
 
         with db_get_cursor() as cur:
@@ -136,7 +159,7 @@ class MLModel(object):
                     metric_type, epoch, acc, f1_weighted, f1_macro, auc, precision_val, loss, model_id
                 ) VALUES %s;
             """, metrics)
-            execute_values(cur, "INSERT INTO machine_learning_features (feat_name, omics, imp, model_id) VALUES %s", feat)
+            execute_values(cur, "INSERT INTO machine_learning_features (feat_id, omics, imp, model_id) VALUES %s", feat)
 
         if threaded:
             logging.getLogger("threading").info(f"Thread training model {self.id} finished.")
@@ -162,5 +185,8 @@ class MLModel(object):
                 cur.execute("""
                     UPDATE machine_learning_features
                     SET feedback = %s
-                    WHERE feat_name = %s and model_id = %s;
+                    FROM features
+                    WHERE features.id = machine_learning_features.feat_id
+                        AND features.name = %s
+                        AND machine_learning_features.model_id = %s;
                 """, (f["feedback"], f["feature"], self.id))
