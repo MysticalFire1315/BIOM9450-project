@@ -133,6 +133,7 @@ CREATE TABLE machine_learning_features (
     feat_name varchar(64) NOT NULL,
     omics integer NOT NULL,
     imp double precision NOT NULL,
+    feedback text,
 
     model_id integer NOT NULL,
     CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_models (id)

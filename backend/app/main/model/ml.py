@@ -86,11 +86,7 @@ class MLModel(object):
         with db_get_cursor() as cur:
             cur.execute("SELECT feat_name, omics, imp FROM machine_learning_features WHERE model_id = %s;", (self._id,))
             result = cur.fetchall()
-        return [{
-            "feat_name": feat_name,
-            "omics": omics,
-            "imp": imp,
-        } for feat_name, omics, imp in result]
+        return [dict(zip(["feat_name", "omics", "imp"], t)) for t in result]
 
     @property
     def num_epoch_pretrain(self) -> int:
@@ -159,3 +155,12 @@ class MLModel(object):
             result = cur.fetchall()
 
         return [x for x in result if (x[0] % interval == 0)]
+
+    def feedback(self, data):
+        with db_get_cursor() as cur:
+            for f in data:
+                cur.execute("""
+                    UPDATE machine_learning_features
+                    SET feedback = %s
+                    WHERE feat_name = %s and model_id = %s;
+                """, (f["feedback"], f["feature"], self.id))
