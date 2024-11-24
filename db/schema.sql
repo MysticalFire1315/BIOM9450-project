@@ -15,6 +15,11 @@ CREATE TYPE sex AS ENUM (
     'other'
 );
 
+CREATE TYPE ml_metric_type AS ENUM (
+    'training',
+    'testing'
+);
+
 ----------
 -- Tables
 ----------
@@ -85,12 +90,12 @@ CREATE TABLE researchers (
 
 CREATE TABLE request_logs (
     id serial PRIMARY KEY,
-    time_accessed TIMESTAMPTZ DEFAULT NOW(),
-    method varchar(10),
-    url_path varchar(255),
-    remote_addr varchar(45),
-    agent varchar(255),
-    status_code integer,
+    time_accessed TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    method varchar(10) NOT NULL,
+    url_path varchar(255) NOT NULL,
+    remote_addr varchar(45) NOT NULL,
+    agent varchar(255) NOT NULL,
+    status_code integer NOT NULL,
 
     user_id integer,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id)
@@ -99,16 +104,37 @@ CREATE TABLE request_logs (
 CREATE TABLE machine_learning_models (
     id SERIAL PRIMARY KEY,
     name varchar(64),
-    time_created TIMESTAMPTZ DEFAULT NOW()
+    time_created TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    num_epoch_pretrain integer NOT NULL,
+    num_epoch integer NOT NULL,
+    lr_e_pretrain double precision NOT NULL,
+    lr_e double precision NOT NULL,
+    lr_c double precision NOT NULL,
+    num_classes integer NOT NULL
+);
+
+CREATE TABLE machine_learning_performance (
+    id SERIAL PRIMARY KEY,
+    metric_type ml_metric_type NOT NULL,
+    epoch integer NOT NULL,
+    acc double precision NOT NULL,
+    f1_weighted double precision NOT NULL,
+    f1_macro double precision NOT NULL,
+    auc double precision NOT NULL,
+    precision_val double precision NOT NULL,
+    loss double precision NOT NULL,
+
+    model_id integer NOT NULL,
+    CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_models (id)
 );
 
 CREATE TABLE machine_learning_features (
     id SERIAL PRIMARY KEY,
-    feat_name varchar(64),
-    omics integer,
-    imp double precision,
+    feat_name varchar(64) NOT NULL,
+    omics integer NOT NULL,
+    imp double precision NOT NULL,
 
-    model_id integer,
+    model_id integer NOT NULL,
     CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_models (id)
 );
 

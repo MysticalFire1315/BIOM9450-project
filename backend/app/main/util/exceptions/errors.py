@@ -12,3 +12,6 @@ class BadInputError(CustomError):
 
 class TokenInvalidError(CustomError):
     pass
+
+class UnavailableError(CustomError):
+    pass

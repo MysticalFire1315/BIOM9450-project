@@ -33,3 +33,10 @@ def register_handlers(api):
         output = {'message': str(error)}, 401
         logger.error(output)
         return output
+
+    @api.errorhandler(errors.UnavailableError)
+    def handle_unavailable(error):
+        logger.debug(traceback.format_exc())
+        output = {'message': str(error)}, 503
+        logger.error(output)
+        return output

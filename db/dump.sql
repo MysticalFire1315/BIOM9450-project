@@ -21,6 +21,7 @@ INSERT INTO researchers (people_id)
     VALUES (2),
     (5);
 
+/*
 INSERT INTO machine_learning_models (name)
     VALUES ('BCRA'),
     ('ROSMAP');
@@ -89,7 +90,7 @@ VALUES
     ('DSG1|1828', 0, 18.159989430294065, 2),
     ('hsa-mir-205', 2, 17.588734910487243, 2),
     ('MDGA2|161357', 0, 15.294878830052205, 2);
-
+*/
 
 INSERT INTO routes (uri, method, patient, oncologist, researcher, no_role, everyone)
     VALUES ('/auth/register', 'POST', false, false, false, false, true),
@@ -120,4 +121,5 @@ INSERT INTO routes (uri, method, patient, oncologist, researcher, no_role, every
 
     -- /ml routes
     ('/ml/model/<id>', 'GET', false, true, true, false, false),
-    ('/ml/probability', 'POST', false, true, true, false, false);
+    ('/ml/probability', 'POST', false, true, true, false, false),
+    ('/ml/train', 'POST', false, true, true, false, false);

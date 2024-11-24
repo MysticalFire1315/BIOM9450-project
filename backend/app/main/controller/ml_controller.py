@@ -1,4 +1,4 @@
-from app.main.service.ml_service import get_model, get_probability
+from app.main.service.ml_service import get_model, get_probability, train_model
 from app.main.util.dto import MachineLearningDto
 from app.main.util.decorator import require_logged_in_as
 from flask_restx import Resource
@@ -25,3 +25,13 @@ class ProbabilityAPI(Resource):
     def post(self) -> Tuple[Dict[str, str], int]:
         post_data = request.json
         return get_probability(post_data)
+
+@api.route("/train")
+class TrainAPI(Resource):
+    @api.doc("train a model")
+    @api.response(202, "Model training started")
+    @api.expect(MachineLearningDto.ml_train)
+    @require_logged_in_as(oncologist=True, researcher=True)
+    def post(self) -> Tuple[Dict[str, str], int]:
+        post_data = request.json
+        return train_model(post_data)
