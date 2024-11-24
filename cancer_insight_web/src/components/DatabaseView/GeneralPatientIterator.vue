@@ -51,10 +51,10 @@
                 md="3"
               >
                 <v-card class="pb-3" border flat :style="{
-      backgroundImage: `url(${require('@/assets/patient_v_card.png')})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'bottom'
-    }">
+                  backgroundImage: `url(${require('@/assets/patient_v_card.png')})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'bottom'
+                }">
                     <v-avatar :color="item.raw.avatarColor">
                         <!-- <v-img :src="item.raw.img"></v-img> -->
                         <span class="text-h5">{{ item.raw.initials }}</span>
@@ -69,7 +69,7 @@
                   </v-list-item>
   
                   <div class="d-flex justify-space-between px-4">  
-                    <v-btn icon>
+                    <v-btn icon @click="navigateTo(`/database/${item.raw.id}-personal-profile`)">
                         <v-tooltip activator="parent" location="bottom">
                             View Personal Profile
                         </v-tooltip>
@@ -158,7 +158,7 @@
     avatarColor: getRandomColor()  // Add the color here
   };
 });
-    console.log(message.value)
+    // console.log(message.value)
     } catch (error) {
       console.error(error);
     }

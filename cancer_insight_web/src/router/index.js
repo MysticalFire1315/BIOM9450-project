@@ -11,6 +11,7 @@ import SettingView from '@/views/SettingView.vue'
 import ContactView from '@/views/ContactView.vue'
 import DocumentView from '@/views/DocumentView.vue'
 import CreatePatientView from '@/views/DatabaseView/CreatePatientView.vue'
+import PatientPersonalProfileView from '@/views/DatabaseView/PatientPersonalProfileView.vue'
 
 import { useAuthStore } from '../stores/useAuthStore';
 import AboutView from '../views/AboutView.vue'
@@ -42,6 +43,11 @@ const routes = [
       {
         path: 'create-patient', // Updated route path
         component: CreatePatientView, // Updated component
+      },
+      {
+        path: ':patientId-personal-profile', // Child route of /database
+        component: PatientPersonalProfileView,
+        props: true, // Pass the patientId as a prop
       },
     ],
   },

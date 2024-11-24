@@ -9,11 +9,11 @@ let chartInstance = null;
 const initChart = () => {
     if (rank_chart.value) {
         // Ensure the chart container has valid dimensions
-        console.log("Chart container dimensions:", rank_chart.value.clientWidth, rank_chart.value.clientHeight);
+        // console.log("Chart container dimensions:", rank_chart.value.clientWidth, rank_chart.value.clientHeight);
         if (rank_chart.value.clientWidth > 0 && rank_chart.value.clientHeight > 0) {
             chartInstance = echarts.init(rank_chart.value, 'chalk'); // Initialize chart with the 'chalk' theme
         } else {
-            console.warn('Chart container has no dimensions');
+            // console.warn('Chart container has no dimensions');
             return; // Prevent further execution if dimensions are invalid
         }
     }
@@ -68,7 +68,7 @@ const hardcodedData = [
 // 异步获取数据 (用硬编码数据代替 API 调用)
 const getData = async () => {
     try {
-        console.log('硬编码数据:', hardcodedData); // 打印硬编码的数据结构
+        // console.log('硬编码数据:', hardcodedData); // 打印硬编码的数据结构
 
         // 检查数据格式
         if (!hardcodedData || !Array.isArray(hardcodedData)) {
@@ -81,17 +81,17 @@ const getData = async () => {
             imp: parseFloat(item.value || 0), // 确保 `imp` 转换为数字
         }));
 
-        console.log('解析后的数据:', allData.value); // 打印解析后的数据
+        // console.log('解析后的数据:', allData.value); // 打印解析后的数据
         updateChart(); // 数据到达后更新图表
     } catch (error) {
-        console.error('获取数据失败:', error);
+        // console.error('获取数据失败:', error);
     }
 };
 
 // 更新图表
 const updateChart = () => {
     if (!chartInstance) {
-        console.error('图表实例未初始化');
+        // console.error('图表实例未初始化');
         return;
     }
 
