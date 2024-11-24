@@ -145,3 +145,17 @@ class MLModel(object):
         if threaded:
             logging.getLogger("threading").info(f"Thread training model {self.id} finished.")
             thread_dict[self.id] = False
+
+    def get_metrics(self, metric_type, interval):
+        if not metric_type or not interval:
+            raise BadInputError
+
+        with db_get_cursor() as cur:
+            cur.execute("""
+                SELECT epoch, acc, f1_weighted, f1_macro, auc, precision_val, loss
+                FROM machine_learning_performance
+                WHERE metric_type = %s and model_id = %s;
+            """, (metric_type, self.id))
+            result = cur.fetchall()
+
+        return [x for x in result if (x[0] % interval == 0)]
