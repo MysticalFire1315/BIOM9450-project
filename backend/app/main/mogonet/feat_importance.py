@@ -65,7 +65,7 @@ def cal_feat_imp(data_folder, model_folder, view_list, num_class):
 
     return feat_imp_list
 
-def summarize_imp_feat(featimp_list_list, data_folder, topn=30):
+def summarize_imp_feat(featimp_list_list, data_folder):
     """
     Summarizes feature importance from multiple runs, saves the top features to a CSV file,
     and prints a confirmation message.
@@ -101,6 +101,6 @@ def summarize_imp_feat(featimp_list_list, data_folder, topn=30):
     df_featimp_top = df_featimp.groupby(['feat_name', 'omics'])['imp'].sum().reset_index()
 
     # Sort by 'imp' in descending order and take the top features
-    df_featimp_top = df_featimp_top.sort_values(by='imp', ascending=False).head(topn)
+    df_featimp_top = df_featimp_top.sort_values(by='imp', ascending=False)
 
     return df_featimp_top

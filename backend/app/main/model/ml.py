@@ -91,7 +91,7 @@ class MLModel(object):
                 WHERE m.model_id = %s;
             """, (self._id,))
             result = cur.fetchall()
-        return [dict(zip(["feat_name", "omics", "imp"], t)) for t in result]
+        return [dict(zip(["feat_name", "omics", "imp"], t)) for t in sorted(result, key=lambda x: x[-1])[:30]]
 
     @property
     def num_epoch_pretrain(self) -> int:
