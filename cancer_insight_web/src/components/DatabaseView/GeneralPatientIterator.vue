@@ -1,5 +1,9 @@
 <template>
-    <v-card>
+    <v-card :style="{
+      backgroundImage: `url(${require('@/assets/patient_v_card_large.png')})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'bottom'
+    }">
         
         <v-card-title>
             <span class="me-2 fw-bold">All Patients</span>
@@ -10,7 +14,7 @@
         color="brown"
         ></v-divider>
       <v-data-iterator
-        :items="games"
+        :items="message"
         :items-per-page="12"
         :search="search"
       >
@@ -46,15 +50,21 @@
                 cols="auto"
                 md="3"
               >
-                <v-card class="pb-3" border flat>
-                    <v-avatar>
-                        <v-img :src="item.raw.img"></v-img>
+                <v-card class="pb-3" border flat :style="{
+      backgroundImage: `url(${require('@/assets/patient_v_card.png')})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'bottom'
+    }">
+                    <v-avatar :color="item.raw.avatarColor">
+                        <!-- <v-img :src="item.raw.img"></v-img> -->
+                        <span class="text-h5">{{ item.raw.initials }}</span>
                     </v-avatar>
                   
   
-                  <v-list-item :subtitle="item.raw.subtitle" class="mb-2">
+                  <v-list-item :subtitle="`Patient ID ${item.raw.id}`" class="mb-2">
+
                     <template v-slot:title>
-                      <strong class="text-h6 mb-2">{{ item.raw.title }}</strong>
+                      <strong class="text-h6 mb-2">{{ item.raw.fullName }}</strong>
                     </template>
                   </v-list-item>
   
@@ -117,127 +127,68 @@
   </template>
   
   <script setup>
-    import { shallowRef } from 'vue'
-    import { useRouter } from 'vue-router';
+  import { shallowRef, onMounted, ref } from 'vue'
+  import { useRouter } from 'vue-router';
+  import apiService from '@/services/apiService';
+
+  const message = ref([]); // Initialize message as an array
+  const colors = ['red', 'blue', 'green', 'purple', 'orange', 'pink'];
+
+  const fetchPatientList = async () => {
+  try {
+    const response = await apiService.getData('/patient/list');
+    message.value = response.data.data.map(patient => {
+  // Create initials by taking the first letter of first name and last name
+  const initials = (patient.firstname.charAt(0) + patient.lastname.charAt(0)).toUpperCase();
+  
+  // Create full name by concatenating first name and last name
+  const fullName = `${patient.firstname} ${patient.lastname}`;
+  
+  // Function to get a random color from the predefined set
+  const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
+
+  // Return the new object with id, fullName, initials, and a random color
+  return {
+    id: patient.id,
+    fullName: fullName,
+    initials: initials,
+    avatarColor: getRandomColor()  // Add the color here
+  };
+});
+    console.log(message.value)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
     const router = useRouter();
     const navigateTo = (route) => {
         router.push(route);
     };
 
     const search = shallowRef('')
-    const games = [
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/4.png',
-        title: 'The Sci-Fi Shooter Experience',
-        subtitle: 'Dive into a futuristic world of intense battles and alien encounters.',
-        advanced: false,
-        duration: '8 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/2.png',
-        title: 'Epic Adventures in Open Worlds',
-        subtitle: 'Embark on a journey through vast, immersive landscapes and quests.',
-        advanced: true,
-        duration: '10 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/3.png',
-        title: 'Surviving the Space Station Horror',
-        subtitle: 'Navigate a haunted space station in this chilling survival horror game.',
-        advanced: false,
-        duration: '9 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/5.png',
-        title: 'Neon-Lit High-Speed Racing Thrills',
-        subtitle: 'Experience adrenaline-pumping races in a futuristic, neon-soaked city.',
-        advanced: true,
-        duration: '12 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/6.png',
-        title: 'Retro-Style Platformer Adventures',
-        subtitle: 'Jump and dash through pixelated worlds in this classic-style platformer.',
-        advanced: false,
-        duration: '11 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/7.png',
-        title: 'Medieval Strategic War Campaigns',
-        subtitle: 'Lead armies into epic battles and conquer kingdoms in this strategic war game.',
-        advanced: true,
-        duration: '10 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/1.png',
-        title: 'Underwater VR Exploration Adventure',
-        subtitle: 'Dive deep into the ocean and discover the mysteries of the underwater world.',
-        advanced: true,
-        duration: '11 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/8.png',
-        title: '1920s Mystery Detective Chronicles',
-        subtitle: 'Solve crimes and uncover secrets in the glamourous 1920s era.',
-        advanced: false,
-        duration: '9 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/4.png',
-        title: 'The Sci-Fi Shooter Experience',
-        subtitle: 'Dive into a futuristic world of intense battles and alien encounters.',
-        advanced: false,
-        duration: '8 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/2.png',
-        title: 'Epic Adventures in Open Worlds',
-        subtitle: 'Embark on a journey through vast, immersive landscapes and quests.',
-        advanced: true,
-        duration: '10 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/3.png',
-        title: 'Surviving the Space Station Horror',
-        subtitle: 'Navigate a haunted space station in this chilling survival horror game.',
-        advanced: false,
-        duration: '9 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/5.png',
-        title: 'Neon-Lit High-Speed Racing Thrills',
-        subtitle: 'Experience adrenaline-pumping races in a futuristic, neon-soaked city.',
-        advanced: true,
-        duration: '12 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/6.png',
-        title: 'Retro-Style Platformer Adventures',
-        subtitle: 'Jump and dash through pixelated worlds in this classic-style platformer.',
-        advanced: false,
-        duration: '11 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/7.png',
-        title: 'Medieval Strategic War Campaigns',
-        subtitle: 'Lead armies into epic battles and conquer kingdoms in this strategic war game.',
-        advanced: true,
-        duration: '10 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/1.png',
-        title: 'Underwater VR Exploration Adventure',
-        subtitle: 'Dive deep into the ocean and discover the mysteries of the underwater world.',
-        advanced: true,
-        duration: '11 minutes',
-      },
-      {
-        img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/8.png',
-        title: '1920s Mystery Detective Chronicles',
-        subtitle: 'Solve crimes and uncover secrets in the glamourous 1920s era.',
-        advanced: false,
-        duration: '9 minutes',
-      },
-    ]
+    // const games = [
+    //   {
+    //     img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/4.png',
+    //     title: 'The Sci-Fi Shooter Experience',
+    //     subtitle: 'Dive into a futuristic world of intense battles and alien encounters.',
+    //     advanced: false,
+    //     duration: '8 minutes',
+    //   },
+    //   {
+    //     img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/2.png',
+    //     title: 'Epic Adventures in Open Worlds',
+    //     subtitle: 'Embark on a journey through vast, immersive landscapes and quests.',
+    //     advanced: true,
+    //     duration: '10 minutes',
+    //   },
+    // ]
+
+    onMounted(() => {
+    fetchPatientList();
+    });
   </script>
   

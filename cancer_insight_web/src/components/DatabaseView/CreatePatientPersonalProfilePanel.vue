@@ -193,7 +193,7 @@ const handleSave = async () => {
       const response = await apiService.postData('/patient/create', newPatientForm);
       console.log(response.data);
       alert('Patient data saved successfully!');
-      navigateTo('/database')
+      navigateTo('/database');
       // Optionally handle response here (e.g., redirect, reset form, etc.)
     } catch (error) {
       console.error('Error saving patient data:', error);
