@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import * as echarts from 'echarts';
+import apiService from '@/services/apiService';
 
 const rank_chart = ref(null);
 let chartInstance = null;
@@ -31,62 +32,62 @@ const initChart = () => {
 // 数据存储
 const allData = ref([]);
 
-// 硬编码数据
-const hardcodedData = [
-    { category: "hsa-miR-132", value: "58.90909090909089" },
-    { category: "hsa-miR-129-5p", value: "55.11961722488037" },
-    { category: "hsa-miR-146b-5p", value: "51.42857142857142" },
-    { category: "cg04126866", value: "46.233766233766225" },
-    { category: "cg08367223", value: "46.233766233766225" },
-    { category: "cg19485804", value: "46.233766233766225" },
-    { category: "hsa-miR-129-3p", value: "44.326812428078235" },
-    { category: "hsa-miR-2114", value: "44.326812428078235" },
-    { category: "cg18149207", value: "42.70396270396268" },
-    { category: "hsa-miR-24", value: "40.90909090909089" },
-    { category: "hsa-miR-143", value: "40.90909090909089" },
-    { category: "cg03894103", value: "39.201773835920164" },
-    { category: "hsa-miR-660", value: "37.57575757575757" },
-    { category: "hsa-miR-185", value: "37.57575757575757" },
-    { category: "cg13468685", value: "35.96933187294633" },
-    { category: "cg08952029", value: "35.90909090909089" },
-    { category: "cg01182697", value: "35.90909090909089" },
-    { category: "hsa-miR-1308", value: "34.323725055432355" },
-    { category: "cg15789095", value: "32.97805642633227" },
-    { category: "cg20793071", value: "32.6374859708193" },
-    { category: "ENSG00000105419.11", value: "31.778656126482208" },
-    { category: "hsa-miR-448", value: "31.150054764512582" },
-    { category: "hsa-miR-432", value: "31.150054764512582" },
-    { category: "cg24192663", value: "29.999999999999982" },
-    { category: "cg12556134", value: "29.732620320855595" },
-    { category: "cg00754253", value: "29.445676274944567" },
-    { category: "ENSG00000174607.6", value: "28.97360703812315" },
-    { category: "ENSG00000165175.11", value: "28.97360703812315" },
-    { category: "cg15775914", value: "28.051948051948038" },
-    { category: "hsa-miR-130b", value: "28.051948051948038" }
-];
+// // 硬编码数据
+// const hardcodedData = [
+//     { category: "hsa-miR-132", value: "58.90909090909089" },
+//     { category: "hsa-miR-129-5p", value: "55.11961722488037" },
+//     { category: "hsa-miR-146b-5p", value: "51.42857142857142" },
+//     { category: "cg04126866", value: "46.233766233766225" },
+//     { category: "cg08367223", value: "46.233766233766225" },
+//     { category: "cg19485804", value: "46.233766233766225" },
+//     { category: "hsa-miR-129-3p", value: "44.326812428078235" },
+//     { category: "hsa-miR-2114", value: "44.326812428078235" },
+//     { category: "cg18149207", value: "42.70396270396268" },
+//     { category: "hsa-miR-24", value: "40.90909090909089" },
+//     { category: "hsa-miR-143", value: "40.90909090909089" },
+//     { category: "cg03894103", value: "39.201773835920164" },
+//     { category: "hsa-miR-660", value: "37.57575757575757" },
+//     { category: "hsa-miR-185", value: "37.57575757575757" },
+//     { category: "cg13468685", value: "35.96933187294633" },
+//     { category: "cg08952029", value: "35.90909090909089" },
+//     { category: "cg01182697", value: "35.90909090909089" },
+//     { category: "hsa-miR-1308", value: "34.323725055432355" },
+//     { category: "cg15789095", value: "32.97805642633227" },
+//     { category: "cg20793071", value: "32.6374859708193" },
+//     { category: "ENSG00000105419.11", value: "31.778656126482208" },
+//     { category: "hsa-miR-448", value: "31.150054764512582" },
+//     { category: "hsa-miR-432", value: "31.150054764512582" },
+//     { category: "cg24192663", value: "29.999999999999982" },
+//     { category: "cg12556134", value: "29.732620320855595" },
+//     { category: "cg00754253", value: "29.445676274944567" },
+//     { category: "ENSG00000174607.6", value: "28.97360703812315" },
+//     { category: "ENSG00000165175.11", value: "28.97360703812315" },
+//     { category: "cg15775914", value: "28.051948051948038" },
+//     { category: "hsa-miR-130b", value: "28.051948051948038" }
+// ];
 
-// 异步获取数据 (用硬编码数据代替 API 调用)
-const getData = async () => {
-    try {
-        // console.log('硬编码数据:', hardcodedData); // 打印硬编码的数据结构
+// // 异步获取数据 (用硬编码数据代替 API 调用)
+// const getData = async () => {
+//     try {
+//         // console.log('硬编码数据:', hardcodedData); // 打印硬编码的数据结构
 
-        // 检查数据格式
-        if (!hardcodedData || !Array.isArray(hardcodedData)) {
-            throw new Error('数据格式错误，期望为数组');
-        }
+//         // 检查数据格式
+//         if (!hardcodedData || !Array.isArray(hardcodedData)) {
+//             throw new Error('数据格式错误，期望为数组');
+//         }
 
-        // 解析字段，确保字段名称和格式正确
-        allData.value = hardcodedData.map(item => ({
-            feat_name: item.category || 'Unknown', // 确保字段名正确
-            imp: parseFloat(item.value || 0), // 确保 `imp` 转换为数字
-        }));
+//         // 解析字段，确保字段名称和格式正确
+//         allData.value = hardcodedData.map(item => ({
+//             feat_name: item.category || 'Unknown', // 确保字段名正确
+//             imp: parseFloat(item.value || 0), // 确保 `imp` 转换为数字
+//         }));
 
-        // console.log('解析后的数据:', allData.value); // 打印解析后的数据
-        updateChart(); // 数据到达后更新图表
-    } catch (error) {
-        // console.error('获取数据失败:', error);
-    }
-};
+//         // console.log('解析后的数据:', allData.value); // 打印解析后的数据
+//         updateChart(); // 数据到达后更新图表
+//     } catch (error) {
+//         // console.error('获取数据失败:', error);
+//     }
+// };
 
 // 更新图表
 const updateChart = () => {
@@ -222,10 +223,46 @@ const stopInterval = () => {
     timeId.value && clearInterval(timeId.value);
 };
 
+const message = ref([]);
+
+const fetchAccuracyData = async () => {
+    try {
+        const response = await apiService.getData(`/ml/model/1`);
+        
+        // Map the response data to the desired format
+        message.value = Array.from(response.data.data.features.map(item => ({
+            category: item.feat_name,
+            value: item.imp.toString(), // Convert `imp` to a string
+        })));
+
+        allData.value = message.value.map(item => ({
+            feat_name: item.category || 'Unknown', // 确保字段名正确
+            imp: parseFloat(item.value || 0), // 确保 `imp` 转换为数字
+        }));
+
+        // console.log('解析后的数据:', allData.value); // 打印解析后的数据
+        updateChart(); 
+
+        // Convert message.value to a plain array using Array.from()
+        // const plainArray = Array.from(message.value, item => {
+        //     return {
+        //         category: item.feat_name,
+        //         value: item.imp.toString()
+        //     };
+        // });
+
+        console.log(message);  // Now plainArray is a regular array, not a reactive proxy.
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
 // 组件生命周期
 onMounted(() => {
+    fetchAccuracyData();
     initChart();
-    getData(); // Load data and update the chart
+    // getData(); // Load data and update the chart
     window.addEventListener('resize', screenAdapter); // Adjust chart on window resize
     startInterval(); // Start dynamic scrolling
 });
