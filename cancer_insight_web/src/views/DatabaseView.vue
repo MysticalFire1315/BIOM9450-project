@@ -5,8 +5,8 @@
       <h1>To be implemented :)</h1>
     </div> -->
     <div>
-      <GeneralPatientIterator />
       <router-view></router-view>
+      <GeneralPatientIterator />
     </div>
     
   </template>

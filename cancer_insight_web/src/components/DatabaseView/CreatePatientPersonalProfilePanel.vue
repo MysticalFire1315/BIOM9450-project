@@ -11,6 +11,7 @@
               sm="6"
             >
               <v-text-field
+                hint = "First Name of the Patient"
                 label="First name*"
                 required
               ></v-text-field>
@@ -22,20 +23,8 @@
               sm="6"
             >
               <v-text-field
-                hint="example of helper text only on focus"
-                label="Middle name"
-              ></v-text-field>
-            </v-col>
-
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
-              <v-text-field
-                hint="example of persistent helper text"
+                hint="Last Name of the Patient"
                 label="Last name*"
-                persistent-hint
                 required
               ></v-text-field>
             </v-col>
@@ -45,43 +34,66 @@
               md="4"
               sm="6"
             >
+              <v-avatar>
+                <v-icon icon="mdi-account-circle"></v-icon>
+              </v-avatar>
+              <v-btn class="text-caption text-medium-emphasis">
+                Clear
+              </v-btn>
+            </v-col>
+
+            <v-col
+              cols="12"
+              md="9"
+              sm="6"
+            >
               <v-text-field
-                label="Email*"
+                label="Address*"
                 required
               ></v-text-field>
             </v-col>
 
             <v-col
               cols="12"
-              md="4"
+              md="3"
               sm="6"
             >
               <v-text-field
-                label="Password*"
-                type="password"
+                label="Country"
                 required
               ></v-text-field>
             </v-col>
 
             <v-col
               cols="12"
-              md="4"
+              md="6"
               sm="6"
             >
               <v-text-field
-                label="Confirm Password*"
-                type="password"
+                label="Emergency Contact Name"
                 required
               ></v-text-field>
             </v-col>
+
+            <v-col
+              cols="12"
+              md="6"
+              sm="6"
+            >
+              <v-text-field
+                label="Emergency Contact Phone"
+                required
+              ></v-text-field>
+            </v-col>
+
 
             <v-col
               cols="12"
               sm="6"
             >
               <v-select
-                :items="['0-17', '18-29', '30-54', '54+']"
-                label="Age*"
+                :items="['Male', 'Female', 'Other']"
+                label="Gender*"
                 required
               ></v-select>
             </v-col>
@@ -90,12 +102,11 @@
               cols="12"
               sm="6"
             >
-              <v-autocomplete
-                :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                label="Interests"
-                auto-select-first
-                multiple
-              ></v-autocomplete>
+            <v-text-field
+                hint = "Please enter the date of birth following the format YYYY-MM-DD"
+                label="Date of Birth"
+                required
+              ></v-text-field>
             </v-col>
           </v-row>
 
