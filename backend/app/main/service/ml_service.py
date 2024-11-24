@@ -45,3 +45,9 @@ def get_probability(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
         imp_scale += 100 * imp
 
     return {"status": "success", "probability": exp_imp / imp_scale}, 200
+
+def get_metrics(data: Dict[str, str]):
+    model = get_model(data["model_id"])
+    metrics = model.get_metrics(data.get("metric_type"), data.get("interval"))
+    keys = ["epoch", "acc", "f1_weighted", "f1_macro", "auc", "precision_val", "loss"]
+    return [dict(zip(keys, t)) for t in metrics]

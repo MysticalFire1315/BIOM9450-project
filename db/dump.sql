@@ -122,4 +122,5 @@ INSERT INTO routes (uri, method, patient, oncologist, researcher, no_role, every
     -- /ml routes
     ('/ml/model/<id>', 'GET', false, true, true, false, false),
     ('/ml/probability', 'POST', false, true, true, false, false),
-    ('/ml/train', 'POST', false, true, true, false, false);
+    ('/ml/train', 'POST', false, true, true, false, false),
+    ('/ml/metrics', 'POST', false, true, true, false, false);

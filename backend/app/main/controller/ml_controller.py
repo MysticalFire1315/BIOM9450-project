@@ -1,4 +1,4 @@
-from app.main.service.ml_service import get_model, get_probability, train_model
+from app.main.service.ml_service import get_model, get_probability, train_model, get_metrics
 from app.main.util.dto import MachineLearningDto
 from app.main.util.decorator import require_logged_in_as
 from flask_restx import Resource
@@ -35,3 +35,13 @@ class TrainAPI(Resource):
     def post(self) -> Tuple[Dict[str, str], int]:
         post_data = request.json
         return train_model(post_data)
+
+@api.route("/metrics")
+class MetricsAPI(Resource):
+    @api.doc("get metrics about a model")
+    @api.expect(MachineLearningDto.ml_metrics_input)
+    @api.marshal_list_with(MachineLearningDto.ml_metrics_output)
+    @require_logged_in_as(oncologist=True, researcher=True)
+    def post(self) -> Tuple[Dict[str, str], int]:
+        post_data = request.json
+        return get_metrics(post_data)

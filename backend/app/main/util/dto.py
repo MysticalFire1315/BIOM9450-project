@@ -143,3 +143,23 @@ class MachineLearningDto:
             "lr_c": fields.Float(description="Learning rate for classifier training"),
         }
     )
+    ml_metrics_input = api.model(
+        "ml_metrics_input",
+        {
+            "model_id": fields.Integer(),
+            "metric_type": fields.String(),
+            "interval": fields.Integer(),
+        }
+    )
+    ml_metrics_output = api.model(
+        "ml_metrics_output",
+        {
+            "epoch": fields.Integer(),
+            "acc": fields.Float(),
+            "f1_weighted": fields.Float(),
+            "f1_macro": fields.Float(),
+            "auc": fields.Float(),
+            "precision_val": fields.Float(),
+            "loss": fields.Float(),
+        }
+    )
