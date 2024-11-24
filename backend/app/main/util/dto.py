@@ -106,3 +106,29 @@ class ResearcherDto:
             "person": fields.Nested(PersonDto.person_profile),
         },
     )
+
+
+class MachineLearningDto:
+    api = Namespace("machine_learning", description="machine learning related operations")
+    ml_features = api.model(
+        "ml_features",
+        {
+            "feat_name": fields.String(description="The name of the feature"),
+            "omics": fields.Integer(description="omics"),
+            "imp": fields.Float(description="Importance"),
+        }
+    )
+    ml_model = api.model(
+        "ml_model",
+        {
+            "name": fields.String(description="The name of the model"),
+            "features": fields.List(fields.Nested(ml_features)),
+        }
+    )
+    ml_expressions = api.model(
+        "ml_expressions",
+        {
+            "model_id": fields.Integer(),
+            "*": fields.Wildcard(fields.Float()),
+        }
+    )

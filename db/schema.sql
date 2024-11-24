@@ -96,22 +96,20 @@ CREATE TABLE request_logs (
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE machine_learning_model (
+CREATE TABLE machine_learning_models (
     id SERIAL PRIMARY KEY,
     name varchar(64),
-    time_created TIMESTAMPTZ DEFAULT NOW(),
-    last_updated TIMESTAMPTZ DEFAULT NOW()
-
+    time_created TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE machine_learning_features (
     id SERIAL PRIMARY KEY,
-    feat_name varchar(32),
+    feat_name varchar(64),
     omics integer,
     imp double precision,
 
     model_id integer,
-    CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_model (id)
+    CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_models (id)
 );
 
 -------------------------------------
