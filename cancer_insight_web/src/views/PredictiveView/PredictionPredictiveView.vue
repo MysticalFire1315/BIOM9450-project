@@ -1,3 +1,10 @@
 <template>
-    <h1>I am prediction predictive view</h1>
+    <div>
+        <FeaturePredictive />
+    </div>
+    
 </template>
+
+<script setup>
+    import FeaturePredictive from '@/components/PredictiveView/FeaturePredictive.vue';
+</script>

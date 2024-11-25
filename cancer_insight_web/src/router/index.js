@@ -15,11 +15,13 @@ import PatientPersonalProfileView from '@/views/DatabaseView/PatientPersonalProf
 import TrainingPredictiveView from '@/views/PredictiveView/TrainingPredictiveView.vue'
 import PredictionPredictiveView from '@/views/PredictiveView/PredictionPredictiveView.vue'
 import ResultSelectionView from '@/views/PredictiveView/ResultSelectionView.vue'
+import ResultDisplayView from '@/views/PredictiveView/ResultDisplayView.vue'
 import FeedbackPredictiveView from '@/views/PredictiveView/FeedbackPredictiveView.vue'
 import ListAllModelView from '@/views/PredictiveView/ListAllModelView.vue'
 
 import { useAuthStore } from '../stores/useAuthStore';
 import AboutView from '../views/AboutView.vue'
+
 
 const routes = [
   {
@@ -83,7 +85,7 @@ const routes = [
       },
       {
         path: ':modelId-result', // Child route of /database
-        component: PatientPersonalProfileView,
+        component: ResultDisplayView,
         props: true, // Pass the patientId as a prop
       },
     ]

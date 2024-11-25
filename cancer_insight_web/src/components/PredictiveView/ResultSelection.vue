@@ -28,6 +28,12 @@
   
   <script setup>
   import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+    const navigateTo = (route) => {
+        router.push(route);
+    };
   
   // Reactive state
   const modelId = ref('');
@@ -54,7 +60,8 @@
   
     console.log('Payload submitted:', payload);
   
-    alert('Model ID submitted successfully!');
+    // alert('Model ID submitted successfully!');
+    navigateTo(`${parsedModelId}-result`);
   };
   </script>
   

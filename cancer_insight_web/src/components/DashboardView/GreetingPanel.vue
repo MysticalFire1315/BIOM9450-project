@@ -8,7 +8,7 @@
     }"
   >
     <v-card-title style="font-size:xx-large; color: white;" class="text-left">
-        Welcome back, USERNAME!
+        Welcome back!
     </v-card-title>
     <v-card-subtitle style="font-size:x-large; color:white;" class="text-left">
         Ready to start your research with 

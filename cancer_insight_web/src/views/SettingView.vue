@@ -1,6 +1,6 @@
 <template>
     <div class="setting">
-      <h1> THis is the setting view.</h1>
+      <h1>This page can only be accessed by super admin :) .</h1>
     </div>
   </template>
   

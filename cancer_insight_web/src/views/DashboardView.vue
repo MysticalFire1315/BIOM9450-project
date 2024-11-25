@@ -15,7 +15,7 @@
       </v-col>
     </v-row>
     
-    <v-row style="width:135%">
+    <!-- <v-row style="width:135%">
       <v-col cols="4">
         <PatientNumEntryOverview/>
       </v-col>
@@ -25,7 +25,7 @@
       <v-col cols="4">
         <ModelOverview/>
       </v-col>
-    </v-row>
+    </v-row> -->
     
   </v-container>
 </template>
@@ -34,8 +34,8 @@
 <script setup>
 import GreetingPanel from '@/components/DashboardView/GreetingPanel.vue'; 
 import IdentityPanel from '@/components/DashboardView/IdentityPanel.vue';
-import DatabaseNumEntryOverview from '@/components/DashboardView/DatabaseNumEntryOverview.vue';
+// import DatabaseNumEntryOverview from '@/components/DashboardView/DatabaseNumEntryOverview.vue';
 import DashboardTImelinePanel from '@/components/DashboardView/DashboardTImelinePanel.vue';
-import PatientNumEntryOverview from '@/components/DashboardView/PatientNumEntryOverview.vue';
-import ModelOverview from '@/components/DashboardView/ModelOverview.vue';
+// import PatientNumEntryOverview from '@/components/DashboardView/PatientNumEntryOverview.vue';
+// import ModelOverview from '@/components/DashboardView/ModelOverview.vue';
 </script>

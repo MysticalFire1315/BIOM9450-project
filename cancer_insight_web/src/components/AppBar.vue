@@ -27,12 +27,12 @@
             <v-icon>mdi-contacts</v-icon>
         </v-btn>
 
-        <v-btn icon @click="navigateTo('/document')">
+        <!-- <v-btn icon @click="navigateTo('/document')">
             <v-tooltip activator="parent" location="bottom">
                 Documents
             </v-tooltip>
             <v-icon>mdi-file-document</v-icon>
-        </v-btn>
+        </v-btn> -->
 
         <v-btn icon @click="navigateTo('/about')">
             <v-tooltip activator="parent" location="bottom">
