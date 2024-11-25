@@ -69,6 +69,14 @@ class MLModel(object):
         except TypeError:
             raise NotFoundError('ML model not found')
 
+    @staticmethod
+    def get_all() -> List["MLModel"]:
+        with db_get_cursor() as cur:
+            cur.execute("SELECT * FROM machine_learning_models;")
+            result = cur.fetchall()
+        return [MLModel(*r) for r in result]
+
+
     @property
     def id(self) -> int:
         return self._id

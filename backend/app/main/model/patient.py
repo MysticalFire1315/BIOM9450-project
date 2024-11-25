@@ -2,10 +2,12 @@ import traceback
 from flask import current_app
 import datetime
 from typing import List
+from psycopg2.extras import execute_values
 
 from app.main.util.database import db_get_cursor, UniqueViolation, NotNullViolation
-from app.main.util.exceptions.errors import NotFoundError, BadInputError
+from app.main.util.exceptions.errors import NotFoundError, BadInputError, AlreadyExistsError
 from app.main.model.person import Person
+from app.main.model.ml import MLModel
 
 class Patient(object):
     def __init__(
@@ -50,6 +52,17 @@ class Patient(object):
         except NotNullViolation:
             raise BadInputError('Bad input')
         return Patient.get_by_people_id(people_id)
+
+    @staticmethod
+    def get_by_id(id: int) -> "Patient":
+        with db_get_cursor() as cur:
+            cur.execute("SELECT * FROM patients WHERE id = %s;", (id,))
+            result = cur.fetchone()
+
+        try:
+            return Patient(*result)
+        except TypeError:
+            raise NotFoundError('Patient not found')
 
     @staticmethod
     def get_by_people_id(people_id: int) -> "Patient":
@@ -105,3 +118,18 @@ class Patient(object):
     @property
     def people_id(self) -> int:
         return self._people_id
+
+    def link_mutations(self, mutations_list: List[str]):
+        feat_dict = MLModel.update_feat_dict(mutations_list)
+        current_mutations = set(self.get_mutations())
+        to_execute = [(self.id, feat_dict[m]) for m in mutations_list if m not in current_mutations]
+        with db_get_cursor() as cur:
+            execute_values(cur, "INSERT INTO patient_mutations (patient_id, feat_id) VALUES %s;", to_execute)
+
+    def get_mutations(self) -> List[str]:
+        feat_dict = {v: k for k, v in MLModel.get_feat_dict().items()}
+        with db_get_cursor() as cur:
+            cur.execute("SELECT feat_id FROM patient_mutations WHERE patient_id = %s;", (self.id,))
+            result = cur.fetchall()
+
+        return [feat_dict[i[0]] for i in result]

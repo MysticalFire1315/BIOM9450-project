@@ -145,6 +145,17 @@ CREATE TABLE machine_learning_features (
     CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_models (id)
 );
 
+CREATE TABLE patient_mutations (
+    id SERIAL PRIMARY KEY,
+    patient_id integer NOT NULL,
+    CONSTRAINT fk_patient FOREIGN KEY (patient_id) REFERENCES patients (id),
+
+    feat_id integer NOT NULL,
+    CONSTRAINT fk_feature FOREIGN KEY (feat_id) REFERENCES features (id),
+
+    UNIQUE (patient_id, feat_id)
+);
+
 -------------------------------------
 -- For documentation purposes only --
 -------------------------------------

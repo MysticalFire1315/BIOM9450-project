@@ -31,6 +31,12 @@ def get_model(id: int):
         raise UnavailableError("Model still being trained")
     return MLModel.get_by_id(id)
 
+def get_models():
+    models = MLModel.get_all()
+    for m in models:
+        m.ready = not (m.id in MOGONET_THREADS.keys() and MOGONET_THREADS[m.id])
+    return models
+
 def get_probability(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     features = get_model(data["model_id"]).features
 

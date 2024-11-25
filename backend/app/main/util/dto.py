@@ -122,7 +122,14 @@ class MachineLearningDto:
         "ml_model",
         {
             "name": fields.String(description="The name of the model"),
+            "time_created": fields.DateTime(),
             "features": fields.List(fields.Nested(ml_features)),
+            "num_epoch_pretrain": fields.Integer(),
+            "num_epoch": fields.Integer(),
+            "lr_e_pretrain": fields.Float(),
+            "lr_e": fields.Float(),
+            "lr_c": fields.Float(),
+            "ready": fields.Boolean(),
         }
     )
     ml_expressions = api.model(
