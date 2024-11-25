@@ -25,6 +25,18 @@ class Researcher(object):
 
     @staticmethod
     def get_by_people_id(people_id: int) -> "Researcher":
+        """Retrieves a researcher from the database by their people ID.
+
+        Args:
+            people_id (int): The people ID of the researcher to retrieve.
+
+        Returns:
+            Researcher: The retrieved Researcher object.
+
+        Raises:
+            NotFoundError: If no researcher with the given people ID exists.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM researchers WHERE people_id = %s;", (people_id,))
             result = cur.fetchone()
@@ -36,6 +48,12 @@ class Researcher(object):
 
     @staticmethod
     def get_all() -> List["Researcher"]:
+        """Retrieves all researchers from the database.
+
+        Returns:
+            List[Researcher]: A list of all Researcher objects.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM researchers;")
             result = cur.fetchall()
