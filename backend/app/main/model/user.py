@@ -1,5 +1,5 @@
 import datetime
-from typing import Union
+from typing import Optional
 
 import jwt
 
@@ -15,6 +15,8 @@ from app.main.util.exceptions.errors import (
 
 
 class User(object):
+    """Representation of a user."""
+
     def __init__(
         self,
         id: int,
@@ -106,7 +108,7 @@ class User(object):
         return self._created_at
 
     @property
-    def people_id(self) -> Union[int, None]:
+    def people_id(self) -> Optional[int]:
         return self._people_id
 
     @people_id.setter
@@ -124,11 +126,11 @@ class User(object):
         with db_get_cursor() as cur:
             cur.execute(
                 """
-                        UPDATE users
-                        SET password_hash = %s,
-                            people_id = %s
-                        WHERE id = %s;
-                        """,
+                UPDATE users
+                SET password_hash = %s,
+                    people_id = %s
+                WHERE id = %s;
+                """,
                 (self._password_hash, self._people_id, self._id),
             )
 

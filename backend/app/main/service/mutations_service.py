@@ -15,6 +15,7 @@ def get_all_mutations():
 
 
 def get_mutation(name: str):
+    # Get mutation data from COSMIC
     url = "https://clinicaltables.nlm.nih.gov/api/cosmic/v4/search"
     params = {"terms": name, "df": "MutationID,GeneName,PrimarySite"}
     response = requests.get(url, params=params)

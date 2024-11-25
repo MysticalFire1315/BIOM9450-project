@@ -20,9 +20,9 @@ api = PatientDto.api
 @api.route("/create")
 class CreateAPI(Resource):
     @api.doc("create a new patient profile")
-    @require_logged_in_as(oncologist=True, researcher=True)
-    @api.expect(PatientDto.patient_profile, validate=True)
     @api.response(201, "Patient successfully created.")
+    @api.expect(PatientDto.patient_profile, validate=True)
+    @require_logged_in_as(oncologist=True, researcher=True)
     def post(self) -> Tuple[Dict[str, str], int]:
         post_data = request.json
         return create_patient(post_data)
@@ -31,7 +31,6 @@ class CreateAPI(Resource):
 @api.route("/profile")
 class ProfileAPI(Resource):
     @api.doc("get the patient's profile")
-    @api.response(200, "Patient profile")
     @api.marshal_with(PatientDto.patient_profile, envelope="data")
     @require_logged_in_as(patient=True, throughpass=True)
     def get(self, person):
@@ -41,7 +40,6 @@ class ProfileAPI(Resource):
 @api.route("/profile/<id>")
 class ProfileIdAPI(Resource):
     @api.doc("get the patient's profile")
-    @api.response(200, "patient profile")
     @api.marshal_with(PatientDto.patient_profile, envelope="data")
     @require_logged_in_as(oncologist=True, researcher=True)
     def get(self, id):
@@ -51,7 +49,6 @@ class ProfileIdAPI(Resource):
 @api.route("/profile/<id>/mutations")
 class ProfileMutationsAPI(Resource):
     @api.doc("get the patient's profile")
-    @api.response(200, "patient profile")
     @require_logged_in_as(oncologist=True, researcher=True)
     def get(self, id):
         return get_mutations(id)
@@ -81,6 +78,7 @@ upload_parser.add_argument(
 @api.route("/mutation/upload")
 class MutationUploadAPI(Resource):
     @api.doc("upload a mutation file")
+    @api.response(201, "Mutation file successfully uploaded.")
     @api.expect(upload_parser)
     @require_logged_in_as(oncologist=True, researcher=True)
     def post(self):

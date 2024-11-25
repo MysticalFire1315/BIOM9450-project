@@ -19,7 +19,7 @@ def link_user(user: User, data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
         "status": "success",
         "message": "Successfully linked",
         "role": get_person_role(person),
-    }, 200
+    }, 201
 
 
 def get_user(user: User) -> User:

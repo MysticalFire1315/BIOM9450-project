@@ -14,6 +14,8 @@ from app.main.util.exceptions.errors import (
 
 
 class Patient(object):
+    """Representation of a patient."""
+
     def __init__(
         self,
         id: int,

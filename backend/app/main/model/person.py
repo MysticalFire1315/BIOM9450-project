@@ -20,6 +20,8 @@ class Sex(Enum):
 
 
 class Person(object):
+    """Representation of a person."""
+
     def __init__(
         self,
         id: int,

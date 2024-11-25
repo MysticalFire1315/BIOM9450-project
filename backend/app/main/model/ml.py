@@ -17,6 +17,8 @@ logger = logging.getLogger("mogonet")
 
 
 class MLModel(object):
+    """Representation of a trained MOGONET model."""
+
     def __init__(
         self,
         id: int,
@@ -236,7 +238,7 @@ class MLModel(object):
                 """
                 SELECT epoch, acc, f1_weighted, f1_macro, auc, precision_val, loss
                 FROM machine_learning_performance
-                WHERE metric_type = %s and model_id = %s;
+                WHERE metric_type = %s AND model_id = %s;
             """,
                 (metric_type, self.id),
             )

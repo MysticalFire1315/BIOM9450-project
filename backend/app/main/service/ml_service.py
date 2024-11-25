@@ -21,6 +21,7 @@ def train_model(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     )
     MOGONET_THREADS[model.id] = True
 
+    # Run training in background thread
     thread = threading.Thread(
         target=model.train, args=(True, MOGONET_THREADS), daemon=True
     )
@@ -51,9 +52,10 @@ def get_models():
 def get_probability(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     features = get_model(data["model_id"]).features
 
+    # Probability of getting cancer given by following formula:
+    #   sum(expression level * feature importance)/sum(100*feature importance)
     exp_imp = 0
     imp_scale = 0
-
     for feat in features:
         name = feat["feat_name"]
         imp = feat["imp"]

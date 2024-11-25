@@ -6,18 +6,16 @@ class AuthDto:
     user_login = api.model(
         "auth_login",
         {
-            "email": fields.String(required=True, description="The email address"),
-            "password": fields.String(required=True, description="The user password "),
+            "email": fields.String(required=True),
+            "password": fields.String(required=True),
         },
     )
     user_register = api.model(
         "auth_register",
         {
-            "email": fields.String(required=True, description="The email address"),
-            "password": fields.String(required=True, description="The user password "),
-            "username": fields.String(
-                required=True, description="The user's public username"
-            ),
+            "email": fields.String(required=True),
+            "password": fields.String(required=True),
+            "username": fields.String(required=True),
         },
     )
 
@@ -27,28 +25,24 @@ class UserDto:
     user_link = api.model(
         "user_link",
         {
-            "person_id": fields.Integer(
-                required=True, description="Id of the person to link current user with"
-            ),
+            "person_id": fields.Integer(required=True),
         },
     )
     user_profile = api.model(
         "user_profile",
         {
-            "email": fields.String(description="The email address"),
-            "username": fields.String(description="The user's public username"),
-            "role": fields.String(description="The user's role"),
+            "email": fields.String(),
+            "username": fields.String(),
+            "role": fields.String(),
         },
     )
     user_history = api.model(
         "user_history",
         {
-            "time_accessed": fields.DateTime(
-                description="Time this route was accessed"
-            ),
-            "method": fields.String(description="The HTTP method for this request"),
-            "path": fields.String(description="The path accessed"),
-            "response": fields.Integer(description="The HTTP response code"),
+            "time_accessed": fields.DateTime(),
+            "method": fields.String(),
+            "path": fields.String(),
+            "response": fields.Integer(),
         },
     )
 
@@ -58,11 +52,11 @@ class PersonDto:
     person_profile = api.model(
         "person_profile",
         {
-            "id": fields.Integer(description="Id"),
-            "firstname": fields.String(description="First name"),
-            "lastname": fields.String(description="Last name"),
-            "date_of_birth": fields.Date(description="Date of birth"),
-            "sex": fields.String(description="Sex"),
+            "id": fields.Integer(),
+            "firstname": fields.String(),
+            "lastname": fields.String(),
+            "date_of_birth": fields.Date(),
+            "sex": fields.String(),
         },
     )
 
@@ -72,15 +66,11 @@ class PatientDto:
     patient_profile = api.model(
         "patient_profile",
         {
-            "photo": fields.String(description="Base64 encoded image"),
-            "address": fields.String(description="Address (full)"),
-            "country": fields.String(description="Country"),
-            "emergency_contact_name": fields.String(
-                description="Emergency contact name"
-            ),
-            "emergency_contact_phone": fields.String(
-                description="Emergency contact phone number"
-            ),
+            "photo": fields.String(),
+            "address": fields.String(),
+            "country": fields.String(),
+            "emergency_contact_name": fields.String(),
+            "emergency_contact_phone": fields.String(),
             "person": fields.Nested(PersonDto.person_profile),
         },
     )
@@ -91,12 +81,10 @@ class OncologistDto:
     oncologist_profile = api.model(
         "oncologist_profile",
         {
-            "specialization": fields.String(description="The specialization"),
-            "phone": fields.String(description="Phone number"),
-            "email": fields.String(description="Email"),
-            "affiliations": fields.List(
-                fields.String(description="Hospital affiliations")
-            ),
+            "specialization": fields.String(),
+            "phone": fields.String(),
+            "email": fields.String(),
+            "affiliations": fields.List(fields.String()),
             "person": fields.Nested(PersonDto.person_profile),
         },
     )
@@ -107,19 +95,19 @@ class ResearcherDto:
     researcher_position = api.model(
         "researcher_position",
         {
-            "title": fields.String(description="Title"),
-            "organization": fields.String(description="Organization"),
-            "start_date": fields.Date(description="Start date"),
-            "end_date": fields.Date(description="End date"),
+            "title": fields.String(),
+            "organization": fields.String(),
+            "start_date": fields.Date(),
+            "end_date": fields.Date(),
         },
     )
     researcher_profile = api.model(
         "researcher_profile",
         {
-            "title": fields.String(description="Title"),
-            "phone": fields.String(description="Phone number"),
-            "email": fields.String(description="Email"),
-            "area_of_research": fields.String(description="Area of research"),
+            "title": fields.String(),
+            "phone": fields.String(),
+            "email": fields.String(),
+            "area_of_research": fields.String(),
             "positions": fields.List(fields.Nested(researcher_position)),
             "person": fields.Nested(PersonDto.person_profile),
         },
@@ -133,15 +121,15 @@ class MachineLearningDto:
     ml_features = api.model(
         "ml_features",
         {
-            "feat_name": fields.String(description="The name of the feature"),
-            "omics": fields.Integer(description="omics"),
-            "imp": fields.Float(description="Importance"),
+            "feat_name": fields.String(),
+            "omics": fields.Integer(),
+            "imp": fields.Float(),
         },
     )
     ml_model = api.model(
         "ml_model",
         {
-            "name": fields.String(description="The name of the model"),
+            "name": fields.String(),
             "time_created": fields.DateTime(),
             "features": fields.List(fields.Nested(ml_features)),
             "num_epoch_pretrain": fields.Integer(),
@@ -162,20 +150,12 @@ class MachineLearningDto:
     ml_train = api.model(
         "ml_train",
         {
-            "name": fields.String(
-                required=True, description="The name of the model (BRCA or ROSMAP)"
-            ),
-            "num_epoch_pretrain": fields.Integer(
-                description="Number of epochs for pretraining"
-            ),
-            "num_epoch": fields.Integer(
-                description="Number of epochs for main training"
-            ),
-            "lr_e_pretrain": fields.Float(
-                description="Learning rate for encoder pretraining"
-            ),
-            "lr_e": fields.Float(description="Learning rate for encoder main training"),
-            "lr_c": fields.Float(description="Learning rate for classifier training"),
+            "name": fields.String(required=True),
+            "num_epoch_pretrain": fields.Integer(),
+            "num_epoch": fields.Integer(),
+            "lr_e_pretrain": fields.Float(),
+            "lr_e": fields.Float(),
+            "lr_c": fields.Float(),
         },
     )
     ml_metrics_input = api.model(

@@ -5,6 +5,8 @@ from app.main.util.exceptions.errors import NotFoundError
 
 
 class Researcher(object):
+    """Representation of a researcher."""
+
     def __init__(
         self,
         id: int,

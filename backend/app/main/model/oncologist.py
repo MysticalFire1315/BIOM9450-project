@@ -5,6 +5,8 @@ from app.main.util.exceptions.errors import NotFoundError
 
 
 class Oncologist(object):
+    """Representation of an oncologist."""
+
     def __init__(
         self,
         id: int,
