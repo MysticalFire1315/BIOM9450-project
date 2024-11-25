@@ -1,3 +1,5 @@
+"""Data Transfer Objects (DTOs) for the Swagger API."""
+
 from flask_restx import Namespace, fields
 
 

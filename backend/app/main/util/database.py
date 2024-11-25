@@ -59,6 +59,9 @@ NotNullViolation = errors.lookup(errorcodes.NOT_NULL_VIOLATION)
 
 @contextmanager
 def db_get_cursor():
+    """Custom `cursor()` function that grabs cursor from connection pool
+    and automatically commits or rolls back transaction when done.
+    """
     try:
         con = postgreSQL_pool.getconn()
         con.initialize(logging.getLogger("psycopg2"))
