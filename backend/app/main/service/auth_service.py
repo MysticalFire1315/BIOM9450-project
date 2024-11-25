@@ -22,7 +22,7 @@ def login_user(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     return {
         "status": "success",
         "message": "Successfully logged in.",
-        "Authorization": user.encode_auth_token().decode(),
+        "Authorization": user.encode_auth_token(),
     }, 200
 
 
@@ -35,6 +35,7 @@ def logout_user(token: str) -> Tuple[Dict[str, str], int]:
 
 
 def get_logged_in_user(token: str) -> User:
+    print(token)
     return User.decode_auth_token(token)
 
 

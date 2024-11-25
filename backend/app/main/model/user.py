@@ -140,14 +140,17 @@ class User(object):
             "exp": datetime.datetime.now(datetime.timezone.utc)
             + datetime.timedelta(days=1, seconds=5),
             "iat": datetime.datetime.now(datetime.timezone.utc),
-            "sub": self.id,
+            "sub": str(self.id)
         }
         return jwt.encode(payload, key, algorithm="HS256")
 
     @staticmethod
     def decode_auth_token(auth_token: str) -> "User":
+        print(auth_token, type(auth_token))
+        print(key, type(key))
         try:
-            payload = jwt.decode(auth_token, key)
+            # payload = jwt.decode(auth_token, key)
+            payload = jwt.decode(auth_token, key, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             raise TokenInvalidError('Token expired')
         except jwt.InvalidTokenError:
@@ -160,4 +163,4 @@ class User(object):
         if is_blacklisted:
             raise TokenInvalidError('Token expired')
         else:
-            return User.get_by_id(payload["sub"])
+            return User.get_by_id(int(payload["sub"]))

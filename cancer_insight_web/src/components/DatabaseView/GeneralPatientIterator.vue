@@ -76,7 +76,7 @@
                         <v-icon>mdi-account-eye-outline</v-icon>
                     </v-btn>
 
-                    <v-btn icon>
+                    <!-- <v-btn icon>
                         <v-tooltip activator="parent" location="bottom">
                             Add Mutational Profile for ROSMAP
                         </v-tooltip>
@@ -88,7 +88,7 @@
                             Add Mutational Profile for BRCA
                         </v-tooltip>
                         <v-icon>mdi-tooltip-plus-outline</v-icon>
-                    </v-btn>
+                    </v-btn> -->
                     
                   </div>
                 </v-card>

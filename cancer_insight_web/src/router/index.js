@@ -12,6 +12,10 @@ import ContactView from '@/views/ContactView.vue'
 import DocumentView from '@/views/DocumentView.vue'
 import CreatePatientView from '@/views/DatabaseView/CreatePatientView.vue'
 import PatientPersonalProfileView from '@/views/DatabaseView/PatientPersonalProfileView.vue'
+import TrainingPredictiveView from '@/views/PredictiveView/TrainingPredictiveView.vue'
+import PredictionPredictiveView from '@/views/PredictiveView/PredictionPredictiveView.vue'
+import ResultPredictiveView from '@/views/PredictiveView/ResultPredictiveView.vue'
+import FeedbackPredictiveView from '@/views/PredictiveView/FeedbackPredictiveView.vue'
 
 import { useAuthStore } from '../stores/useAuthStore';
 import AboutView from '../views/AboutView.vue'
@@ -54,7 +58,25 @@ const routes = [
   {
     path: '/predictive',
     name: 'predictive',
-    component: PredictiveView
+    component: PredictiveView,
+    children: [
+      {
+        path: 'new-training',
+        component: TrainingPredictiveView
+      },
+      {
+        path: 'new-prediction',
+        component: PredictionPredictiveView
+      },
+      {
+        path: 'result',
+        component: ResultPredictiveView
+      },
+      {
+        path: 'feedback',
+        component: FeedbackPredictiveView
+      }
+    ]
   },
   {
     path: '/logout',
