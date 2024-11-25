@@ -1,10 +1,8 @@
-import traceback
-from flask import current_app
-import datetime
 from typing import List
 
-from app.main.util.database import db_get_cursor, UniqueViolation, NotNullViolation
-from app.main.util.exceptions.errors import NotFoundError, BadInputError
+from app.main.util.database import db_get_cursor
+from app.main.util.exceptions.errors import NotFoundError
+
 
 class Oncologist(object):
     def __init__(
@@ -22,26 +20,6 @@ class Oncologist(object):
         self._people_id = people_id
 
     @staticmethod
-    def new_oncologist(people_id: int) -> "Oncologist":
-        # TODO
-        raise NotImplementedError
-
-        try:
-            with db_get_cursor() as cur:
-                cur.execute(
-                    """
-                    INSERT INTO oncologists (people_id)
-                    VALUES (%s);
-                    """,
-                    (people_id)
-                )
-        except UniqueViolation:
-            raise AlreadyExistsError('Oncologist already exists')
-        except NotNullViolation:
-            raise BadInputError('Bad input')
-        return Oncologist.get_by_people_id(people_id)
-
-    @staticmethod
     def get_by_people_id(people_id: int) -> "Oncologist":
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM oncologists WHERE people_id = %s;", (people_id,))
@@ -50,7 +28,7 @@ class Oncologist(object):
         try:
             return Oncologist(*result)
         except TypeError:
-            raise NotFoundError('Oncologist not found')
+            raise NotFoundError("Oncologist not found")
 
     @staticmethod
     def get_all() -> List["Oncologist"]:
@@ -83,8 +61,11 @@ class Oncologist(object):
     @property
     def affiliations(self) -> List[str]:
         with db_get_cursor() as cur:
-            cur.execute("""
+            cur.execute(
+                """
                 SELECT hospital FROM oncologist_affiliations
-                WHERE id = %s;
-                """, (self.id,))
+                WHERE oncologist_id = %s;
+                """,
+                (self.id,),
+            )
             return [i for j in cur.fetchall() for i in j]

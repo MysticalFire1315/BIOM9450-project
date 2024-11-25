@@ -14,8 +14,9 @@ import CreatePatientView from '@/views/DatabaseView/CreatePatientView.vue'
 import PatientPersonalProfileView from '@/views/DatabaseView/PatientPersonalProfileView.vue'
 import TrainingPredictiveView from '@/views/PredictiveView/TrainingPredictiveView.vue'
 import PredictionPredictiveView from '@/views/PredictiveView/PredictionPredictiveView.vue'
-import ResultPredictiveView from '@/views/PredictiveView/ResultPredictiveView.vue'
+import ResultSelectionView from '@/views/PredictiveView/ResultSelectionView.vue'
 import FeedbackPredictiveView from '@/views/PredictiveView/FeedbackPredictiveView.vue'
+import ListAllModelView from '@/views/PredictiveView/ListAllModelView.vue'
 
 import { useAuthStore } from '../stores/useAuthStore';
 import AboutView from '../views/AboutView.vue'
@@ -70,12 +71,21 @@ const routes = [
       },
       {
         path: 'result',
-        component: ResultPredictiveView
+        component: ResultSelectionView
       },
       {
         path: 'feedback',
         component: FeedbackPredictiveView
-      }
+      }, 
+      {
+        path: 'all-models',
+        component: ListAllModelView
+      },
+      {
+        path: ':modelId-result', // Child route of /database
+        component: PatientPersonalProfileView,
+        props: true, // Pass the patientId as a prop
+      },
     ]
   },
   {

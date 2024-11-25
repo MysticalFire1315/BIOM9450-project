@@ -1,8 +1,9 @@
 # 模型组件
 
-import torch.nn as nn
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
+
 
 # Xavier初始化方法，用于给定的线性层参数初始化权重
 def xavier_init(m):
@@ -11,6 +12,7 @@ def xavier_init(m):
         nn.init.xavier_normal_(m.weight)  # 使用Xavier正态分布初始化权重
         if m.bias is not None:
             m.bias.data.fill_(0.0)  # 将偏置设置为0
+
 
 # 图卷积层定义
 class GraphConvolution(nn.Module):
@@ -41,6 +43,7 @@ class GraphConvolution(nn.Module):
         else:
             return output
 
+
 # 基于图卷积网络（GCN）的编码器模块
 class GCN_E(nn.Module):
     def __init__(self, in_dim, hgcn_dim, dropout):
@@ -64,8 +67,9 @@ class GCN_E(nn.Module):
         # 第三层卷积，并应用LeakyReLU激活
         x = self.gc3(x, adj)
         x = F.leaky_relu(x, 0.25)
-        
+
         return x
+
 
 # 基于线性层的分类器模块
 class Classifier_1(nn.Module):
@@ -80,6 +84,7 @@ class Classifier_1(nn.Module):
         x = self.clf(x)
         return x
 
+
 # VCDN模块（用于多视角数据的多类分类）
 class VCDN(nn.Module):
     def __init__(self, num_view, num_cls, hvcdn_dim):
@@ -89,24 +94,31 @@ class VCDN(nn.Module):
         self.model = nn.Sequential(
             nn.Linear(pow(num_cls, num_view), hvcdn_dim),
             nn.LeakyReLU(0.25),
-            nn.Linear(hvcdn_dim, num_cls)
+            nn.Linear(hvcdn_dim, num_cls),
         )
         self.model.apply(xavier_init)
-        
+
     def forward(self, in_list):
         # 多视角数据的输入处理，将每个视角数据应用Sigmoid函数
         num_view = len(in_list)
         for i in range(num_view):
             in_list[i] = torch.sigmoid(in_list[i])
         # 逐层组合各视角特征，并通过VCDN模型进行分类
-        x = torch.reshape(torch.matmul(in_list[0].unsqueeze(-1), in_list[1].unsqueeze(1)), (-1, pow(self.num_cls, 2), 1))
+        x = torch.reshape(
+            torch.matmul(in_list[0].unsqueeze(-1), in_list[1].unsqueeze(1)),
+            (-1, pow(self.num_cls, 2), 1),
+        )
         for i in range(2, num_view):
-            x = torch.reshape(torch.matmul(x, in_list[i].unsqueeze(1)), (-1, pow(self.num_cls, i + 1), 1))
+            x = torch.reshape(
+                torch.matmul(x, in_list[i].unsqueeze(1)),
+                (-1, pow(self.num_cls, i + 1), 1),
+            )
         # 展平特征，准备进行分类
         vcdn_feat = torch.reshape(x, (-1, pow(self.num_cls, num_view)))
         output = self.model(vcdn_feat)
 
         return output
+
 
 # 初始化模型字典函数
 def init_model_dict(num_view, num_class, dim_list, dim_he_list, dim_hc, gcn_dopout=0.5):
@@ -120,14 +132,17 @@ def init_model_dict(num_view, num_class, dim_list, dim_he_list, dim_hc, gcn_dopo
         model_dict["C"] = VCDN(num_view, num_class, dim_hc)
     return model_dict
 
+
 # 初始化优化器字典函数
 def init_optim(num_view, model_dict, lr_e=1e-4, lr_c=1e-4):
     optim_dict = {}
     # 为每个视角的编码器与分类器创建优化器
     for i in range(num_view):
         optim_dict["C{:}".format(i + 1)] = torch.optim.Adam(
-                list(model_dict["E{:}".format(i + 1)].parameters()) + list(model_dict["C{:}".format(i + 1)].parameters()), 
-                lr=lr_e)
+            list(model_dict["E{:}".format(i + 1)].parameters())
+            + list(model_dict["C{:}".format(i + 1)].parameters()),
+            lr=lr_e,
+        )
     # 若有2个或以上视角，为VCDN分类器创建优化器
     if num_view >= 2:
         optim_dict["C"] = torch.optim.Adam(model_dict["C"].parameters(), lr=lr_c)

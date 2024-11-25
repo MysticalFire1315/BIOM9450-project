@@ -1,0 +1,6 @@
+##fileformat=VCFv4.2
+##INFO=<ID=GENE,Number=1,Type=String,Description="Gene name">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr1	12345	.	A	T	50	PASS	GENE=BRCA1
+chr2	67890	.	G	C	99	PASS	GENE=TP53
+chr3	111213	.	T	A	80	PASS	GENE=EGFR

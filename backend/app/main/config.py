@@ -1,22 +1,21 @@
 import os
 
 # uncomment the line below for postgres database url from environment variable
-postgres_local_base = 'postgresql://postgres:postgres@localhost'
+postgres_local_base = "postgresql://postgres:postgres@localhost"
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious_secret_key')
+    SECRET_KEY = os.getenv("SECRET_KEY", "my_precious_secret_key")
     DEBUG = False
     # Swagger
     RESTX_MASK_SWAGGER = False
 
 
-
 class DevelopmentConfig(Config):
     # uncomment the line below to use postgres
-    SQLALCHEMY_DATABASE_URI = postgres_local_base + '/dev'
+    SQLALCHEMY_DATABASE_URI = postgres_local_base + "/dev"
     DEBUG = True
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'flask_boilerplate_main.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -24,7 +23,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     # uncomment the line below to use postgres
-    SQLALCHEMY_DATABASE_URI = postgres_local_base + '/dev'
+    SQLALCHEMY_DATABASE_URI = postgres_local_base + "/dev"
     DEBUG = True
     TESTING = True
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'flask_boilerplate_test.db')
@@ -35,13 +34,9 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     # uncomment the line below to use postgres
-    SQLALCHEMY_DATABASE_URI = postgres_local_base + '/prod'
+    SQLALCHEMY_DATABASE_URI = postgres_local_base + "/prod"
 
 
-config_by_name = dict(
-    dev=DevelopmentConfig,
-    test=TestingConfig,
-    prod=ProductionConfig
-)
+config_by_name = dict(dev=DevelopmentConfig, test=TestingConfig, prod=ProductionConfig)
 
 key = Config.SECRET_KEY

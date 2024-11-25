@@ -43,11 +43,13 @@ class UserDto:
     user_history = api.model(
         "user_history",
         {
-            "time_accessed": fields.DateTime(description="Time this route was accessed"),
+            "time_accessed": fields.DateTime(
+                description="Time this route was accessed"
+            ),
             "method": fields.String(description="The HTTP method for this request"),
             "path": fields.String(description="The path accessed"),
             "response": fields.Integer(description="The HTTP response code"),
-        }
+        },
     )
 
 
@@ -60,7 +62,7 @@ class PersonDto:
             "firstname": fields.String(description="First name"),
             "lastname": fields.String(description="Last name"),
             "date_of_birth": fields.Date(description="Date of birth"),
-            "sex": fields.String(description="Sex")
+            "sex": fields.String(description="Sex"),
         },
     )
 
@@ -92,56 +94,89 @@ class OncologistDto:
             "specialization": fields.String(description="The specialization"),
             "phone": fields.String(description="Phone number"),
             "email": fields.String(description="Email"),
-            "affiliations": fields.List(fields.String(description="Hospital affiliations")),
+            "affiliations": fields.List(
+                fields.String(description="Hospital affiliations")
+            ),
             "person": fields.Nested(PersonDto.person_profile),
         },
     )
 
+
 class ResearcherDto:
     api = Namespace("researcher", description="researcher related operations")
+    researcher_position = api.model(
+        "researcher_position",
+        {
+            "title": fields.String(description="Title"),
+            "organization": fields.String(description="Organization"),
+            "start_date": fields.Date(description="Start date"),
+            "end_date": fields.Date(description="End date"),
+        },
+    )
     researcher_profile = api.model(
         "researcher_profile",
         {
-            # Other fields here
+            "title": fields.String(description="Title"),
+            "phone": fields.String(description="Phone number"),
+            "email": fields.String(description="Email"),
+            "area_of_research": fields.String(description="Area of research"),
+            "positions": fields.List(fields.Nested(researcher_position)),
             "person": fields.Nested(PersonDto.person_profile),
         },
     )
 
 
 class MachineLearningDto:
-    api = Namespace("machine_learning", description="machine learning related operations")
+    api = Namespace(
+        "machine_learning", description="machine learning related operations"
+    )
     ml_features = api.model(
         "ml_features",
         {
             "feat_name": fields.String(description="The name of the feature"),
             "omics": fields.Integer(description="omics"),
             "imp": fields.Float(description="Importance"),
-        }
+        },
     )
     ml_model = api.model(
         "ml_model",
         {
             "name": fields.String(description="The name of the model"),
+            "time_created": fields.DateTime(),
             "features": fields.List(fields.Nested(ml_features)),
-        }
+            "num_epoch_pretrain": fields.Integer(),
+            "num_epoch": fields.Integer(),
+            "lr_e_pretrain": fields.Float(),
+            "lr_e": fields.Float(),
+            "lr_c": fields.Float(),
+            "ready": fields.Boolean(),
+        },
     )
     ml_expressions = api.model(
         "ml_expressions",
         {
             "model_id": fields.Integer(),
             "*": fields.Wildcard(fields.Float()),
-        }
+        },
     )
     ml_train = api.model(
         "ml_train",
         {
-            "name": fields.String(required=True, description="The name of the model (BRCA or ROSMAP)"),
-            "num_epoch_pretrain": fields.Integer(description="Number of epochs for pretraining"),
-            "num_epoch": fields.Integer(description="Number of epochs for main training"),
-            "lr_e_pretrain": fields.Float(description="Learning rate for encoder pretraining"),
+            "name": fields.String(
+                required=True, description="The name of the model (BRCA or ROSMAP)"
+            ),
+            "num_epoch_pretrain": fields.Integer(
+                description="Number of epochs for pretraining"
+            ),
+            "num_epoch": fields.Integer(
+                description="Number of epochs for main training"
+            ),
+            "lr_e_pretrain": fields.Float(
+                description="Learning rate for encoder pretraining"
+            ),
             "lr_e": fields.Float(description="Learning rate for encoder main training"),
             "lr_c": fields.Float(description="Learning rate for classifier training"),
-        }
+        },
     )
     ml_metrics_input = api.model(
         "ml_metrics_input",
@@ -149,7 +184,7 @@ class MachineLearningDto:
             "model_id": fields.Integer(),
             "metric_type": fields.String(),
             "interval": fields.Integer(),
-        }
+        },
     )
     ml_metrics_output = api.model(
         "ml_metrics_output",
@@ -161,19 +196,38 @@ class MachineLearningDto:
             "auc": fields.Float(),
             "precision_val": fields.Float(),
             "loss": fields.Float(),
-        }
+        },
     )
     ml_feature_feedback = api.model(
         "ml_feature_feedback",
         {
             "feature": fields.String(),
             "feedback": fields.String(),
-        }
+        },
     )
     ml_feedback = api.model(
         "ml_feedback",
         {
             "model_id": fields.Integer(),
             "data": fields.List(fields.Nested(ml_feature_feedback)),
-        }
+        },
+    )
+
+
+class MutationDto:
+    api = Namespace("mutation", description="mutation related operations")
+    mutation_cosmic_data = api.model(
+        "mutation_cosmic_data",
+        {
+            "mutation_id": fields.String(),
+            "gene_name": fields.String(),
+            "primary_site": fields.String(),
+        },
+    )
+    mutation_profile = api.model(
+        "mutation_profile",
+        {
+            "COSMIC_data": fields.List(fields.Nested(mutation_cosmic_data)),
+            "patients": fields.List(fields.Integer()),
+        },
     )

@@ -1,18 +1,17 @@
-from app.main.model.user import User
-from app.main.model.person import Person
-from app.main.util.database import db_get_cursor
 from typing import Dict, Tuple
+
+from app.main.model.person import Person
+from app.main.model.user import User
+from app.main.util.database import db_get_cursor
 
 
 def register_user(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
-    user = User.new_user(
-        data.get("email"), data.get("username"), data.get("password")
-    )
+    user = User.new_user(data.get("email"), data.get("username"), data.get("password"))
 
     return {
         "status": "success",
         "message": "Successfully registered.",
-        "Authorization": user.encode_auth_token().decode(),
+        "Authorization": user.encode_auth_token(),
     }, 201
 
 

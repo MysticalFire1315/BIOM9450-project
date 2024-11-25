@@ -1,12 +1,13 @@
 import copy
-from typing import List
 import logging
+from typing import List
 
-from app.main.mogonet.train_test import train_test, prepare_trte_data
-from app.main.mogonet.models import init_model_dict
 from app.main.mogonet.feat_importance import cal_feat_imp, summarize_imp_feat
+from app.main.mogonet.models import init_model_dict
+from app.main.mogonet.train_test import prepare_trte_data, train_test
 
 logger = logging.getLogger("mogonet")
+
 
 # Main entry point for the program
 def main(
@@ -17,23 +18,32 @@ def main(
     lr_e_pretrain: float,
     lr_e: float,
     lr_c: float,
-    num_class: int
+    num_class: int,
 ):
     # Step 1: Train and test the model
     logger.info("Step 1: Training and Testing the Model...")
-    performance = train_test(data_folder, view_list, num_class,
-               lr_e_pretrain, lr_e, lr_c,
-               num_epoch_pretrain, num_epoch)
+    performance = train_test(
+        data_folder,
+        view_list,
+        num_class,
+        lr_e_pretrain,
+        lr_e,
+        lr_c,
+        num_epoch_pretrain,
+        num_epoch,
+    )
 
     # Step 2: Compute feature importance
     logger.info("Step 2: Generating Feature Importance...")
     num_view = len(view_list)
     dim_hvcdn = pow(num_class, num_view)
-    dim_he_list = [200, 200, 100] if 'ROSMAP' in data_folder else [400, 400, 200]
+    dim_he_list = [200, 200, 100] if "ROSMAP" in data_folder else [400, 400, 200]
 
     # Prepare the data and initialize the model
     logger.debug("Prep data and initialize model")
-    data_tr_list, data_trte_list, trte_idx, labels_trte = prepare_trte_data(data_folder, view_list)
+    data_tr_list, data_trte_list, trte_idx, labels_trte = prepare_trte_data(
+        data_folder, view_list
+    )
     dim_list = [x.shape[1] for x in data_tr_list]
     model_dict = init_model_dict(num_view, num_class, dim_list, dim_he_list, dim_hvcdn)
 

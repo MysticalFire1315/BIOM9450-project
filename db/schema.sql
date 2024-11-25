@@ -83,9 +83,24 @@ CREATE TABLE oncologist_affiliations (
 
 CREATE TABLE researchers (
     id serial PRIMARY KEY,
+    title varchar(64),
+    phone varchar(32),
+    email varchar(100),
+    area_of_research varchar(255),
 
     people_id integer UNIQUE NOT NULL,
     CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people (id)
+);
+
+CREATE TABLE researcher_positions (
+    id serial PRIMARY KEY,
+    title varchar(255),
+    organization varchar(128),
+    start_date DATE,
+    end_date DATE,
+
+    researcher_id integer UNIQUE NOT NULL,
+    CONSTRAINT fk_researcher FOREIGN KEY (researcher_id) REFERENCES researchers (id)
 );
 
 CREATE TABLE request_logs (
@@ -143,6 +158,17 @@ CREATE TABLE machine_learning_features (
     CONSTRAINT fk_feature FOREIGN KEY (feat_id) REFERENCES features (id),
     model_id integer NOT NULL,
     CONSTRAINT fk_model FOREIGN KEY (model_id) REFERENCES machine_learning_models (id)
+);
+
+CREATE TABLE patient_mutations (
+    id SERIAL PRIMARY KEY,
+    patient_id integer NOT NULL,
+    CONSTRAINT fk_patient FOREIGN KEY (patient_id) REFERENCES patients (id),
+
+    feat_id integer NOT NULL,
+    CONSTRAINT fk_feature FOREIGN KEY (feat_id) REFERENCES features (id),
+
+    UNIQUE (patient_id, feat_id)
 );
 
 -------------------------------------

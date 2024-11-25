@@ -1,6 +1,7 @@
-import click
 import os
 import unittest
+
+import click
 
 from app import blueprint
 from app.main import create_app
