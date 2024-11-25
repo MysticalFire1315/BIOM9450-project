@@ -99,10 +99,23 @@ class OncologistDto:
 
 class ResearcherDto:
     api = Namespace("researcher", description="researcher related operations")
+    researcher_position = api.model(
+        "researcher_position",
+        {
+            "title": fields.String(description="Title"),
+            "organization": fields.String(description="Organization"),
+            "start_date": fields.Date(description="Start date"),
+            "end_date": fields.Date(description="End date"),
+        },
+    )
     researcher_profile = api.model(
         "researcher_profile",
         {
-            # Other fields here
+            "title": fields.String(description="Title"),
+            "phone": fields.String(description="Phone number"),
+            "email": fields.String(description="Email"),
+            "area_of_research": fields.String(description="Area of research"),
+            "positions": fields.List(fields.Nested(researcher_position)),
             "person": fields.Nested(PersonDto.person_profile),
         },
     )

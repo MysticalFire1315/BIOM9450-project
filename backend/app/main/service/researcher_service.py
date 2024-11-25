@@ -7,4 +7,4 @@ def get_profile(id: int):
     return x
 
 def get_all_researchers():
-    return Researcher.get_all()
+    return [Person.get_by_id(x.people_id) for x in Researcher.get_all()]

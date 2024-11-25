@@ -83,9 +83,24 @@ CREATE TABLE oncologist_affiliations (
 
 CREATE TABLE researchers (
     id serial PRIMARY KEY,
+    title varchar(64),
+    phone varchar(32),
+    email varchar(100),
+    area_of_research varchar(255),
 
     people_id integer UNIQUE NOT NULL,
     CONSTRAINT fk_people FOREIGN KEY (people_id) REFERENCES people (id)
+);
+
+CREATE TABLE researcher_positions (
+    id serial PRIMARY KEY,
+    title varchar(255),
+    organization varchar(128),
+    start_date DATE,
+    end_date DATE,
+
+    researcher_id integer UNIQUE NOT NULL,
+    CONSTRAINT fk_researcher FOREIGN KEY (researcher_id) REFERENCES researchers (id)
 );
 
 CREATE TABLE request_logs (

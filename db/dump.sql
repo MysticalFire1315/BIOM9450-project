@@ -7,8 +7,8 @@ INSERT INTO people (firstname, lastname, date_of_birth, sex)
 
 INSERT INTO oncologists (specialization, phone, email, people_id)
     VALUES ('Medical Oncology', '+61 400 111 111', 'alice.smith@example.com', 1),
-    ('Radiation Oncology', '+61 400 222 222', 'bob.jones@example.com', 2),
-    ('Pediatric Oncology', '+61 400 333 333', 'carol.taylor@example.com', 3);
+    ('Radiation Oncology', '+61 400 222 222', 'bob.jones@example.com', 3),
+    ('Pediatric Oncology', '+61 400 333 333', 'carol.taylor@example.com', 4);
 
 INSERT INTO oncologist_affiliations (hospital, oncologist_id)
     VALUES ('Royal Melbourne Hospital', 1),
@@ -17,9 +17,14 @@ INSERT INTO oncologist_affiliations (hospital, oncologist_id)
     ('Royal Children''s Hospital', 3),
     ('Sydney Children''s Hospital', 3);
 
-INSERT INTO researchers (people_id)
-    VALUES (2),
-    (5);
+INSERT INTO researchers (title, phone, email, area_of_research, people_id)
+    VALUES ('Dr.', '555-123-4567', 'drsmith@example.com', 'Breast Cancer Genomics', 2),
+    ('Prof.', '555-987-6543', 'profjohnson@example.com', 'Immunotherapy for Lung Cancer', 5);
+
+INSERT INTO researcher_positions (title, organization, start_date, end_date, researcher_id)
+    VALUES ('Principal Investigator', 'Cancer Research Center', '2015-01-01', NULL, 1),
+    ('Research Scientist', 'Immunotherapy Institute', '2010-06-01', '2020-12-31', 2);
+
 
 /*
 INSERT INTO machine_learning_models (name)
@@ -130,5 +135,5 @@ INSERT INTO routes (uri, method, patient, oncologist, researcher, no_role, every
     ('/ml/feedback', 'POST', false, true, true, false, false),
 
     -- /mutations routes
-    ('/mutations/list', 'get', false, true, true, false, false),
-    ('/mutations/<name>', 'get', false, true, true, false, false);
+    ('/mutations/list', 'GET', false, true, true, false, false),
+    ('/mutations/<name>', 'GET', false, true, true, false, false);
