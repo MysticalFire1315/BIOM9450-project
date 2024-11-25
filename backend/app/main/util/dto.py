@@ -184,3 +184,21 @@ class MachineLearningDto:
             "data": fields.List(fields.Nested(ml_feature_feedback)),
         }
     )
+
+class MutationDto:
+    api = Namespace("mutation", description="mutation related operations")
+    mutation_cosmic_data = api.model(
+        "mutation_cosmic_data",
+        {
+            "mutation_id": fields.String(),
+            "gene_name": fields.String(),
+            "primary_site": fields.String(),
+        }
+    )
+    mutation_profile = api.model(
+        "mutation_profile",
+        {
+            "COSMIC_data": fields.List(fields.Nested(mutation_cosmic_data)),
+            "patients": fields.List(fields.Integer()),
+        }
+    )
