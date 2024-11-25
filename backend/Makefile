@@ -5,16 +5,13 @@
 clean:
 	find . -type f -name '*.pyc' -delete
 	find . -type f -name '*.log' -delete
+	find . -type d -name '__pycache__' -delete
+	rm .venv -rf
 
 install:
 	python3 -m venv .venv; \
 	. .venv/bin/activate; \
-	pip install -r requirements.txt;
-
-tests:
-	. .venv/bin/activate; \
-	export FLASK_APP=flasky.py; \
-	flask test
+	pip install -r requirements.txt --no-cache-dir;
 
 run:
 	mkdir logs; \
