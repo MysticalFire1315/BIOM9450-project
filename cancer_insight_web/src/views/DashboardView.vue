@@ -14,6 +14,12 @@
         <DashboardTImelinePanel/>
       </v-col>
     </v-row>
+
+    <v-row style="width:135%">
+      <v-col>
+        <NavigationPanel/>
+      </v-col>
+    </v-row>
     
     <!-- <v-row style="width:135%">
       <v-col cols="4">
@@ -36,6 +42,7 @@ import GreetingPanel from '@/components/DashboardView/GreetingPanel.vue';
 import IdentityPanel from '@/components/DashboardView/IdentityPanel.vue';
 // import DatabaseNumEntryOverview from '@/components/DashboardView/DatabaseNumEntryOverview.vue';
 import DashboardTImelinePanel from '@/components/DashboardView/DashboardTImelinePanel.vue';
+import NavigationPanel from '@/components/DashboardView/NavigationPanel.vue';
 // import PatientNumEntryOverview from '@/components/DashboardView/PatientNumEntryOverview.vue';
 // import ModelOverview from '@/components/DashboardView/ModelOverview.vue';
 </script>
