@@ -107,7 +107,9 @@ INSERT INTO routes (uri, method, patient, oncologist, researcher, no_role, every
     ('/patient/create', 'POST', false, true, true, false, false),
     ('/patient/profile', 'GET', true, false, false, false, false),
     ('/patient/profile/<id>', 'GET', false, true, true, false, false),
+    ('/patient/profile/<id>/mutations', 'GET', false, true, true, false, false),
     ('/patient/list', 'GET', false, true, true, false, false),
+    ('/patient/mutation/upload', 'POST', false, true, true, false, false),
 
     -- /oncologist routes
     ('/oncologist/profile', 'GET', false, true, false, false, false),
@@ -120,7 +122,13 @@ INSERT INTO routes (uri, method, patient, oncologist, researcher, no_role, every
     ('/researcher/list', 'GET', true, true, true, true, true),
 
     -- /ml routes
-    ('/ml/model/<id>', 'GET', false, true, true, false, false),
-    ('/ml/probability', 'POST', false, true, true, false, false),
     ('/ml/train', 'POST', false, true, true, false, false),
-    ('/ml/metrics', 'POST', false, true, true, false, false);
+    ('/ml/list', 'GET', false, true, true, false, false),
+    ('/ml/model/<id>', 'GET', false, true, true, false, false),
+    ('/ml/metrics', 'POST', false, true, true, false, false),
+    ('/ml/probability', 'POST', false, true, true, false, false),
+    ('/ml/feedback', 'POST', false, true, true, false, false),
+
+    -- /mutations routes
+    ('/mutations/list', 'get', false, true, true, false, false),
+    ('/mutations/<name>', 'get', false, true, true, false, false);
