@@ -70,14 +70,26 @@ class Patient(object):
         return Patient.get_by_people_id(people_id)
 
     @staticmethod
-    def get_by_id(id: int) -> "Patient":
+    def get_by_id(patient_id: int) -> "Patient":
+        """Retrieves a patient from the database by their ID.
+
+        Args:
+            patient_id (int): The ID of the patient to retrieve.
+
+        Returns:
+            Patient: The retrieved Patient object.
+
+        Raises:
+            NotFoundError: If no patient with the given ID exists.
+        """
+
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM patients WHERE id = %s;", (id,))
+            cur.execute("SELECT * FROM patients WHERE id = %s;", (patient_id,))
             result = cur.fetchone()
 
-        try:
+        if result:
             return Patient(*result)
-        except TypeError:
+        else:
             raise NotFoundError("Patient not found")
 
     @staticmethod
@@ -92,12 +104,47 @@ class Patient(object):
             raise NotFoundError("Patient not found")
 
     @staticmethod
-    def get_all() -> List[Person]:
+    def get_all() -> List["Patient"]:
+        """Retrieves all patients from the database.
+
+        Returns:
+            List[Patient]: A list of all Patient objects.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM patients;")
-            result = cur.fetchall()
+            results = cur.fetchall()
 
-        return [Person.get_by_id(Patient(*r).people_id) for r in result]
+        return [Patient(*result) for result in results]
+
+    def save(self):
+        """Saves the current state of the patient to the database."""
+
+        with db_get_cursor() as cur:
+            cur.execute(
+                """
+                UPDATE patients
+                SET photo = %s, address = %s, country = %s, emergency_contact_name = %s,
+                    emergency_contact_phone = %s, created_at = %s, updated_at = %s, people_id = %s
+                WHERE id = %s;
+                """,
+                (
+                    self._photo,
+                    self._address,
+                    self._country,
+                    self._emergency_contact_name,
+                    self._emergency_contact_phone,
+                    self._created_at,
+                    self._updated_at,
+                    self._people_id,
+                    self._id,
+                ),
+            )
+
+    def delete(self):
+        """Deletes the patient from the database."""
+        with db_get_cursor() as cur:
+            cur.execute("DELETE FROM patients WHERE id = %s;", (self._id,))
 
     @property
     def id(self) -> int:
@@ -136,6 +183,12 @@ class Patient(object):
         return self._people_id
 
     def link_mutations(self, mutations_list: List[str]):
+        """Links a list of mutations to the patient in the database.
+
+        Args:
+            mutations_list (List[str]): A list of mutation names to be linked to the patient.
+        """
+
         feat_dict = MLModel.update_feat_dict(mutations_list)
         current_mutations = set(self.get_mutations())
         to_execute = [
@@ -151,6 +204,12 @@ class Patient(object):
             )
 
     def get_mutations(self) -> List[str]:
+        """Retrieves the list of mutations linked to the patient from the database.
+
+        Returns:
+            List[str]: A list of mutation names linked to the patient.
+        """
+
         feat_dict = {v: k for k, v in MLModel.get_feat_dict().items()}
         with db_get_cursor() as cur:
             cur.execute(

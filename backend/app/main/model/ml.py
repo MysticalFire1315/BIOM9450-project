@@ -188,6 +188,12 @@ class MLModel(object):
 
     @staticmethod
     def get_feat_dict() -> Dict[str, int]:
+        """Retrieves the feature dictionary from the database.
+
+        Returns:
+            Dict[str, int]: A dictionary where keys are feature names and values are feature IDs.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM features")
             existing = cur.fetchall()
@@ -195,6 +201,15 @@ class MLModel(object):
 
     @staticmethod
     def update_feat_dict(feat_names: List[str]):
+        """Updates the feature dictionary in the database with new feature names.
+
+        Args:
+            feat_names (List[str]): A list of feature names to be added to the database.
+
+        Returns:
+            Dict[str, int]: The updated feature dictionary.
+        """
+
         d = MLModel.get_feat_dict()
         missing = [(n,) for n in feat_names if n not in d]
         with db_get_cursor() as cur:
@@ -202,6 +217,13 @@ class MLModel(object):
         return MLModel.get_feat_dict()
 
     def train(self, threaded=False, thread_dict=None):
+        """Trains the machine learning model and updates the performance metrics and features in the database.
+
+        Args:
+            threaded (bool, optional): If True, logs the completion of the training thread. Defaults to False.
+            thread_dict (dict, optional): A dictionary to update the thread status. Defaults to None.
+        """
+
         performance, features = main(
             os.path.join("app", "main", "mogonet", self.name),
             [1, 2, 3],
@@ -213,7 +235,7 @@ class MLModel(object):
             self.num_class,
         )
 
-        # Prepare performance metrics for insertion to datebase
+        # Prepare performance metrics for insertion to database
         metrics = []
         for metric in performance:
             for value in performance[metric][1:]:
@@ -262,6 +284,19 @@ class MLModel(object):
             thread_dict[self.id] = False
 
     def get_metrics(self, metric_type, interval):
+        """Retrieves the performance metrics for the model from the database.
+
+        Args:
+            metric_type (str): The type of metric to retrieve.
+            interval (int): The interval at which to retrieve the metrics.
+
+        Returns:
+            List[tuple]: A list of tuples containing the performance metrics.
+
+        Raises:
+            BadInputError: If metric_type or interval is not provided.
+        """
+
         if not metric_type or not interval:
             raise BadInputError
 
@@ -279,6 +314,12 @@ class MLModel(object):
         return [x for x in result if (x[0] % interval == 0)]
 
     def feedback(self, data):
+        """Updates the feedback for the features in the database.
+
+        Args:
+            data (list): A list of dictionaries containing feedback and feature names.
+        """
+
         with db_get_cursor() as cur:
             for f in data:
                 cur.execute(
