@@ -26,9 +26,9 @@
             {{ item.sex.replace('Sex.', '') }}
           </template>
 
-        <template v-slot:item.affiliations="{ item }">
+        <!-- <template v-slot:item.affiliations="{ item }">
             {{ item.affiliations.join(', ') }}
-        </template>
+        </template> -->
         </v-data-table>
       </v-card>
     </div>
@@ -47,9 +47,6 @@
     { key: 'firstname', title: 'First Name', align: 'center' },
     { key: 'lastname', title: 'Last Name', align: 'center' },
     { key: 'date_of_birth', title: 'Date of Birth', align: 'center' },
-    { key: 'phone', title: 'Phone', align: 'center' },
-    { key: 'email', title: 'Email', align: 'center' },
-    { key: 'affiliations', title: 'Affiliation', align: 'center' },
     { key: 'sex', title: 'Gender', align: 'center' },
   ];
   
@@ -57,17 +54,18 @@
   const fetchExpertData = async () => {
     try {
       const response = await apiService.getData(`/oncologist/list`);
-      message.value = response.data.data.map((item) => ({
-      id: item.person.id, // Unique identifier
-      firstname: item.person.firstname,
-      lastname: item.person.lastname,
-      date_of_birth: item.person.date_of_birth,
-      sex: item.person.sex,
-      specialization: item.specialization,
-      phone: item.phone,
-      email: item.email,
-      affiliations: item.affiliations,
-    }));
+    //   message.value = response.data.data.map((item) => ({
+    //   id: item.person.id, // Unique identifier
+    //   firstname: item.person.firstname,
+    //   lastname: item.person.lastname,
+    //   date_of_birth: item.person.date_of_birth,
+    //   sex: item.person.sex,
+    //   specialization: item.specialization,
+    //   phone: item.phone,
+    //   email: item.email,
+    //   affiliations: item.affiliations,
+    // }));
+    message.value = response.data.data;
     console.log(message.value);
     } catch (error) {
       console.error(error);
