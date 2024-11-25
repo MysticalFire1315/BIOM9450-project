@@ -23,6 +23,18 @@ class Oncologist(object):
 
     @staticmethod
     def get_by_people_id(people_id: int) -> "Oncologist":
+        """Retrieves an oncologist from the database by their people ID.
+
+        Args:
+            people_id (int): The people ID of the oncologist to retrieve.
+
+        Returns:
+            Oncologist: The retrieved Oncologist object.
+
+        Raises:
+            NotFoundError: If no oncologist with the given people ID exists.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM oncologists WHERE people_id = %s;", (people_id,))
             result = cur.fetchone()
@@ -34,11 +46,17 @@ class Oncologist(object):
 
     @staticmethod
     def get_all() -> List["Oncologist"]:
+        """Retrieves all oncologists from the database.
+
+        Returns:
+            List[Oncologist]: A list of all Oncologist objects.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM oncologists;")
-            result = cur.fetchall()
+            results = cur.fetchall()
 
-        return [Oncologist(*r) for r in result]
+        return [Oncologist(*result) for result in results]
 
     @property
     def id(self) -> int:
