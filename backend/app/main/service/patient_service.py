@@ -10,6 +10,18 @@ from app.main.util.exceptions.errors import CustomError
 
 
 def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
+    """Creates a new patient entry in the database.
+
+    Args:
+        data (Dict[str, str]): A dictionary containing patient and person details.
+
+    Returns:
+        Tuple[Dict[str, str], int]: A tuple containing a response message and a status code.
+
+    Raises:
+        CustomError: If there is an error creating the patient.
+    """
+
     person_data = data.get("person")
     person = Person.new_person(
         person_data.get("firstname"),
