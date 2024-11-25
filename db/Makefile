@@ -10,8 +10,6 @@ DB_HOST = localhost
 
 # Files
 SCHEMA_FILE = schema.sql
-FUNCTIONS_FILE = functions.sql
-TRIGGERS_FILE = triggers.sql
 DUMP_FILE = dump.sql
 VIEWS_FILE = views.sql
 
@@ -26,14 +24,6 @@ createdb:
 # Apply schema
 apply_schema: $(SCHEMA_FILE)
 	psql -h $(DB_HOST) -U $(DB_USER) -d $(DB_NAME) -f $(SCHEMA_FILE)
-
-# Apply functions
-apply_functions: $(FUNCTIONS_FILE)
-	psql -h $(DB_HOST) -U $(DB_USER) -d $(DB_NAME) -f $(FUNCTIONS_FILE)
-
-# Apply triggers
-apply_triggers: $(TRIGGERS_FILE)
-	psql -h $(DB_HOST) -U $(DB_USER) -d $(DB_NAME) -f $(TRIGGERS_FILE)
 
 # Apply views
 apply_views: $(VIEWS_FILE)

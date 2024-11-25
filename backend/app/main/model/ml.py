@@ -122,9 +122,10 @@ class MLModel(object):
                 (self._id,),
             )
             result = cur.fetchall()
+
         return [
             dict(zip(["feat_name", "omics", "imp"], t))
-            for t in sorted(result, key=lambda x: x[-1])[:30]
+            for t in sorted(result, key=lambda x: x[-1], reverse=True)[:30]
         ]
 
     @property
