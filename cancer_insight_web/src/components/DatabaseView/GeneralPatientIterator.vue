@@ -75,7 +75,6 @@
                         </v-tooltip>
                         <v-icon>mdi-account-eye-outline</v-icon>
                     </v-btn>
-
                     <!-- <v-btn icon>
                         <v-tooltip activator="parent" location="bottom">
                             Add Mutational Profile for ROSMAP
@@ -91,6 +90,7 @@
                     </v-btn> -->
                     
                   </div>
+                  <PatientFileInput />
                 </v-card>
               </v-col>
             </v-row>
@@ -130,6 +130,7 @@
   import { shallowRef, onMounted, ref } from 'vue'
   import { useRouter } from 'vue-router';
   import apiService from '@/services/apiService';
+  import PatientFileInput from './PatientFileInput.vue';
 
   const message = ref([]); // Initialize message as an array
   const colors = ['red', 'blue', 'green', 'purple', 'orange', 'pink'];
@@ -170,22 +171,6 @@
     };
 
     const search = shallowRef('')
-    // const games = [
-    //   {
-    //     img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/4.png',
-    //     title: 'The Sci-Fi Shooter Experience',
-    //     subtitle: 'Dive into a futuristic world of intense battles and alien encounters.',
-    //     advanced: false,
-    //     duration: '8 minutes',
-    //   },
-    //   {
-    //     img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/2.png',
-    //     title: 'Epic Adventures in Open Worlds',
-    //     subtitle: 'Embark on a journey through vast, immersive landscapes and quests.',
-    //     advanced: true,
-    //     duration: '10 minutes',
-    //   },
-    // ]
 
     onMounted(() => {
     fetchPatientList();
