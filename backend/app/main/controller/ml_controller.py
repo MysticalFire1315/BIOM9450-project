@@ -1,11 +1,21 @@
-from app.main.service.ml_service import get_model, get_models, get_probability, train_model, get_metrics, feedback
-from app.main.util.dto import MachineLearningDto
-from app.main.util.decorator import require_logged_in_as
-from flask_restx import Resource
+from typing import Dict, Tuple
+
 from flask import request
-from typing import Tuple, Dict
+from flask_restx import Resource
+
+from app.main.service.ml_service import (
+    feedback,
+    get_metrics,
+    get_model,
+    get_models,
+    get_probability,
+    train_model,
+)
+from app.main.util.decorator import require_logged_in_as
+from app.main.util.dto import MachineLearningDto
 
 api = MachineLearningDto.api
+
 
 @api.route("/list")
 class ListAPI(Resource):
@@ -15,6 +25,7 @@ class ListAPI(Resource):
     def get(self):
         return get_models()
 
+
 @api.route("/model/<id>")
 class ModelAPI(Resource):
     @api.doc("get the model")
@@ -23,6 +34,7 @@ class ModelAPI(Resource):
     @require_logged_in_as(oncologist=True, researcher=True)
     def get(self, id):
         return get_model(id)
+
 
 @api.route("/probability")
 class ProbabilityAPI(Resource):
@@ -34,6 +46,7 @@ class ProbabilityAPI(Resource):
         post_data = request.json
         return get_probability(post_data)
 
+
 @api.route("/train")
 class TrainAPI(Resource):
     @api.doc("train a model")
@@ -44,6 +57,7 @@ class TrainAPI(Resource):
         post_data = request.json
         return train_model(post_data)
 
+
 @api.route("/metrics")
 class MetricsAPI(Resource):
     @api.doc("get metrics about a model")
@@ -53,6 +67,7 @@ class MetricsAPI(Resource):
     def post(self) -> Tuple[Dict[str, str], int]:
         post_data = request.json
         return get_metrics(post_data)
+
 
 @api.route("/feedback")
 class FeedbackAPI(Resource):

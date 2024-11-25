@@ -1,5 +1,6 @@
 import logging.config
 
+
 def setup_logging(env: str):
     logging_config = {
         "version": 1,
@@ -82,7 +83,7 @@ def setup_logging(env: str):
                 "level": "INFO",
                 "handlers": ["console", "mogonet_handler"],
                 "propagate": False,
-            }
+            },
         },
         "root": {
             "level": "WARNING",

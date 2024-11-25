@@ -1,10 +1,8 @@
-import traceback
-from flask import current_app
-import datetime
 from typing import List
 
 from app.main.util.database import db_get_cursor
 from app.main.util.exceptions.errors import NotFoundError
+
 
 class Oncologist(object):
     def __init__(
@@ -30,7 +28,7 @@ class Oncologist(object):
         try:
             return Oncologist(*result)
         except TypeError:
-            raise NotFoundError('Oncologist not found')
+            raise NotFoundError("Oncologist not found")
 
     @staticmethod
     def get_all() -> List["Oncologist"]:
@@ -63,8 +61,11 @@ class Oncologist(object):
     @property
     def affiliations(self) -> List[str]:
         with db_get_cursor() as cur:
-            cur.execute("""
+            cur.execute(
+                """
                 SELECT hospital FROM oncologist_affiliations
                 WHERE oncologist_id = %s;
-                """, (self.id,))
+                """,
+                (self.id,),
+            )
             return [i for j in cur.fetchall() for i in j]

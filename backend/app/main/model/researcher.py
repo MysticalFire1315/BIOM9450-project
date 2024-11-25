@@ -1,7 +1,8 @@
-from typing import List, Dict
+from typing import Dict, List
 
 from app.main.util.database import db_get_cursor
 from app.main.util.exceptions.errors import NotFoundError
+
 
 class Researcher(object):
     def __init__(
@@ -29,7 +30,7 @@ class Researcher(object):
         try:
             return Researcher(*result)
         except TypeError:
-            raise NotFoundError('Researcher not found')
+            raise NotFoundError("Researcher not found")
 
     @staticmethod
     def get_all() -> List["Researcher"]:
@@ -66,18 +67,21 @@ class Researcher(object):
     @property
     def positions(self) -> List[Dict[str, str]]:
         with db_get_cursor() as cur:
-            cur.execute("""
+            cur.execute(
+                """
                 SELECT title, organization, start_date, end_date FROM researcher_positions
                 WHERE researcher_id = %s;
-                """, (self.id,))
+                """,
+                (self.id,),
+            )
             result = cur.fetchall()
 
         return [
             {
-                'title': r[0],
-                'organization': r[1],
-                'start_date': r[2],
-                'end_date': r[3],
+                "title": r[0],
+                "organization": r[1],
+                "start_date": r[2],
+                "end_date": r[3],
             }
             for r in result
         ]

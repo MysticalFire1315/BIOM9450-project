@@ -1,13 +1,17 @@
-import traceback
-from flask import current_app
 import datetime
 from typing import List
+
 from psycopg2.extras import execute_values
 
-from app.main.util.database import db_get_cursor, UniqueViolation, NotNullViolation
-from app.main.util.exceptions.errors import NotFoundError, BadInputError, AlreadyExistsError
-from app.main.model.person import Person
 from app.main.model.ml import MLModel
+from app.main.model.person import Person
+from app.main.util.database import NotNullViolation, UniqueViolation, db_get_cursor
+from app.main.util.exceptions.errors import (
+    AlreadyExistsError,
+    BadInputError,
+    NotFoundError,
+)
+
 
 class Patient(object):
     def __init__(
@@ -33,11 +37,14 @@ class Patient(object):
         self._people_id = people_id
 
     @staticmethod
-    def new_patient(people_id: int, photo: bytes = None,
+    def new_patient(
+        people_id: int,
+        photo: bytes = None,
         address: str = None,
         country: str = None,
         emergency_contact_name: str = None,
-        emergency_contact_phone: str = None) -> "Patient":
+        emergency_contact_phone: str = None,
+    ) -> "Patient":
         try:
             with db_get_cursor() as cur:
                 cur.execute(
@@ -45,12 +52,19 @@ class Patient(object):
                     INSERT INTO patients (photo, address, country, emergency_contact_name, emergency_contact_phone, people_id)
                     VALUES (%s, %s, %s, %s, %s, %s);
                     """,
-                    (photo, address, country, emergency_contact_name, emergency_contact_phone, people_id)
+                    (
+                        photo,
+                        address,
+                        country,
+                        emergency_contact_name,
+                        emergency_contact_phone,
+                        people_id,
+                    ),
                 )
         except UniqueViolation:
-            raise AlreadyExistsError('Patient already exists')
+            raise AlreadyExistsError("Patient already exists")
         except NotNullViolation:
-            raise BadInputError('Bad input')
+            raise BadInputError("Bad input")
         return Patient.get_by_people_id(people_id)
 
     @staticmethod
@@ -62,7 +76,7 @@ class Patient(object):
         try:
             return Patient(*result)
         except TypeError:
-            raise NotFoundError('Patient not found')
+            raise NotFoundError("Patient not found")
 
     @staticmethod
     def get_by_people_id(people_id: int) -> "Patient":
@@ -73,7 +87,7 @@ class Patient(object):
         try:
             return Patient(*result)
         except TypeError:
-            raise NotFoundError('Patient not found')
+            raise NotFoundError("Patient not found")
 
     @staticmethod
     def get_all() -> List[Person]:
@@ -122,14 +136,25 @@ class Patient(object):
     def link_mutations(self, mutations_list: List[str]):
         feat_dict = MLModel.update_feat_dict(mutations_list)
         current_mutations = set(self.get_mutations())
-        to_execute = [(self.id, feat_dict[m]) for m in mutations_list if m not in current_mutations]
+        to_execute = [
+            (self.id, feat_dict[m])
+            for m in mutations_list
+            if m not in current_mutations
+        ]
         with db_get_cursor() as cur:
-            execute_values(cur, "INSERT INTO patient_mutations (patient_id, feat_id) VALUES %s;", to_execute)
+            execute_values(
+                cur,
+                "INSERT INTO patient_mutations (patient_id, feat_id) VALUES %s;",
+                to_execute,
+            )
 
     def get_mutations(self) -> List[str]:
         feat_dict = {v: k for k, v in MLModel.get_feat_dict().items()}
         with db_get_cursor() as cur:
-            cur.execute("SELECT feat_id FROM patient_mutations WHERE patient_id = %s;", (self.id,))
+            cur.execute(
+                "SELECT feat_id FROM patient_mutations WHERE patient_id = %s;",
+                (self.id,),
+            )
             result = cur.fetchall()
 
         return [feat_dict[i[0]] for i in result]

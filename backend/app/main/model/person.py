@@ -2,8 +2,9 @@ from datetime import datetime
 from enum import Enum
 from typing import Union
 
-from app.main.util.database import db_get_cursor, NotNullViolation
+from app.main.util.database import NotNullViolation, db_get_cursor
 from app.main.util.exceptions.errors import BadInputError, NotFoundError
+
 
 class Sex(Enum):
     MALE = "male"
@@ -25,13 +26,13 @@ class Person(object):
         firstname: str,
         lastname: str,
         date_of_birth: datetime,
-        sex: Union[Sex, str]
+        sex: Union[Sex, str],
     ):
         self._id = id
         self._firstname = firstname
         self._lastname = lastname
         self._date_of_birth = date_of_birth
-        self._sex = Sex.from_str(sex) if (type(sex) is str) else sex
+        self._sex = Sex.from_str(sex) if isinstance(sex, str) else sex
 
     @staticmethod
     def new_person(
@@ -44,7 +45,7 @@ class Person(object):
                     (firstname, lastname, date_of_birth, sex.value),
                 )
         except NotNullViolation:
-            raise BadInputError('Bad input')
+            raise BadInputError("Bad input")
         return Person.get_by_details(firstname, lastname, date_of_birth, sex)
 
     @staticmethod
@@ -68,7 +69,7 @@ class Person(object):
         try:
             return Person(*result)
         except TypeError:
-            raise NotFoundError('Person not found')
+            raise NotFoundError("Person not found")
 
     @staticmethod
     def get_by_id(id: int) -> "Person":
@@ -79,7 +80,7 @@ class Person(object):
         try:
             return Person(*result)
         except TypeError:
-            raise NotFoundError('Person not found')
+            raise NotFoundError("Person not found")
 
     @property
     def id(self) -> int:
@@ -125,6 +126,4 @@ class Person(object):
 
     def delete(self):
         with db_get_cursor() as cur:
-            cur.execute(
-                "DELETE FROM people WHERE id = %s", (self.id,)
-            )
+            cur.execute("DELETE FROM people WHERE id = %s", (self.id,))

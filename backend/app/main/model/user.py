@@ -1,15 +1,18 @@
 import datetime
+from typing import Union
 
-import datetime
 import jwt
+
 from app.main import flask_bcrypt
 from app.main.config import key
-from app.main.util.database import (NotNullViolation, UniqueViolation,
-                                    db_get_cursor)
-from app.main.util.exceptions.errors import NotFoundError, AlreadyExistsError, BadInputError, TokenInvalidError
+from app.main.util.database import NotNullViolation, UniqueViolation, db_get_cursor
+from app.main.util.exceptions.errors import (
+    AlreadyExistsError,
+    BadInputError,
+    NotFoundError,
+    TokenInvalidError,
+)
 
-from typing import Union
-from flask import current_app
 
 class User(object):
     def __init__(
@@ -40,9 +43,9 @@ class User(object):
                     (email, username, User.hash_password(password)),
                 )
         except UniqueViolation:
-            raise AlreadyExistsError('User already exists')
+            raise AlreadyExistsError("User already exists")
         except NotNullViolation:
-            raise BadInputError('Bad input')
+            raise BadInputError("Bad input")
         return User.get_by_email(email)
 
     @staticmethod
@@ -54,7 +57,7 @@ class User(object):
         try:
             return User(*result)
         except TypeError:
-            raise NotFoundError('User not found')
+            raise NotFoundError("User not found")
 
     @staticmethod
     def get_by_id(id: int) -> "User":
@@ -65,13 +68,13 @@ class User(object):
         try:
             return User(*result)
         except TypeError:
-            raise NotFoundError('User not found')
+            raise NotFoundError("User not found")
 
     @staticmethod
     def get_by_login(email: str, password: str) -> "User":
         user = User.get_by_email(email)
         if not user.check_password(password):
-            raise NotFoundError('User not found')
+            raise NotFoundError("User not found")
         return user
 
     @property
@@ -131,9 +134,7 @@ class User(object):
 
     @staticmethod
     def hash_password(password: str) -> str:
-        return flask_bcrypt.generate_password_hash(password).decode(
-            "utf-8"
-        )
+        return flask_bcrypt.generate_password_hash(password).decode("utf-8")
 
     def encode_auth_token(self) -> bytes:
         payload = {
@@ -149,15 +150,17 @@ class User(object):
         try:
             payload = jwt.decode(auth_token, key, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
-            raise TokenInvalidError('Token expired')
+            raise TokenInvalidError("Token expired")
         except jwt.InvalidTokenError:
-            raise TokenInvalidError('Token invalid')
+            raise TokenInvalidError("Token invalid")
 
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM blacklist_tokens WHERE token = %s", (auth_token,))
+            cur.execute(
+                "SELECT * FROM blacklist_tokens WHERE token = %s", (auth_token,)
+            )
             is_blacklisted = cur.fetchone() is not None
 
         if is_blacklisted:
-            raise TokenInvalidError('Token expired')
+            raise TokenInvalidError("Token expired")
         else:
             return User.get_by_id(int(payload["sub"]))

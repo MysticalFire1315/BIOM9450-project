@@ -1,11 +1,13 @@
 # utils.py
 import os
+
 import numpy as np
 import torch
 import torch.nn.functional as F
 
 # Check if CUDA (GPU) is available for computations
 cuda = torch.cuda.is_available()
+
 
 # Calculate sample weights to balance classes in the dataset
 def cal_sample_weight(labels, num_class, use_sample_weight=True):
@@ -25,6 +27,7 @@ def cal_sample_weight(labels, num_class, use_sample_weight=True):
 
     return sample_weight
 
+
 # Convert class labels into one-hot encoded tensors
 def one_hot_tensor(y, num_dim):
     # Initialize a tensor with zeros of shape (num_samples, num_classes)
@@ -32,6 +35,7 @@ def one_hot_tensor(y, num_dim):
     # Set 1 in the position corresponding to the class label
     y_onehot.scatter_(1, y.view(-1, 1), 1)
     return y_onehot
+
 
 # Compute pairwise cosine distance between two tensors
 def cosine_distance_torch(x1, x2=None, eps=1e-8):
@@ -43,10 +47,11 @@ def cosine_distance_torch(x1, x2=None, eps=1e-8):
     # Compute cosine similarity and return 1 - similarity (cosine distance)
     return 1 - torch.mm(x1, x2.t()) / (w1 * w2.t()).clamp(min=eps)
 
+
 # Convert a dense tensor to a sparse tensor
 def to_sparse(x):
     # Determine the type of the input tensor
-    x_typename = torch.typename(x).split('.')[-1]
+    x_typename = torch.typename(x).split(".")[-1]
     sparse_tensortype = getattr(torch.sparse, x_typename)
     # Identify non-zero elements in the tensor
     indices = torch.nonzero(x)
@@ -62,6 +67,7 @@ def to_sparse(x):
     sparse_tensor = sparse_tensor.to(x.dtype)  # Match the data type
     return sparse_tensor
 
+
 # Calculate a parameter for adjacency matrix construction based on edge density
 def cal_adj_mat_parameter(edge_per_node, data, metric="cosine"):
     # Compute pairwise distances between all samples
@@ -69,6 +75,7 @@ def cal_adj_mat_parameter(edge_per_node, data, metric="cosine"):
     # Select a threshold parameter corresponding to the desired edge density
     parameter = torch.sort(dist.view(-1)).values[edge_per_node * data.shape[0]]
     return parameter.cpu().item()  # Return the parameter as a CPU scalar
+
 
 # Construct a binary adjacency graph from pairwise distance tensor
 def graph_from_dist_tensor(dist, parameter, self_dist=True):
@@ -82,6 +89,7 @@ def graph_from_dist_tensor(dist, parameter, self_dist=True):
         diag_idx = np.diag_indices(g.shape[0])
         g[diag_idx[0], diag_idx[1]] = 0
     return g
+
 
 # Generate a sparse adjacency matrix for graph construction
 def gen_adj_mat_tensor(data, parameter, metric="cosine"):
@@ -101,10 +109,15 @@ def gen_adj_mat_tensor(data, parameter, metric="cosine"):
     adj = F.normalize(adj + I, p=1)
     return to_sparse(adj)
 
+
 # Generate a sparse adjacency matrix for test data (train-to-test connections)
 def gen_test_adj_mat_tensor(data, trte_idx, parameter, metric="cosine"):
     # Initialize an adjacency matrix for the full dataset
-    adj = torch.zeros((data.shape[0], data.shape[0])).cuda() if cuda else torch.zeros((data.shape[0], data.shape[0]))
+    adj = (
+        torch.zeros((data.shape[0], data.shape[0])).cuda()
+        if cuda
+        else torch.zeros((data.shape[0], data.shape[0]))
+    )
     num_tr = len(trte_idx["tr"])  # Number of training samples
     # Compute train-to-test distances
     dist_tr2te = cosine_distance_torch(data[trte_idx["tr"]], data[trte_idx["te"]])
@@ -126,13 +139,17 @@ def gen_test_adj_mat_tensor(data, trte_idx, parameter, metric="cosine"):
     adj = F.normalize(adj + I, p=1)
     return to_sparse(adj)
 
+
 # Save model parameters to files in the specified folder
 def save_model_dict(folder, model_dict):
     if not os.path.exists(folder):  # Create the folder if it doesn't exist
         os.makedirs(folder)
     for module in model_dict:
         # Save each model's parameters to a file
-        torch.save(model_dict[module].state_dict(), os.path.join(folder, module + ".pth"))
+        torch.save(
+            model_dict[module].state_dict(), os.path.join(folder, module + ".pth")
+        )
+
 
 # Load model parameters from files into the provided model dictionary
 def load_model_dict(folder, model_dict):
@@ -141,7 +158,11 @@ def load_model_dict(folder, model_dict):
         path = os.path.join(folder, "models", "1", f"{module}.pth")
         if os.path.exists(path):
             # Load parameters into the model
-            model_dict[module].load_state_dict(torch.load(path, map_location="cuda" if cuda else "cpu"))
+            model_dict[module].load_state_dict(
+                torch.load(path, map_location="cuda" if cuda else "cpu")
+            )
         else:
-            print(f"WARNING: {module} not loaded, file missing.")  # Warn if file is missing
+            print(
+                f"WARNING: {module} not loaded, file missing."
+            )  # Warn if file is missing
     return model_dict

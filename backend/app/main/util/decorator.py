@@ -1,14 +1,13 @@
 from functools import partial, wraps
+from typing import Callable
 
 from flask import request
 
 from app.main.service.auth_service import get_logged_in_person, get_logged_in_user
 from app.main.service.person_service import get_person_role
-from typing import Callable
 
-def require_user_logged_in(
-    func: Callable = None, /, *, throughpass=False
-) -> Callable:
+
+def require_user_logged_in(func: Callable = None, /, *, throughpass=False) -> Callable:
     """Require a user to be logged in to access the route.
 
     Args:
@@ -22,24 +21,27 @@ def require_user_logged_in(
     """
 
     if not func:
-        return partial(
-            require_user_logged_in,
-            throughpass=throughpass
-        )
+        return partial(require_user_logged_in, throughpass=throughpass)
 
     @wraps(func)
     def wrapper(*args, **kwargs):
         user = get_logged_in_user(request.headers.get("Authorization"))
 
         if throughpass:
-            kwargs['user'] = user
+            kwargs["user"] = user
         return func(*args, **kwargs)
 
     return wrapper
 
 
 def require_logged_in_as(
-    func: Callable = None, /, *, patient=False, oncologist=False, researcher=False, throughpass=False
+    func: Callable = None,
+    /,
+    *,
+    patient=False,
+    oncologist=False,
+    researcher=False,
+    throughpass=False,
 ) -> Callable:
     """Require a user to be logged in to access the route.
     Optionally, the user can be required to be a patient, oncologist, or researcher.
@@ -66,7 +68,7 @@ def require_logged_in_as(
             patient=patient,
             oncologist=oncologist,
             researcher=researcher,
-            throughpass=throughpass
+            throughpass=throughpass,
         )
 
     @wraps(func)
@@ -80,7 +82,7 @@ def require_logged_in_as(
             return {"status": "fail", "message": "Unauthorized"}, 403
 
         if throughpass:
-            kwargs['person'] = person
+            kwargs["person"] = person
         return func(*args, **kwargs)
 
     return wrapper
