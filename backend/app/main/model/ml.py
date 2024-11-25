@@ -50,6 +50,24 @@ class MLModel(object):
         lr_e=5e-4,
         lr_c=1e-3,
     ) -> "MLModel":
+        """Creates a new machine learning model entry in the database.
+
+        Args:
+            name (str): The name of the model. Must be either "BRCA" or "ROSMAP".
+            num_epoch_pretrain (int, optional): Number of epochs for pretraining. Default is 500.
+            num_epoch (int, optional): Number of epochs for training. Default is 2500.
+            lr_e_pretrain (float, optional): Learning rate for encoder during pretraining. Default is 1e-3.
+            lr_e (float, optional): Learning rate for encoder during training. Default is 5e-4.
+            lr_c (float, optional): Learning rate for classifier. Default is 1e-3.
+
+        Returns:
+            MLModel: The created MLModel object.
+
+        Raises:
+            BadInputError: If the model name is not "BRCA" or "ROSMAP".
+            AlreadyExistsError: If a model with the same name already exists.
+        """
+
         name = name.strip().upper()
         if name == "BRCA":
             num_classes = 5
@@ -82,9 +100,23 @@ class MLModel(object):
         return MLModel.get_by_id(model_id)
 
     @staticmethod
-    def get_by_id(id: int) -> "MLModel":
+    def get_by_id(model_id: int) -> "MLModel":
+        """Retrieves a machine learning model from the database by its ID.
+
+        Args:
+            model_id (int): The ID of the model to retrieve.
+
+        Returns:
+            MLModel: The retrieved MLModel object.
+
+        Raises:
+            NotFoundError: If no model with the given ID exists.
+        """
+
         with db_get_cursor() as cur:
-            cur.execute("SELECT * FROM machine_learning_models WHERE id = %s;", (id,))
+            cur.execute(
+                "SELECT * FROM machine_learning_models WHERE id = %s;", (model_id,)
+            )
             result = cur.fetchone()
 
         try:
