@@ -20,7 +20,7 @@ def register_user(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     return {
         "status": "success",
         "message": "Successfully registered.",
-        "Authorization": user.encode_auth_token(),
+        "Authorization": user.encode_auth_token().decode(),
     }, 201
 
 
@@ -39,7 +39,7 @@ def login_user(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
     return {
         "status": "success",
         "message": "Successfully logged in.",
-        "Authorization": user.encode_auth_token(),
+        "Authorization": user.encode_auth_token().decode(),
     }, 200
 
 
