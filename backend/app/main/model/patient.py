@@ -4,7 +4,6 @@ from typing import List
 from psycopg2.extras import execute_values
 
 from app.main.model.ml import MLModel
-from app.main.model.person import Person
 from app.main.util.database import NotNullViolation, UniqueViolation, db_get_cursor
 from app.main.util.exceptions.errors import (
     AlreadyExistsError,

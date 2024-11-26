@@ -85,7 +85,7 @@ def get_all_patients():
         List[Patient]: A list of all Patient objects.
     """
 
-    return Patient.get_all()
+    return [Person.get_by_id(p.people_id) for p in Patient.get_all()]
 
 
 def mutation_upload(patient_id: Optional[int], people_id: Optional[int], file):
