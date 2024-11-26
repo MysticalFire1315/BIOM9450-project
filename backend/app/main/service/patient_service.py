@@ -10,6 +10,18 @@ from app.main.util.exceptions.errors import CustomError
 
 
 def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
+    """Creates a new patient entry in the database.
+
+    Args:
+        data (Dict[str, str]): A dictionary containing patient and person details.
+
+    Returns:
+        Tuple[Dict[str, str], int]: A tuple containing a response message and a status code.
+
+    Raises:
+        CustomError: If there is an error creating the patient.
+    """
+
     person_data = data.get("person")
     person = Person.new_person(
         person_data.get("firstname"),
@@ -38,21 +50,56 @@ def create_patient(data: Dict[str, str]) -> Tuple[Dict[str, str], int]:
 
 
 def get_profile(id: int):
+    """Retrieves the profile of a patient by their people ID.
+
+    Args:
+        id (int): The people ID of the patient to retrieve.
+
+    Returns:
+        Patient: The Patient object with the associated person details.
+    """
+
     x = Patient.get_by_people_id(id)
     x.person = Person.get_by_id(id)
     return x
 
 
 def get_mutations(id: int):
+    """Retrieves the mutations of a patient by their people ID.
+
+    Args:
+        id (int): The people ID of the patient to retrieve mutations for.
+
+    Returns:
+        Tuple[Dict[str, str], int]: A tuple containing the status and a list of mutations.
+    """
+
     x = Patient.get_by_people_id(id)
     return {"status": "success", "mutations": x.get_mutations()}, 200
 
 
 def get_all_patients():
-    return Patient.get_all()
+    """Retrieves all patients.
+
+    Returns:
+        List[Patient]: A list of all Patient objects.
+    """
+
+    return [Person.get_by_id(p.people_id) for p in Patient.get_all()]
 
 
 def mutation_upload(patient_id: Optional[int], people_id: Optional[int], file):
+    """Uploads a mutation file and links the mutations to the patient.
+
+    Args:
+        patient_id (Optional[int]): The ID of the patient.
+        people_id (Optional[int]): The people ID of the patient.
+        file: The mutation file to upload.
+
+    Returns:
+        Tuple[Dict[str, str], int]: A tuple containing the status and a list of gene names.
+    """
+
     gene_names = set()
 
     try:

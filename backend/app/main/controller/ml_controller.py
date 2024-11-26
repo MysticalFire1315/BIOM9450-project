@@ -29,7 +29,6 @@ class ListAPI(Resource):
 @api.route("/model/<id>")
 class ModelAPI(Resource):
     @api.doc("get the model")
-    @api.response(200, "Model")
     @api.marshal_with(MachineLearningDto.ml_model, envelope="data", skip_none=True)
     @require_logged_in_as(oncologist=True, researcher=True)
     def get(self, id):
@@ -39,7 +38,6 @@ class ModelAPI(Resource):
 @api.route("/probability")
 class ProbabilityAPI(Resource):
     @api.doc("determine probability from model")
-    @api.response(200, "Probability")
     @api.expect(MachineLearningDto.ml_expressions)
     @require_logged_in_as(oncologist=True, researcher=True)
     def post(self) -> Tuple[Dict[str, str], int]:
@@ -72,6 +70,7 @@ class MetricsAPI(Resource):
 @api.route("/feedback")
 class FeedbackAPI(Resource):
     @api.doc("provide feedback")
+    @api.response(201, "Feedback saved successfully")
     @api.expect(MachineLearningDto.ml_feedback)
     @require_logged_in_as(oncologist=True, researcher=True)
     def post(self) -> Tuple[Dict[str, str], int]:

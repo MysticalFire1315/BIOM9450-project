@@ -27,6 +27,6 @@ pnpm-debug.log*
 *.venv
 __pycache__
 *.log*
-
+.ruff_cache
 # self made testing files
 http_demo_temp

@@ -1,5 +1,5 @@
 import datetime
-from typing import Union
+from typing import Optional
 
 import jwt
 
@@ -15,6 +15,8 @@ from app.main.util.exceptions.errors import (
 
 
 class User(object):
+    """Representation of a user."""
+
     def __init__(
         self,
         id: int,
@@ -33,6 +35,21 @@ class User(object):
 
     @staticmethod
     def new_user(email: str, username: str, password: str) -> "User":
+        """Creates a new user entry in the database.
+
+        Args:
+            email (str): The email of the user.
+            username (str): The username of the user.
+            password (str): The password of the user.
+
+        Returns:
+            User: The created User object.
+
+        Raises:
+            AlreadyExistsError: If a user with the same email or username already exists.
+            BadInputError: If the input data is invalid.
+        """
+
         try:
             with db_get_cursor() as cur:
                 cur.execute(
@@ -50,6 +67,18 @@ class User(object):
 
     @staticmethod
     def get_by_email(email: str) -> "User":
+        """Retrieves a user from the database by their email.
+
+        Args:
+            email (str): The email of the user to retrieve.
+
+        Returns:
+            User: The retrieved User object.
+
+        Raises:
+            NotFoundError: If no user with the given email exists.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM users WHERE email = %s;", (email,))
             result = cur.fetchone()
@@ -61,6 +90,18 @@ class User(object):
 
     @staticmethod
     def get_by_id(id: int) -> "User":
+        """Retrieves a user from the database by their ID.
+
+        Args:
+            id (int): The ID of the user to retrieve.
+
+        Returns:
+            User: The retrieved User object.
+
+        Raises:
+            NotFoundError: If no user with the given ID exists.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM users WHERE id = %s;", (id,))
             result = cur.fetchone()
@@ -72,6 +113,19 @@ class User(object):
 
     @staticmethod
     def get_by_login(email: str, password: str) -> "User":
+        """Retrieves a user from the database by their email and password.
+
+        Args:
+            email (str): The email of the user to retrieve.
+            password (str): The password of the user to retrieve.
+
+        Returns:
+            User: The retrieved User object.
+
+        Raises:
+            NotFoundError: If no user with the given email and password exists.
+        """
+
         user = User.get_by_email(email)
         if not user.check_password(password):
             raise NotFoundError("User not found")
@@ -106,7 +160,7 @@ class User(object):
         return self._created_at
 
     @property
-    def people_id(self) -> Union[int, None]:
+    def people_id(self) -> Optional[int]:
         return self._people_id
 
     @people_id.setter
@@ -124,11 +178,11 @@ class User(object):
         with db_get_cursor() as cur:
             cur.execute(
                 """
-                        UPDATE users
-                        SET password_hash = %s,
-                            people_id = %s
-                        WHERE id = %s;
-                        """,
+                UPDATE users
+                SET password_hash = %s,
+                    people_id = %s
+                WHERE id = %s;
+                """,
                 (self._password_hash, self._people_id, self._id),
             )
 
@@ -137,6 +191,12 @@ class User(object):
         return flask_bcrypt.generate_password_hash(password).decode("utf-8")
 
     def encode_auth_token(self) -> bytes:
+        """Generates an authentication token for the user.
+
+        Returns:
+            bytes: The generated authentication token.
+        """
+
         payload = {
             "exp": datetime.datetime.now(datetime.timezone.utc)
             + datetime.timedelta(days=1, seconds=5),
@@ -147,8 +207,18 @@ class User(object):
 
     @staticmethod
     def decode_auth_token(auth_token: str) -> "User":
-        print(auth_token, type(auth_token))
-        print(key, type(key))
+        """Decodes the provided authentication token.
+
+        Args:
+            auth_token (str): The authentication token to decode.
+
+        Returns:
+            User: The user associated with the authentication token.
+
+        Raises:
+            TokenInvalidError: If the token is expired or invalid.
+        """
+
         try:
             payload = jwt.decode(auth_token, key, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:

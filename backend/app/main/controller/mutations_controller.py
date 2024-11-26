@@ -18,8 +18,7 @@ class ListAPI(Resource):
 @api.route("/<name>")
 class ProfileAPI(Resource):
     @api.doc("get the mutation")
-    @api.response(200, "Mutation")
-    @api.expect(MutationDto.mutation_profile)
+    @api.marshal_with(MutationDto.mutation_profile)
     @require_logged_in_as(oncologist=True, researcher=True)
     def get(self, name):
         return get_mutation(name)

@@ -7,6 +7,10 @@ logger = logging.getLogger("errors")
 
 
 def register_handlers(api):
+    """Custom function to register all error handlers to app.
+    Returns the correct HTTP status code and logs each error.
+    """
+
     @api.errorhandler(errors.NotFoundError)
     def handle_not_found(error):
         logger.debug(traceback.format_exc())

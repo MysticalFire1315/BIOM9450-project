@@ -13,6 +13,18 @@ class Sex(Enum):
 
     @staticmethod
     def from_str(string: str):
+        """Converts a string to a Sex enum.
+
+        Args:
+            string (str): The string representation of the sex.
+
+        Returns:
+            Sex: The corresponding Sex enum.
+
+        Raises:
+            BadInputError: If the string does not match any Sex enum value.
+        """
+
         for x in Sex:
             if x.value == string:
                 return x
@@ -20,6 +32,8 @@ class Sex(Enum):
 
 
 class Person(object):
+    """Representation of a person."""
+
     def __init__(
         self,
         id: int,
@@ -38,6 +52,21 @@ class Person(object):
     def new_person(
         firstname: str, lastname: str, date_of_birth: datetime, sex: Sex
     ) -> "Person":
+        """Creates a new person entry in the database.
+
+        Args:
+            firstname (str): The first name of the person.
+            lastname (str): The last name of the person.
+            date_of_birth (datetime): The date of birth of the person.
+            sex (Sex): The sex of the person.
+
+        Returns:
+            Person: The created Person object.
+
+        Raises:
+            BadInputError: If the input data is invalid.
+        """
+
         try:
             with db_get_cursor() as cur:
                 cur.execute(
@@ -52,9 +81,24 @@ class Person(object):
     def get_by_details(
         firstname: str, lastname: str, date_of_birth: datetime, sex: Sex
     ) -> "Person":
+        """Retrieves a person from the database by their details.
+
+        Args:
+            firstname (str): The first name of the person.
+            lastname (str): The last name of the person.
+            date_of_birth (datetime): The date of birth of the person.
+            sex (Sex): The sex of the person.
+
+        Returns:
+            Person: The retrieved Person object.
+
+        Raises:
+            NotFoundError: If no person with the given details exists.
+        """
+
         with db_get_cursor() as cur:
             cur.execute(
-                """;
+                """
                 SELECT *
                 FROM people
                 WHERE firstname = %s
@@ -73,6 +117,18 @@ class Person(object):
 
     @staticmethod
     def get_by_id(id: int) -> "Person":
+        """Retrieves a person from the database by their ID.
+
+        Args:
+            id (int): The ID of the person to retrieve.
+
+        Returns:
+            Person: The retrieved Person object.
+
+        Raises:
+            NotFoundError: If no person with the given ID exists.
+        """
+
         with db_get_cursor() as cur:
             cur.execute("SELECT * FROM people WHERE id = %s;", (id,))
             result = cur.fetchone()
@@ -113,6 +169,8 @@ class Person(object):
         return self._sex
 
     def _update(self):
+        """Updates the person's details in the database."""
+
         with db_get_cursor() as cur:
             cur.execute(
                 """
@@ -125,5 +183,7 @@ class Person(object):
             )
 
     def delete(self):
+        """Deletes the person from the database."""
+
         with db_get_cursor() as cur:
             cur.execute("DELETE FROM people WHERE id = %s", (self.id,))

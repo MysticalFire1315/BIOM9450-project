@@ -8,6 +8,12 @@ from app.main.util.exceptions.errors import NotFoundError
 
 
 def get_all_mutations():
+    """Retrieves all mutation names from the database.
+
+    Returns:
+        List[str]: A list of all mutation names.
+    """
+
     with db_get_cursor() as cur:
         cur.execute("SELECT name FROM features;")
         result = cur.fetchall()
@@ -15,6 +21,19 @@ def get_all_mutations():
 
 
 def get_mutation(name: str):
+    """Retrieves mutation data from COSMIC and the database.
+
+    Args:
+        name (str): The name of the mutation to retrieve.
+
+    Returns:
+        Dict[str, Union[List[Dict[str, str]], List[int]]]: A dictionary containing COSMIC data and patient IDs.
+
+    Raises:
+        NotFoundError: If the mutation is not found in COSMIC or the database.
+    """
+
+    # Get mutation data from COSMIC
     url = "https://clinicaltables.nlm.nih.gov/api/cosmic/v4/search"
     params = {"terms": name, "df": "MutationID,GeneName,PrimarySite"}
     response = requests.get(url, params=params)
