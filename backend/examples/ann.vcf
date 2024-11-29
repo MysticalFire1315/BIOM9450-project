@@ -1,0 +1,6 @@
+##fileformat=VCFv4.2
+##INFO=<ID=ANN,Number=.,Type=String,Description="Annotation format: Allele|Consequence|Gene|Feature|Feature_type|...">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr1	12345	.	A	T	50	PASS	ANN=T|missense_variant|BRCA1|NM_007294.3|protein_coding
+chr2	67890	.	G	C	99	PASS	ANN=C|nonsense_variant|TP53|NM_000546.5|protein_coding
+chr3	111213	.	T	A	80	PASS	ANN=A|synonymous_variant|EGFR|NM_005228.3|protein_coding
