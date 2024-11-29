@@ -190,11 +190,11 @@ class User(object):
     def hash_password(password: str) -> str:
         return flask_bcrypt.generate_password_hash(password).decode("utf-8")
 
-    def encode_auth_token(self) -> bytes:
+    def encode_auth_token(self) -> str:
         """Generates an authentication token for the user.
 
         Returns:
-            bytes: The generated authentication token.
+            str: The generated authentication token.
         """
 
         payload = {
@@ -203,7 +203,8 @@ class User(object):
             "iat": datetime.datetime.now(datetime.timezone.utc),
             "sub": str(self.id),
         }
-        return jwt.encode(payload, key, algorithm="HS256")
+        token = jwt.encode(payload, key, algorithm="HS256")
+        return token if isinstance(token, str) else token.decode()
 
     @staticmethod
     def decode_auth_token(auth_token: str) -> "User":

@@ -2,7 +2,8 @@
 
 ## Getting Started
 
-1. Ensure that Python is installed.
+1. Ensure that Python (3.9.x or 3.10.x) is installed. Other versions of Python may
+not be supported.
 2. Install dependencies with `make install`.
 3. Start the server with `make run`. It will be hosted at `http://127.0.0.1:5000/`.
 4. Optionally, use `make all` to clean, install and run.
